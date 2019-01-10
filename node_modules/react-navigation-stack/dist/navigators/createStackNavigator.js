@@ -1,0 +1,35 @@
+import { StackRouter, createKeyboardAwareNavigator, createNavigator } from 'react-navigation';
+import StackView from '../views/StackView/StackView';
+
+function createStackNavigator(routeConfigMap, stackConfig = {}) {
+  const {
+    initialRouteKey,
+    initialRouteName,
+    initialRouteParams,
+    paths,
+    navigationOptions,
+    disableKeyboardHandling,
+    getCustomActionCreators
+  } = stackConfig;
+
+  const stackRouterConfig = {
+    initialRouteKey,
+    initialRouteName,
+    initialRouteParams,
+    paths,
+    navigationOptions,
+    getCustomActionCreators
+  };
+
+  const router = StackRouter(routeConfigMap, stackRouterConfig);
+
+  // Create a navigator with StackView as the view
+  let Navigator = createNavigator(StackView, router, stackConfig);
+  if (!disableKeyboardHandling) {
+    Navigator = createKeyboardAwareNavigator(Navigator, stackConfig);
+  }
+
+  return Navigator;
+}
+
+export default createStackNavigator;
