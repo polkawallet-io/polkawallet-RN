@@ -56,7 +56,7 @@ In order to give users a more humane and more convenient experience, as the entr
 ![_ _20190105215211](https://user-images.githubusercontent.com/34789555/50725697-6ca56780-113c-11e9-95da-d0c4e90e8c5d.png)
 
 
-- [ ] Polkadot js api debugging for react native (2018.12.17 - now, plan 2019.01.15 done)
+- [x] Polkadot js api debugging for react native (2018.12.17 - plan 2019.01.15 done)[actual: 01.07 done]
 
   Problems arise when importing Polkadot js API to the React Native, Special thanks to @jacogr  helped me debug the API for a long time, https://github.com/polkadot-js/api/issues/481. We've made a breakthrough, but there are still incompatibilities on the Android side.https://github.com/polkadot-js/api/issues/526. 
 
@@ -65,11 +65,13 @@ In order to give users a more humane and more convenient experience, as the entr
 ![_ _20181221211242](https://user-images.githubusercontent.com/34789555/50725734-0bca5f00-113d-11e9-9854-d1ef1c8f7787.gif)
 
 
-- [ ] Display page jump logic
+- [ ] Display page jump logic (plan: 2019.01.15 done)
 
-- [ ] Display page implementation
-- [ ] Functional & logic implementation
-- [ ] Release Beta version
+
+- [ ] Display page implementation (plan: 2019.01.26 done)
+(then have the Chinese New Year, 14 days holiday)
+- [ ] Functional & logic implementation  (plan: 2019.02. 27 done)
+- [ ] Release Beta version (plan: 2019.02.28 release)
 - [ ] Optimization and development
 - [ ] Integrate Parity Signer to Polkawallet
 - [ ] New and more functions, including finance, cross-chain ecosystem
