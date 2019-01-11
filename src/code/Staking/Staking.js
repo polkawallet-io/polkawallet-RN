@@ -71,7 +71,7 @@ export default class IntegralMall extends Component {
                     />
                     <Image
                       style={{marginTop:ScreenHeight/40,height:ScreenHeight/14.5,width:ScreenHeight/14.5,resizeMode:'cover'}}
-                      source={require('../../images/Staking/account_image.png')}
+                      source={require('../../images/Staking/accountIMG.png')}
                     />
                     <View style={{marginRight:ScreenWidth/4,height:ScreenHeight/35,width:ScreenHeight/35}}></View>
                   </View>
@@ -198,7 +198,7 @@ export default class IntegralMall extends Component {
                               <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:(index==0)?1:0,borderBottomWidth:1,borderColor:'grey'}} key={index}>
                                 <Image
                                   style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
-                                  source={require('../../images/Staking/account_image.png')}
+                                  source={require('../../images/Staking/accountIMG.png')}
                                 />
                                 <View style={{marginLeft:ScreenWidth/20,flex:1}}>
                                   <Text

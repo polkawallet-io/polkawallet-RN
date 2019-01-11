@@ -19,13 +19,13 @@ export default class New extends Component {
           <View style={{marginLeft:ScreenWidth/26.79,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}></View>
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
               <Image
-                style={{marginBottom:ScreenHeight/75,height:ScreenHeight/25.65,width:ScreenWidth/3}}
+                style={{marginRight:ScreenHeight/20*4.73/4,marginBottom:ScreenHeight/75,height:ScreenHeight/20,width:ScreenHeight/20*4.73,resizeMode:'contain'}}
                 source={require('../../images/Assetes/logo.png')}
               />
           </View>
           <Image
             style={{marginRight:ScreenWidth/26.79,marginBottom:ScreenHeight/75,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}
-            source={require('../../images/Assetes/right_menu.png')}
+            source={require('../../images/Assetes/rightMenu.png')}
           />
         </View>
         <ScrollView>
@@ -33,7 +33,7 @@ export default class New extends Component {
               <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
                 <Image
                   style={{marginTop:ScreenHeight/30,backgroundColor:'white',borderRadius:ScreenHeight/32,height:ScreenHeight/16,width:ScreenHeight/16}}
-                  source={require('../../images/Assetes/account_image.png')}
+                  source={require('../../images/Assetes/accountIMG.png')}
                 />
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
@@ -41,13 +41,13 @@ export default class New extends Component {
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                 <Text 
-                  style={{fontWeight:"200",width:ScreenWidth*0.6,fontSize:ScreenHeight/45,color:'white'}}
+                  style={{fontWeight:"200",width:ScreenWidth*0.5,fontSize:ScreenHeight/45,color:'white'}}
                   ellipsizeMode={"middle"}
                   numberOfLines={1}
-                >3jdhfjhkfjhdsfddfsfdsfdsfdslfhkdsfiurigonddsfdsfjkshhffkjds</Text>
+                >5Dn8F1SUX6SoLt1BTfKEPL5VY9wMvG1A6tEJTSCHpLsinThm</Text>
                 <Image
                   style={{marginLeft:ScreenWidth/53.57,height:ScreenHeight/45,width:ScreenHeight/45,opacity:0.8}}
-                  source={require('../../images/Assetes/WechatIMG6.png')}
+                  source={require('../../images/Assetes/QrButton.png')}
                 />
               </View>
               <View style={{flex:1}}></View>
@@ -55,7 +55,7 @@ export default class New extends Component {
                 <Text style={{fontWeight:'bold',marginLeft:ScreenWidth/40,color:'white',fontSize:ScreenWidth/25}}>Assetes</Text>
                 <Image
                   style={{marginRight:ScreenWidth/20,height:ScreenHeight/30,width:ScreenHeight/30,opacity:0.9}}
-                  source={require('../../images/Assetes/WechatIMG5.png')}
+                  source={require('../../images/Assetes/addAssetes.png')}
                 />
               </View>
           </View>
@@ -63,7 +63,7 @@ export default class New extends Component {
               <View style={{justifyContent:'center',alignItems:'center',width:ScreenWidth/6,height:ScreenHeight/10}}>
                   <Image
                     style={{borderRadius:ScreenHeight/32,height:ScreenHeight/16,width:ScreenHeight/16}}
-                    source={require('../../images/Assetes/WechatIMG4.png')}
+                    source={require('../../images/Assetes/DOT.png')}
                   />
               </View>
               <View style={{justifyContent:'center',flex:1,}}>
