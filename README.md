@@ -60,8 +60,6 @@ In order to give users a more humane and more convenient experience, as the entr
 
   Problems arise when importing Polkadot js API to the React Native, Special thanks to @jacogr  helped me debug the API for a long time, https://github.com/polkadot-js/api/issues/481. We've made a breakthrough, but there are still incompatibilities on the Android side.https://github.com/polkadot-js/api/issues/526. 
 
-![_ _20181219003817](https://user-images.githubusercontent.com/34789555/50725731-02d98d80-113d-11e9-8e1b-a0b810dc3188.png)
-
 ![_ _20181221211242](https://user-images.githubusercontent.com/34789555/50725734-0bca5f00-113d-11e9-9854-d1ef1c8f7787.gif)
 
 
