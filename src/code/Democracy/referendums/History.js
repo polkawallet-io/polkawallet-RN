@@ -3,14 +3,17 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ScrollView,
 } from 'react-native';
+
 
 export default class Polkawallet extends Component {
   render() {
     return (
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <Text style={{fontSize:30}}>Profile</Text>
-      </View>    );
+            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                <Text style={{fontSize:30}}>History</Text>
+            </View>    
+      );
   }
 }
