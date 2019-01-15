@@ -57,10 +57,7 @@ export default class IntegralMall extends Component {
         titlebottomSO:1,
         option: {
           title: {
-            show:false,
-            // bottom:0
-
-
+            show:false
           },
           tooltip: {},
           legend: {
