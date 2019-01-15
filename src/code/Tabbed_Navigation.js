@@ -54,20 +54,20 @@ const TabRouteConfigs = {
             
         })
     },
-    B4:{
-        screen : CrossChain,
-        navigationOptions:()=>({
-            tabBarLabel:'CrossChain',
-            tabBarIcon:({b,tintColor})=>(
-              <Diceng
-                tintColor={tintColor} 
-                b = {b}
-                b1 = {require('../images/Bottom/crosschain_icon.png')}
-              />
-            )
+    // B4:{
+    //     screen : CrossChain,
+    //     navigationOptions:()=>({
+    //         tabBarLabel:'CrossChain',
+    //         tabBarIcon:({b,tintColor})=>(
+    //           <Diceng
+    //             tintColor={tintColor} 
+    //             b = {b}
+    //             b1 = {require('../images/Bottom/crosschain_icon.png')}
+    //           />
+    //         )
             
-        })
-    },
+    //     })
+    // },
     B5:{
         screen : Profile,
         navigationOptions:()=>({

@@ -6,7 +6,6 @@ import {
   View,
   Dimensions,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import Active from './referendums/Active'
 import History from './referendums/History'
