@@ -7,7 +7,7 @@ import {
 import {TabBarBottom,createBottomTabNavigator} from 'react-navigation'
 import Assetes from './Assetes/Assetes'
 import Staking from './Staking/Staking'
-import Democrscy from './Democrscy/Democrscy'
+import Democracy from './Democracy/Democracy'
 import CrossChain from './CrossChain/CrossChain'
 import Profile from './Profile/Profile'
 import Diceng from './bottom'
@@ -41,9 +41,9 @@ const TabRouteConfigs = {
         })
     },
     B3:{
-        screen : Democrscy,
+        screen : Democracy,
         navigationOptions:()=>({
-            tabBarLabel:'Democrscy',
+            tabBarLabel:'Democracy',
             tabBarIcon:({b,tintColor})=>(
               <Diceng
                 tintColor={tintColor} 
@@ -54,20 +54,20 @@ const TabRouteConfigs = {
             
         })
     },
-    B4:{
-        screen : CrossChain,
-        navigationOptions:()=>({
-            tabBarLabel:'CrossChain',
-            tabBarIcon:({b,tintColor})=>(
-              <Diceng
-                tintColor={tintColor} 
-                b = {b}
-                b1 = {require('../images/Bottom/crosschain_icon.png')}
-              />
-            )
+    // B4:{
+    //     screen : CrossChain,
+    //     navigationOptions:()=>({
+    //         tabBarLabel:'CrossChain',
+    //         tabBarIcon:({b,tintColor})=>(
+    //           <Diceng
+    //             tintColor={tintColor} 
+    //             b = {b}
+    //             b1 = {require('../images/Bottom/crosschain_icon.png')}
+    //           />
+    //         )
             
-        })
-    },
+    //     })
+    // },
     B5:{
         screen : Profile,
         navigationOptions:()=>({

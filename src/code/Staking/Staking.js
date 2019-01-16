@@ -8,7 +8,9 @@ import {
   Dimensions,
   ScrollView,
   Image,
+  
 } from 'react-native';
+import Echarts from 'native-echarts';
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const Staking_Records=[
@@ -23,18 +25,59 @@ const MyNominstors=[
   {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',balance:'30,222,333'},
   {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsflkbdsjf',balance:'22,446,633'}
 ]
+const Vailators=[
+  {address:'5hfg3hofnvdoJhUidfjslfhdsfsdgrgdfbtnhgfhdgfd',num1:'33,333,567',num2:'34,443,333'},
+  {address:'5IHhjhfdksjfuvbuUHUlfhshUHUBFifhdslhfudsivbh',num1:'213,344,565',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsflkbdsjf',num1:'22,446,633',num2:'34,443,333'}
+]
+const Next_up=[
+  {address:'5hfg3hofnvdoJhUidfjslfhdsfsdgrgdfhgdkfjhgjdf',num1:'33,333,567',num2:'34,443,333'},
+  {address:'5IHhjhfdksjfuvbuUHUlfhshUHUBFifhdsffgfdghfhg',num1:'213,344,565',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmyhkbdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdskvNLHjkbdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfombdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfombdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
+  {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsHjkfrrjd',num1:'22,446,633',num2:'34,443,333'}
+]
 export default class IntegralMall extends Component {
   constructor(props)
   {
       super(props)
       this.state={
         title:1,
-        titlebottom:1
+        titlebottomAA:1,
+        titlebottomSO:1,
+        option: {
+          title: {
+            show:false
+          },
+          tooltip: {},
+          legend: {
+              data: ['']
+          },
+          xAxis: {
+              data: ["12/5", "12/8", "12/11", "12/14", "12/17","12/20","12/23","12/26"]
+          },
+          yAxis: {},
+          series: [{
+              type: 'line',
+              data: [0, 0.02,0.03,0.06,0.04,0.06,0.10,0.04]
+          }]
+      },
+      text: 'text'
       }
   }
   render() {
     return (
-        <View style={{flex:1}}>
+        <View style={{flex:1,backgroundColor:'white'}}>
           <View style={{marginTop:ScreenHeight/30,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
             <TouchableOpacity 
               style={{justifyContent:'center',alignItems:'center',height:ScreenHeight/20,width:ScreenWidth*0.49,borderWidth:1,borderColor:'#0076ff',borderTopLeftRadius:8,borderBottomLeftRadius:8,backgroundColor:this.state.title==1?'#0076ff':'white'}}
@@ -60,32 +103,43 @@ export default class IntegralMall extends Component {
           {   
               (this.state.title==1)
               ?
+              // ***********************AliceAccount************************
               <ScrollView>
-                {/* 图 */}
-                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}></View>
+                {/* *********************** 点线图 *********************** */}
+                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}>
+                  <Echarts 
+                    option={this.state.option}
+                    height={ScreenHeight/3}/>                
+                </View>
                 <View style={{height:ScreenHeight*0.45,width:ScreenWidth,alignItems:'center'}}>
                   <View style={{alignItems:'center',justifyContent:'space-between',width:ScreenWidth,flexDirection:'row',height:ScreenHeight*0.4/3}}>
+                    {/* 灰色尖锐 */}
                     <Image
                       style={{marginLeft:ScreenWidth/4,marginBottom:ScreenHeight/29-ScreenHeight/40,height:ScreenHeight/35,width:ScreenHeight/35,resizeMode:'cover'}}
                       source={require('../../images/Staking/greysharp.png')}
                     />
+                    {/* 头像 */}
                     <Image
                       style={{marginTop:ScreenHeight/40,height:ScreenHeight/14.5,width:ScreenHeight/14.5,resizeMode:'cover'}}
                       source={require('../../images/Staking/accountIMG.png')}
                     />
                     <View style={{marginRight:ScreenWidth/4,height:ScreenHeight/35,width:ScreenHeight/35}}></View>
                   </View>
-                  <Text style={{color:'#4B4B4B',marginBottom:ScreenHeight/35,fontSize:ScreenHeight/47.65}}>AliceAccount</Text>
+                  {/* 用户名 */}
+                  <Text style={{color:'#4B4B4B',marginBottom:ScreenHeight/40,fontSize:ScreenHeight/47.65}}>AliceAccount</Text>
+                  {/* 地址 */}
                   <Text 
-                    style={{width:ScreenWidth/2,marginBottom:ScreenHeight/50,fontSize:ScreenHeight/40}}
+                    style={{width:ScreenWidth/2,marginBottom:ScreenHeight/40,fontSize:ScreenHeight/45}}
                     ellipsizeMode={"middle"}
                     numberOfLines={1}
                   >
                     5hfg3hofnvdoJhUidfjslfhdsfsdiljhhjkgrgdfbtnhgfhdgfd
                   </Text>
+                  {/* 余额 */}
                   <Text style={{marginBottom:ScreenHeight/80,fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>balance 1.5 M</Text>
+                  {/* transactions */}
                   <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text>
-                  {/* 选择 */}
+                  {/* Stake or nominate */}
                   <View style={{flexDirection:'row',flex:1,alignItems:'center',justifyContent:'center',width:ScreenWidth}}>
                     <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#4eacd1',height:ScreenHeight/16,width:ScreenWidth*0.4}}>
                       <Image
@@ -114,44 +168,44 @@ export default class IntegralMall extends Component {
                 </View>
                 <View style={{padding:1,borderBottomColor:'grey',height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'space-around'}}>
                   <TouchableOpacity 
-                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottom==1?'blue':'#ffffff00'}}
+                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomAA==1?'#005baf':'#ffffff00'}}
                     onPress={()=>{
                       this.setState({
-                        titlebottom:1
+                        titlebottomAA:1
                       })
                     }}
                     >
-                    <Text style={{color:this.state.titlebottom==1?'blue':'#696969',fontSize:ScreenWidth/30}}>
+                    <Text style={{color:this.state.titlebottomAA==1?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
                       Staking Records
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottom==2?'blue':'#ffffff00'}}
+                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomAA==2?'#005baf':'#ffffff00'}}
                     onPress={()=>{
                       this.setState({
-                        titlebottom:2
+                        titlebottomAA:2
                       })
                     }}
                     >
-                    <Text style={{color:this.state.titlebottom==2?'blue':'#696969',fontSize:ScreenWidth/30}}>
+                    <Text style={{color:this.state.titlebottomAA==2?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
                       Nominsting
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottom==3?'blue':'#ffffff00'}}
+                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomAA==3?'#005baf':'#ffffff00'}}
                     onPress={()=>{
                       this.setState({
-                        titlebottom:3
+                        titlebottomAA:3
                       })
                     }}
                     >
-                    <Text style={{color:this.state.titlebottom==3?'blue':'#696969',fontSize:ScreenWidth/30}}>
+                    <Text style={{color:this.state.titlebottomAA==3?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
                       MyNominstors
                     </Text>
                   </TouchableOpacity>
                 </View>
                 {
-                    (this.state.titlebottom==1)?
+                    (this.state.titlebottomAA==1)?
                     // Staking Records
                     <View>
                       {
@@ -184,7 +238,7 @@ export default class IntegralMall extends Component {
                         })
                       }
                     </View>
-                    :(this.state.titlebottom==2)?
+                    :(this.state.titlebottomAA==2)?
                       // Nominsting
                       <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
                         <Text style={{marginTop:20,color:'#696969'}}>-You are not nominating.</Text>
@@ -225,17 +279,117 @@ export default class IntegralMall extends Component {
               //Staking Overview
               <ScrollView>
                 <View style={{marginTop:6,marginLeft:2,marginRight:2,height:ScreenHeight/5,borderWidth:2,borderColor:'grey',borderRadius:ScreenHeight/100}}>
-                  <View style={{flexDirection:'row',height:ScreenHeight/12,borderWidth:1}}>
+                  <View style={{flexDirection:'row',height:ScreenHeight/12}}>
+                    {/* vailators */}
                     <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
-                      <Text style={{color:''}}>vailators</Text>
-                      <Text>35/35</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>vailators</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>35/35</Text>
+                    </View>
+                    {/* intentions */}
+                    <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
+                      <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>intentions</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>35</Text>
+                    </View>
+                    {/* session */}
+                    <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
+                      <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>session</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>8/60</Text>
+                    </View>
+                    {/* era */}
+                    <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
+                      <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>era</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>608/720</Text>
                     </View>
                   </View>
-                  <Text style={{height:ScreenHeight/10/3,borderWidth:1}}>balance</Text>
-                  <Text style={{height:ScreenHeight/10/3,borderWidth:1}}>lowest vailidator 2,181,791(+1,570,443)</Text>
-                  <Text style={{height:ScreenHeight/10/3,borderWidth:1}}>highest intention unknown</Text>
+                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3,color:'#696969'}}>balance</Text>
+                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3}}>lowest vailidator 2,181,791(+1,570,443)</Text>
+                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3}}>highest intention unknown</Text>
+                </View>
+                {/* Vailators and Next_up */}
+                <View style={{padding:1,borderBottomColor:'grey',height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',borderBottomWidth:1,borderBottomColor:'black'}}>
+                  <TouchableOpacity 
+                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomSO==1?'blue':'#ffffff00'}}
+                    onPress={()=>{
+                      this.setState({
+                        titlebottomSO:1
+                      })
+                    }}
+                    >
+                    <Text style={{marginHorizontal:ScreenWidth/40,color:this.state.titlebottom==1?'blue':'#696969',fontSize:ScreenWidth/30}}>
+                      Vailators
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomSO==2?'blue':'#ffffff00'}}
+                    onPress={()=>{
+                      this.setState({
+                        titlebottomSO:2
+                      })
+                    }}
+                    >
+                    <Text style={{marginHorizontal:ScreenWidth/40,color:this.state.titlebottom==2?'blue':'#696969',fontSize:ScreenWidth/30}}>
+                      Next up
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  {
+                    (this.state.titlebottomSO==1)?
+                    //Vailators
+                    Vailators.map((item,index)=>{
+                      return(
+                          <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                                <Image
+                                  style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
+                                  source={require('../../images/Staking/accountIMG.png')}
+                                />
+                                <View style={{marginLeft:ScreenWidth/20,flex:1}}>
+                                  <Text
+                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64}}
+                                    ellipsizeMode={"middle"}
+                                    numberOfLines={1}
+                                  >
+                                    {item.address}
+                                  </Text>
+                                </View>
+                                <Text
+                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {item.num1+'(+'+item.num2+')'} 
+                                </Text>
+                          </View>
+                      )
+                    })
+                    :
+                    // Next_up
+                    Next_up.map((item,index)=>{
+                      return(
+                          <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                                <Image
+                                  style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
+                                  source={require('../../images/Staking/accountIMG.png')}
+                                />
+                                <View style={{marginLeft:ScreenWidth/20,flex:1}}>
+                                  <Text
+                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64}}
+                                    ellipsizeMode={"middle"}
+                                    numberOfLines={1}
+                                  >
+                                    {item.address}
+                                  </Text>
+                                </View>
+                                <Text
+                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {item.num1+'(+'+item.num2+')'} 
+                                </Text>
+                          </View>
+                      )
+                    })
+                  }
                 </View>
               </ScrollView>
+
           }
         </View>
     );
