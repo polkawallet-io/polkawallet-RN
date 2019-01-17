@@ -102,7 +102,7 @@ export default class Navigation extends Component {
     }
     render() {
         return (
-            <SimpleApp/>
+              <SimpleApp/>
         );
     }
 }
