@@ -71,8 +71,8 @@ export default class IntegralMall extends Component {
               type: 'line',
               data: [0, 0.02,0.03,0.06,0.04,0.06,0.10,0.04]
           }]
-      },
-      text: 'text'
+        },
+        text: 'text'
       }
   }
   render() {
@@ -129,7 +129,7 @@ export default class IntegralMall extends Component {
                   <Text style={{color:'#4B4B4B',marginBottom:ScreenHeight/40,fontSize:ScreenHeight/47.65}}>AliceAccount</Text>
                   {/* 地址 */}
                   <Text 
-                    style={{width:ScreenWidth/2,marginBottom:ScreenHeight/40,fontSize:ScreenHeight/45}}
+                    style={{width:ScreenWidth/2,marginBottom:ScreenHeight/40,fontSize:ScreenHeight/45,color:'black'}}
                     ellipsizeMode={"middle"}
                     numberOfLines={1}
                   >
@@ -166,6 +166,7 @@ export default class IntegralMall extends Component {
                     </View>
                   </View>
                 </View>
+                {/* 次标题 */}
                 <View style={{padding:1,borderBottomColor:'grey',height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'space-around'}}>
                   <TouchableOpacity 
                     style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomAA==1?'#005baf':'#ffffff00'}}
@@ -218,7 +219,7 @@ export default class IntegralMall extends Component {
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
-                                  style={{fontSize:ScreenHeight/47.64}}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black'}}
                                 >
                                   {item.Staking_Record}
                                 </Text>
@@ -229,7 +230,7 @@ export default class IntegralMall extends Component {
                                 </Text>
                               </View>
                               <Text
-                                style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/41.69}}
+                                style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/41.69,color:'black'}}
                               >
                                 {(item.Staking_Record=="Staking Reward")?"+ "+item.num:"- "+item.num} 
                               </Text>
@@ -256,7 +257,7 @@ export default class IntegralMall extends Component {
                                 />
                                 <View style={{marginLeft:ScreenWidth/20,flex:1}}>
                                   <Text
-                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64}}
+                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64,color:'black'}}
                                     ellipsizeMode={"middle"}
                                     numberOfLines={1}
                                   >

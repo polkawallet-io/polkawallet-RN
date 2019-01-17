@@ -1,52 +1,39 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'; 
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Picker
-} from 'react-native';
-
-let ScreenWidth = Dimensions.get("screen").width;
-let ScreenHeight = Dimensions.get("screen").height;
-export default class Polkawallet extends Component {
-    constructor(props)
-    {
-        super(props)
-        this.state = {
-            language: '' 
-        }
-    }
-  render() {
-    return (
-        <View style={styles.container}>
-        <Text >
-          Picker选择器实例
-        </Text>
-        <Picker
-          style={{width:414,borderWidth:1}}
-          selectedValue={this.state.language}
-          onValueChange={(value) => this.setState({language: value})}
-        //   value={["1",'2']}
-        >
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="javaScript" />
-        </Picker>
-        <Text>当前选择的是:{this.state.language}</Text>
-      </View>
-      );
+    AppRegistry,
+    StyleSheet,
+    View,
+    TextInput,
+    Dimensions,
+    Text,
+  } from 'react-native';
+  import QRCode from 'react-native-qrcode'; 
+  const screenWidth=Dimensions.get('window').width
+//   const screenWidth=Dimensions.get('window').width
+  export default class Product_ErWeiMa extends Component{
+      constructor(props){
+          super(props)
+          this.state={
+              text:'biubiubiu'
+          }
+      }   
+      render(){
+          return(
+              <View style={{flex:1,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
+                <TextInput 
+                  style={{height:40,borderColor:'red',borderWidth:2,margin:10,borderRadius:5,padding:5,width:screenWidth-50}}
+                  onChangeText={text=>this.setState({
+                      text:text
+                  })}
+                  value={this.state.text}
+                ></TextInput>
+                <QRCode
+                  value={this.state.text}
+                  size={200}
+                  bgColor='purple'
+                  fgColor='white'
+                ></QRCode>
+              </View>
+          )
+      }
   }
-}
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-    },
-  });

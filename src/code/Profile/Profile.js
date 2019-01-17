@@ -19,6 +19,18 @@ const Custom_Components=[
   {image:require('../../images/Profile/About.png'),text:'About'},
 ]
 export default class New extends Component {
+  constructor(props)
+    {
+        super(props)
+        this.state = {
+            is: false,
+            s:1
+        }
+        this.Manage_Account=this.Manage_Account.bind(this)
+    }
+  Manage_Account(){
+    this.props.navigation.navigate('Manage_Account')
+  }
   render() {
     return (
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
@@ -42,7 +54,9 @@ export default class New extends Component {
                 <Text style={{fontWeight:"500",fontSize:ScreenHeight/45,color:'white'}}>AliceAccount</Text>
               </View>
               <View style={{marginTop:ScreenHeight/70,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
-                <TouchableOpacity style={{backgroundColor:'#FF4D89',borderWidth:1,borderColor:'white',borderRadius:ScreenHeight/45,height:ScreenHeight/22,alignItems:'center',justifyContent:'center'}}>
+                <TouchableOpacity style={{backgroundColor:'#FF4D89',borderWidth:1,borderColor:'white',borderRadius:ScreenHeight/45,height:ScreenHeight/22,alignItems:'center',justifyContent:'center'}}
+                  onPress={this.Manage_Account}
+                >
                   {/* 更多 */}
                   <Text 
                     style={{marginHorizontal:ScreenWidth/20,fontWeight:'500',fontSize:ScreenHeight/45,color:'white'}}
