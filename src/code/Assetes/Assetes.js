@@ -27,7 +27,7 @@ type State = {
 const ALICE = '5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ';
 const ALICE_SEED = 'Alice'.padEnd(32, ' ');
 const BOB   = '5FZEyVyZm7r8WPQ8racC8MfdYMsAJNqGVVQQR4zM5SbEwhDr';
-const ENDPOINT = 'ws://10.0.2.2:9944/';
+const ENDPOINT = 'ws://127.0.0.1:9944/';
 
 
 let ScreenWidth = Dimensions.get("screen").width;
