@@ -29,11 +29,22 @@ export default class New extends Component {
     }
     Create_Account()
     {
+      this.props.t.setState({
+        is:false
+      })
       this.props.p.navigation.navigate('Create_Account')
     }
   render() {
         return (
-            <View style={[styles.container,{backgroundColor:'#7582C9',}]}>
+            <View style={[styles.container]}>
+              <TouchableOpacity style={{width:ScreenWidth*0.43,flex:1}}
+                onPress={()=>{
+                  this.props.t.setState({
+                    is:false
+                  })
+                }}
+              />
+              <View style={{backgroundColor:'#7582C9'}}>
                 <View style={{height:ScreenHeight/14*3,marginTop:ScreenHeight/14}}>
                   <ScrollView>
                     {
@@ -96,14 +107,15 @@ export default class New extends Component {
                 <View style={{flex:1}}/>
                 {/* 下线 */}
                 <View style={styles.line}/>
-              {/* 帮助 */}
-              <TouchableOpacity style={[styles.middle,{height:ScreenHeight/13,flexDirection:'row'}]}>
-                <Image
-                  style={[{height:ScreenHeight/48,width:ScreenHeight/48,resizeMode:'contain'}]}
-                  source={require('../../../images/Assetes/right_menu/help.png')}
-                />
-                <Text style={{fontWeight:'500',color:'white',marginLeft:ScreenWidth/70,fontSize:ScreenWidth/38}}>Can I help you?</Text>
-              </TouchableOpacity>
+                {/* 帮助 */}
+                <TouchableOpacity style={[styles.middle,{height:ScreenHeight/13,flexDirection:'row'}]}>
+                  <Image
+                    style={[{height:ScreenHeight/48,width:ScreenHeight/48,resizeMode:'contain'}]}
+                    source={require('../../../images/Assetes/right_menu/help.png')}
+                  />
+                  <Text style={{fontWeight:'500',color:'white',marginLeft:ScreenWidth/70,fontSize:ScreenWidth/38}}>Can I help you?</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             
         )
@@ -114,7 +126,8 @@ export default class New extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor:'#ffffff00',
+    flexDirection:'row'
   },
   account: {
     height:ScreenHeight/14,
