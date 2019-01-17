@@ -1,5 +1,5 @@
 /** @format */
-
+import 'node-libs-react-native/globals';
 import {AppRegistry} from 'react-native';
 import App from './App';
 import Shiyan from './src/code/Assetes/secondary/shiyan'
