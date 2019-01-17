@@ -23,6 +23,10 @@ export default class Polkawallet extends Component {
       way_change:'Mnemonic',
       isModel:false
     }
+    this.Create_Wallet=this.Create_Wallet.bind(this)
+  }
+  Create_Wallet(){
+    this.props.navigation.navigate('Create_Wallet')
   }
   render() {
     return (
@@ -30,7 +34,9 @@ export default class Polkawallet extends Component {
         {/* 标题栏 */}
         <View style={styles.title}>
           <TouchableOpacity
-            onPress={()=>{}}
+            onPress={()=>{
+              this.props.navigation.navigate('Tabbed_Navigation')
+            }}
           >
             <Image
               style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
@@ -84,9 +90,9 @@ export default class Polkawallet extends Component {
                 />
               </TouchableOpacity>
             </View>
-            <TextInput style = {[styles.textInputStyle,{height:ScreenHeight/10}]}
+            <TextInput style = {[styles.textInputStyle,{height:ScreenHeight/10,fontSize:ScreenHeight/40}]}
                 placeholder = "magic trap help enlist solve manual crush win base creek angry gate"
-                placeholderTextColor = "#666666"
+                placeholderTextColor = "black"
                 underlineColorAndroid="#ffffff00"
                 multiline={true}
                 // onChangeText = {this.onChangePh}
@@ -95,7 +101,7 @@ export default class Polkawallet extends Component {
           {/* name */}
           <View style={styles.NandP}>
             <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
-            <TextInput style = {styles.textInputStyle}
+            <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
                 placeholder = "New Keypair"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
@@ -105,23 +111,25 @@ export default class Polkawallet extends Component {
           {/* pass */}
           <View style={styles.NandP}>
             <Text style={{fontSize:ScreenWidth/30}}>enxrypt it using a password</Text>
-            <TextInput style = {styles.textInputStyle}
+            <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:'red'}]}
                 placeholder = "Please enter your password"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
                 // onChangeText = {this.onChangePh}
             />
           </View>
-          {/* Nay or Aye */}
+          {/* Reset or Save */}
           <View style={{height:ScreenHeight/6,width:ScreenWidth,justifyContent:'center',alignItems:'flex-end'}}>
             <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>
-            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/24,width:ScreenWidth*0.2}}>
+            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/20,width:ScreenWidth*0.2}}>
               
               <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
                 Reset
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',marginLeft:ScreenWidth/100,height:ScreenHeight/24,width:ScreenWidth*0.2}}>
+            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
+              onPress={this.Create_Wallet}
+            >
               
               <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
                 Save
@@ -225,7 +233,7 @@ const styles = StyleSheet.create({
     color:'#666666'
   },
   textInputStyle:{
-    height:ScreenHeight/20,
+    height:ScreenHeight/18,
     width:ScreenWidth*0.8,
     borderWidth:1,
     borderColor:'grey',

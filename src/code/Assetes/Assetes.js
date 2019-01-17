@@ -29,6 +29,7 @@ const ALICE_SEED = 'Alice'.padEnd(32, ' ');
 const BOB   = '5FZEyVyZm7r8WPQ8racC8MfdYMsAJNqGVVQQR4zM5SbEwhDr';
 const ENDPOINT = 'ws://10.0.2.2:9944/';
 
+
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 export default class New extends Component {
@@ -37,10 +38,11 @@ export default class New extends Component {
         super(props)
         this.state = {
             is: false,
-           
+            s:1
         }
+        this.QR_Code=this.QR_Code.bind(this)
+        this.Coin_details=this.Coin_details.bind(this)
     }
-
     componentDidMount () {
       (async () => {
         const keyring = new Keyring();
@@ -118,20 +120,27 @@ export default class New extends Component {
   
   
       })();
-    }
+   }
 
+  QR_Code(){
+    this.props.navigation.navigate('QR_Code')
+  }
+  Coin_details(){
+    this.props.navigation.navigate('Coin_details')
+  }
   
-
+  
   render() {
     const { balance, blockNumber } = this.state;
     return (
       <Drawer
         type='overlay'
         side='right'
-        content={<Right_menu p={this.props}/>}
+        content={<Right_menu p={this.props} t={this}/>}
         open={this.state.is}
         tapToClose={true}//点底层可关闭
-        openDrawerOffset={0.43} // 左边留0.336
+        // openDrawerOffset={0.43} // 左边留0.336
+        openDrawerOffset={0} // 左边留0.336
         closedDrawerOffset={0}//左边留0
         panOpenMask={0.1}
       >
@@ -182,7 +191,7 @@ export default class New extends Component {
                 >5Dn8F1SUX6SoLt1BTfKEPL5VY9wMvG1A6tEJTSCHpLsinThm</Text>
                 {/* 二维码 */}
                 <TouchableOpacity
-                  onPress={()=>{this.props.navigation.navigate('Create_Account')}}
+                  onPress={this.QR_Code}
                 >
                   <Image
                     style={{marginLeft:ScreenWidth/53.57,height:ScreenHeight/45,width:ScreenHeight/45,opacity:0.8}}
@@ -194,7 +203,9 @@ export default class New extends Component {
               <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-between',height:ScreenHeight/3.81/3.8,width:ScreenWidth}}>
                 <Text style={{fontWeight:'bold',marginLeft:ScreenWidth/40,color:'white',fontSize:ScreenWidth/25}}>Assetes</Text>
                 {/* 添加币种 */}
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={()=>{this.setState({s:2})}}
+                >
                   <Image
                     style={{marginRight:ScreenWidth/20,height:ScreenHeight/30,width:ScreenHeight/30,opacity:0.9}}
                     source={require('../../images/Assetes/addAssetes.png')}
@@ -203,7 +214,9 @@ export default class New extends Component {
               </View>
           </View>
           {/* 各种币具体信息 */}
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.Coin_details}
+          >
             <View style={{flexDirection:'row',height:ScreenHeight/10,backgroundColor:'white',borderBottomColor:'#F5F5F5',borderBottomWidth:2}}>
                 <View style={{justifyContent:'center',alignItems:'center',width:ScreenWidth/6,height:ScreenHeight/10}}>
                     <Image
@@ -212,11 +225,11 @@ export default class New extends Component {
                     />
                 </View>
                 <View style={{justifyContent:'center',flex:1,}}>
-                  <Text style={{fontSize:ScreenWidth/23.44}}>DOT</Text>
+                  <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
                   <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Polkadot RelayChain</Text>
                 </View>
                 <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85}}>{(balance || '-').toString()}</Text>
+                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{(balance || '-').toString()}M</Text>
                 </View>
             </View>
           </TouchableOpacity>
