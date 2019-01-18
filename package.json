@@ -18,6 +18,8 @@
     "react-native": "0.57.8",
     "react-native-drawer": "^2.5.1",
     "react-native-qrcode": "^0.2.7",
+    "react-native-secure-storage": "^0.1.2",
+    "react-native-sensitive-info": "^5.2.7",
     "react-native-svg": "^8.0.10",
     "react-native-websocket": "^1.0.2",
     "react-navigation": "^2.18.3",

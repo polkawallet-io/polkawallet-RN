@@ -11,22 +11,77 @@ import {
   TextInput,
   Modal,
   Picker,
+  AsyncStorage,
 } from 'react-native';
+import SInfo from 'react-native-sensitive-info';
+import Keyring from '@polkadot/keyring'
+import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a,randomAsHex } from '@polkadot/util-crypto';
+
+import { hexToU8a, isHex, stringToU8a, u8aToHex }  from '@polkadot/util'
+import { type } from 'os';
+// import Keyring from '@polkadot/keyring'
+const keyring = new Keyring();
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 export default class Polkawallet extends Component {
   constructor(props)
   {
     super(props)
+    this.json
+    this.pair
     this.state={
       way:'Mnemonic',
       way_change:'Mnemonic',
-      isModel:false
+      isModel:false,
+      key:'',
+      name:'',
+      password:'',
+      address:'xxxxxxxxxxxxxxxxxxxxxxxx'
     }
-    this.Create_Wallet=this.Create_Wallet.bind(this)
+    this.Save_Account=this.Save_Account.bind(this)
+    this.onChangekey=this.onChangekey.bind(this)
+    this.onChangename=this.onChangename.bind(this)
+    this.onChangepassword=this.onChangepassword.bind(this)
+
+    this.Reset=this.Reset.bind(this)
+
   }
-  Create_Wallet(){
-    this.props.navigation.navigate('Create_Wallet')
+  onChangekey(Changekey){
+    
+    SEED=Changekey.padEnd(32,' ')
+    SEEDu8a = stringToU8a(SEED)
+    this.pair = keyring.addFromSeed(SEEDu8a)
+    
+    this.setState({
+      key:Changekey,
+      address:this.pair.address()
+    }) 
+  }
+  onChangename(Changename){
+    this.setState({
+      name:Changename
+    }) 
+  }
+  onChangepassword(Changepassword){
+    this.setState({
+      password:Changepassword
+    }) 
+  }
+  Reset(){
+    // SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+    //   (result)=>{
+    //     loadPair = keyring.addFromJson(JSON.parse(result))
+    //     alert(loadPair.address())
+    //   }
+    // )
+  }
+  Save_Account(){
+    
+    this.pair.setMeta({'name':this.state.name})
+    this.json = this.pair.toJson()
+    this.json.meta = this.pair.getMeta()
+    SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});    
+    this.props.navigation.navigate('Backup_Account')
   }
   render() {
     return (
@@ -43,7 +98,7 @@ export default class Polkawallet extends Component {
               source={require('../../../images/Assetes/Create_Account/back.png')}
               />
           </TouchableOpacity>
-          <Text style={styles.text_title}>Create_Account</Text>
+          <Text style={styles.text_title}>Create Account</Text>
           <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
     
         </View>
@@ -63,7 +118,7 @@ export default class Polkawallet extends Component {
                   ellipsizeMode={"middle"}
                   numberOfLines={1}
                 >
-                  5djfhjskbfkdsKJBEHFBbUBFiubrfbFUBRUFBRKLJBFKbdkfKDFbkjdfbk
+                  {this.state.address}
                 </Text>
               </View>
               <Text style={styles.text1}>balance 0</Text>
@@ -95,7 +150,7 @@ export default class Polkawallet extends Component {
                 placeholderTextColor = "black"
                 underlineColorAndroid="#ffffff00"
                 multiline={true}
-                // onChangeText = {this.onChangePh}
+                onChangeText = {this.onChangekey}
             />
           </View>
           {/* name */}
@@ -105,7 +160,7 @@ export default class Polkawallet extends Component {
                 placeholder = "New Keypair"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
-                // onChangeText = {this.onChangePh}
+                onChangeText = {this.onChangename}
             />
           </View>
           {/* pass */}
@@ -115,20 +170,22 @@ export default class Polkawallet extends Component {
                 placeholder = "Please enter your password"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
-                // onChangeText = {this.onChangePh}
+                onChangeText = {this.onChangepassword}
             />
           </View>
           {/* Reset or Save */}
           <View style={{height:ScreenHeight/6,width:ScreenWidth,justifyContent:'center',alignItems:'flex-end'}}>
             <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>
-            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/20,width:ScreenWidth*0.2}}>
+            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/20,width:ScreenWidth*0.2}}
+              onPress={this.Reset}
+            >
               
               <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
                 Reset
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
-              onPress={this.Create_Wallet}
+              onPress={this.Save_Account}
             >
               
               <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>

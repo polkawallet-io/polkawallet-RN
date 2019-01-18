@@ -9,10 +9,24 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import SInfo from 'react-native-sensitive-info';
+
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 
 export default class Manage_Account extends Component {
+  constructor(props)
+  {
+    super(props)
+    this.ExportKey=this.ExportKey.bind(this)
+  }
+  ExportKey(){
+    SInfo.getItem('zx',{}).then(
+      (result)=>{
+        alert((JSON.parse(result)).key)
+      }
+    )
+  }
   render() {
     return (
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
@@ -42,6 +56,7 @@ export default class Manage_Account extends Component {
           <View style={{alignItems:'center'}}>
             <TouchableOpacity
                   style={{width:ScreenWidth*0.8,backgroundColor:'white',marginTop:ScreenHeight/35,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',borderRadius:ScreenHeight/130,marginHorizontal:1,borderBottomWidth:1}}
+                  onPress={this.ExportKey}
                 >
                   <Text style={{marginLeft:ScreenWidth/50,fontSize:ScreenHeight/40}}>Export Keystore</Text>
                   <View style={{flex:1}}/>
