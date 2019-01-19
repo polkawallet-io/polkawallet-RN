@@ -15,14 +15,14 @@ import {
 
   const Transfer_Records=[
     {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
+    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
     {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',Send:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
+    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
+    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
     {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',Send:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',Send:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
+    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
     {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',Send:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
+    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
   ]
   const titlebottoms=['All','Out','In']
   let ScreenWidth = Dimensions.get("screen").width;
@@ -119,7 +119,7 @@ import {
                             <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:(index==0)?1:0,borderBottomWidth:1,borderColor:'grey'}} key={index}>
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
-                                // source={(item.Staking_Record=="Staking Reward")?require('../../images/Staking/profit.png'):require('../../images/Staking/loss.png')}
+                                source={(item.tx_type=="Receive")?require('../../images/Staking/profit.png'):require('../../images/Staking/loss.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text

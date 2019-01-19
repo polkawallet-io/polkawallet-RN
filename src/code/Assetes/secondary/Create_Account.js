@@ -68,17 +68,18 @@ export default class Polkawallet extends Component {
     }) 
   }
   Reset(){
-    // SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
-    //   (result)=>{
-    //     loadPair = keyring.addFromJson(JSON.parse(result))
-    //     alert(loadPair.address())
-    //   }
-    // )
+    SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+      (result)=>{
+        loadPair = keyring.addFromJson(JSON.parse(result))
+        // alert(loadPair.address())
+        alert(result)
+      }
+    )
   }
   Save_Account(){
     
     this.pair.setMeta({'name':this.state.name})
-    this.json = this.pair.toJson()
+    this.json = this.pair.toJson(this.state.password)
     this.json.meta = this.pair.getMeta()
     SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});    
     this.props.navigation.navigate('Backup_Account')

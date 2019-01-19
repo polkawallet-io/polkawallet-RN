@@ -60,9 +60,10 @@ import {
                     {/* username */}
                     <Text style={styles.username}>AliceAccount</Text>
                     <View style={styles.address}>
+                      <Image style={styles.image_copy}/>
                       {/* address */}
                       <Text 
-                        style={{width:ScreenWidth*0.5,fontWeight:'200',fontSize:ScreenWidth/36}}
+                        style={{width:ScreenWidth*0.5,fontWeight:'200',fontSize:ScreenWidth/33}}
                         ellipsizeMode={"middle"}
                         numberOfLines={1}
                       >
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     image_title:{
         height:ScreenHeight/33.35,
         width:ScreenHeight/33.35,
-        resizeMode:'contain'
+        // resizeMode:'contain'
     },
     view:{
         height:ScreenHeight/1.63,
