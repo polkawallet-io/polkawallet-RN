@@ -11,6 +11,10 @@ import QR_Code from './src/code/Assetes/secondary/QR_Code'
 import Coin_details from './src/code/Assetes/secondary/coin_details'
 import Manage_Account from './src/code/Profile/secondary/Manage_Account'
 
+import {Provider} from 'mobx-react'
+ //获取store实例
+import AppState from './src/mobx/mobx'
+
 const Polkawallet_App =  StackNavigator({
   Tabbed_Navigation:{screen:Tabbed_Navigation,navigationOptions:{header:null}},
   Create_Account:{screen:Create_Account,navigationOptions:{header:null}},
@@ -19,10 +23,16 @@ const Polkawallet_App =  StackNavigator({
   Coin_details:{screen:Coin_details,navigationOptions:{header:null}},
   Manage_Account:{screen:Manage_Account,navigationOptions:{header:null}},
  })
+ 
+ 
+
 export default class Polkawallet extends Component {
   render() {
     return (
-      <Polkawallet_App/>
+      <Provider rootStore={AppState}>
+        <Polkawallet_App/>
+      </Provider>
+      
     );
   }
 }

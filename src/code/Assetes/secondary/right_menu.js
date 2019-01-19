@@ -9,21 +9,19 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-const Accounts=[
-  {account:'AliceAccount',address:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},
-  {account:'AliceAccount',address:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},  
-  {account:'AliceAccount',address:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},
-  {account:'AliceAccount',address:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},
-  {account:'AliceAccount',address:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'}
-]
+
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class New extends Component {
     constructor(props)
     {
         super(props)
         this.state = {
-            Account: 0 
+            Account: this.props.rootStore.stateStore.Account+1
         }
         this.Create_Account=this.Create_Account.bind(this)
     }
@@ -34,6 +32,9 @@ export default class New extends Component {
       })
       this.props.p.navigation.navigate('Create_Account')
     }
+  componentWillMount(){
+    
+  }
   render() {
         return (
             <View style={[styles.container]}>
@@ -48,10 +49,12 @@ export default class New extends Component {
                 <View style={{height:ScreenHeight/14*3,marginTop:ScreenHeight/14}}>
                   <ScrollView>
                     {
-                      Accounts.map((item,index)=>{
+                      this.props.rootStore.stateStore.Accounts.map((item,index)=>{
+                        if(index!=0)
                         return(
                           <TouchableOpacity style={[styles.account,{backgroundColor:(this.state.Account==index)?'#5c67a6':'#7582C9'}]} key={index}
                             onPress={()=>{
+                              this.props.rootStore.stateStore.Account=index
                               this.setState({
                                 Account:index
                               })

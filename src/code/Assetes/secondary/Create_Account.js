@@ -23,6 +23,9 @@ import { type } from 'os';
 const keyring = new Keyring();
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class Polkawallet extends Component {
   constructor(props)
   {
@@ -68,21 +71,16 @@ export default class Polkawallet extends Component {
     }) 
   }
   Reset(){
-    SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
-      (result)=>{
-        loadPair = keyring.addFromJson(JSON.parse(result))
-        // alert(loadPair.address())
-        alert(result)
-      }
-    )
+    alert(this.props.rootStore.stateStore.name)
   }
   Save_Account(){
-    
+    // alert(this.pair.address())
     this.pair.setMeta({'name':this.state.name})
     this.json = this.pair.toJson(this.state.password)
     this.json.meta = this.pair.getMeta()
     SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});    
     this.props.navigation.navigate('Backup_Account')
+    this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
   }
   render() {
     return (

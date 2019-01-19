@@ -18,6 +18,10 @@ const Custom_Components=[
   {image:require('../../images/Profile/Support.png'),text:'Support'},
   {image:require('../../images/Profile/About.png'),text:'About'},
 ]
+
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class New extends Component {
   constructor(props)
     {
@@ -51,7 +55,9 @@ export default class New extends Component {
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
                 {/* 用户名 */}
-                <Text style={{fontWeight:"500",fontSize:ScreenHeight/45,color:'white'}}>AliceAccount</Text>
+                <Text style={{fontWeight:"500",fontSize:ScreenHeight/45,color:'white'}}>
+                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
+                </Text>
               </View>
               <View style={{marginTop:ScreenHeight/70,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                 <TouchableOpacity style={{backgroundColor:'#FF4D89',borderWidth:1,borderColor:'white',borderRadius:ScreenHeight/45,height:ScreenHeight/22,alignItems:'center',justifyContent:'center'}}
@@ -68,6 +74,7 @@ export default class New extends Component {
             Custom_Components.map((item,index)=>{
               return (
                 <TouchableOpacity key={index}
+                  onPress={()=>{alert(this.props.rootStore.stateStore.name)}}
                   style={{backgroundColor:'white',marginTop:(index==3)?ScreenHeight/35:0,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',borderRadius:ScreenHeight/130,marginHorizontal:1,borderBottomWidth:(index==4||index==2)?1:0.5}}
                 >
                   <Image
