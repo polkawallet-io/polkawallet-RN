@@ -41,7 +41,7 @@ export default class Polkawallet extends Component{
         <View style={styles.container}>
           {/* 标题栏 */}
           <View style={styles.title}>
-            <Text style={{fontSize:ScreenHeight/37,fontWeight:'bold',color:'#e6e6e6'}}>Create_Wallet</Text>
+            <Text style={{fontSize:ScreenHeight/37,fontWeight:'bold',color:'#e6e6e6'}}>Backup Account</Text>
           </View>
           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
               <View style={styles.Warning_View}>
