@@ -63,7 +63,7 @@ In order to give users a more humane and more convenient experience, as the entr
 ![_ _20181221211242](https://user-images.githubusercontent.com/34789555/50725734-0bca5f00-113d-11e9-9854-d1ef1c8f7787.gif)
 
 
-- [ ] Display page jump logic (plan: 2019.01.15 done)
+- [x] Display page jump logic (plan: 2019.01.15 done)
 
 
 - [ ] Display page implementation (plan: 2019.01.26 done)
