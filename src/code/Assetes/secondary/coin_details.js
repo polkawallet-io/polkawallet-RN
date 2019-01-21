@@ -12,6 +12,7 @@ import {
     ScrollView,
   } from 'react-native';
   import Echarts from 'native-echarts';
+  import moment from "moment/moment";
 
   const Transfer_Records=[
     {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
@@ -27,6 +28,10 @@ import {
   const titlebottoms=['All','Out','In']
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
+
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
   export default class Polkawallet extends Component{
       constructor(props){
           super(props)
@@ -51,7 +56,8 @@ import {
             },
           }
           this.back=this.back.bind(this)
-      }   
+      }  
+      
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
       }
@@ -108,47 +114,121 @@ import {
                   </View>
                 </View>
                 {/* Sliding table */}
-                <View style={{marginTop:10,width:ScreenWidth,flex:1,backgroundColor:'white',borderWidth:1}}>
+                <View style={{marginTop:0,width:ScreenWidth,flex:1,backgroundColor:'white'}}>
                   <ScrollView style={{flex:1}}>
                     {
-                        Transfer_Records.map((item,index)=>{
+                        this.props.rootStore.stateStore.transactions.tx_list.list.map((item,index)=>{
                           return(
                             (this.state.titlebottom==1)
                             ?
                             //All
-                            <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:(index==0)?1:0,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
                               <Image
-                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
-                                source={(item.tx_type=="Receive")?require('../../images/Staking/profit.png'):require('../../images/Staking/loss.png')}
+                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
-                                  style={{fontSize:ScreenHeight/47.64,color:'black'}}
+                                  ellipsizeMode={"middle"}
+                                  numberOfLines={1}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
                                 >
-                                  {item.Staking_Record}
+                                  {item.tx_address}
                                 </Text>
                                 <Text
                                   style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.time}
+                                  {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
+                                </Text>
+                              </View>
+                              {/* 余额 */}
+                              <Text
+                                style={styles.value}
+                              >
+                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                              </Text>
+                            </TouchableOpacity>
+                            :(this.state.titlebottom==2&&item.tx_type=="Send")
+                            ?
+                            // Out
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                              <Image
+                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                              />
+                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
+                                <Text
+                                  ellipsizeMode={"middle"}
+                                  numberOfLines={1}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                >
+                                  {item.tx_address}
+                                </Text>
+                                <Text
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {item.tx_timestamp}
                                 </Text>
                               </View>
                               <Text
-                                style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/41.69,color:'black'}}
+                                style={styles.value}
                               >
-                                {(item.Staking_Record=="Staking Reward")?"+ "+item.num:"- "+item.num} 
+                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
                               </Text>
-                            </View>
-                            :(this.state.titlebottom==2)
-                            ?<View/>
-                            :<View/>
+                            </TouchableOpacity>
+                            :(this.state.titlebottom==3&&item.tx_type=="Receive")?
+                            // in
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                              <Image
+                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                              />
+                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
+                                <Text
+                                  ellipsizeMode={"middle"}
+                                  numberOfLines={1}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                >
+                                  {item.tx_address}
+                                </Text>
+                                <Text
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {item.tx_timestamp}
+                                </Text>
+                              </View>
+                              {/* 余额 */}
+                              <Text
+                                style={styles.value}
+                              >
+                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                              </Text>
+                            </TouchableOpacity>
+                            :<View key={index}/>
                           )
                         })
                     }
                   </ScrollView>
                 </View>
+                <View style={{height:ScreenHeight/100,backgroundColor:'white'}}/>
                 {/* Send or Receive  */}
-                <View style={{height:ScreenHeight/10,borderWidth:1}}></View>
+                <View style={{height:ScreenHeight/15,flexDirection:'row'}}>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#4dabd0'}]}>
+                    <Image 
+                      style={styles.SorR_Image}
+                      source={require('../../../images/Assetes/coin_details/send.png')}
+                    />
+                    <Text style={styles.SorR_Text}>Send</Text>
+                  </TouchableOpacity>
+                  <View style={{flex:1}}/>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#90cd49'}]}>
+                    <Image 
+                      style={styles.SorR_Image}
+                      source={require('../../../images/Assetes/coin_details/receive.png')}
+                    />
+                    <Text style={styles.SorR_Text}>Receive</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
           )
       }
@@ -176,4 +256,26 @@ const styles = StyleSheet.create({
         width:ScreenHeight/33.35,
         resizeMode:'contain'
     },
+    SorR_View:{
+        height:ScreenHeight/15,
+        width:ScreenWidth/2.015,
+        borderRadius:ScreenHeight/150,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    SorR_Image:{
+        height:ScreenHeight/33,
+        width:ScreenHeight/33,
+        resizeMode:'contain'    
+    },
+    SorR_Text:{
+        color:'white',
+        fontSize:ScreenWidth/25,
+        fontWeight:'500',
+        marginLeft:ScreenWidth/30
+    },
+    value:{
+        marginRight:ScreenWidth/20,fontSize:ScreenHeight/50,color:'black'
+    }
 })

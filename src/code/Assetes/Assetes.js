@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import SInfo from 'react-native-sensitive-info';
 import Drawer from 'react-native-drawer'
 import Right_menu from './secondary/right_menu'
 import Api from '@polkadot/api/promise';
@@ -22,13 +23,18 @@ const { stringToU8a } = require('@polkadot/util');
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-export default class New extends Component {
+
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
+export default class Assetes extends Component {
   constructor(props)
     {
         super(props)
         this.state = {
             is: false,
-            s:1
+            s:1,
+            name:'AliceAccount'
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
@@ -39,9 +45,71 @@ export default class New extends Component {
     this.props.navigation.navigate('QR_Code')
   }
   Coin_details(){
+    // alert(this.props.rootStore.stateStore.transactions.tx_list.list[0].tx_timestamp)
+    let a = this.props.rootStore.stateStore.transactions.tx_list.list
+    let size = this.props.rootStore.stateStore.transactions.tx_list.size
+    alert(a[6+1].tx_timestamp)
+    for(i=0;i<size;i++)
+    {
+      for(j=0;j<size-i-1;j++)
+      {
+        if(a[j].tx_timestamp<a[j+1].tx_timestamp)
+        {
+          temp=a[j].tx_timestamp
+          a[j].tx_timestamp=a[j+1].tx_timestamp
+          a[j+1].tx_timestamp=temp
+        }
+      }
+    }
+    
     this.props.navigation.navigate('Coin_details')
   }
-  
+  componentWillMount(){
+    SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+      (result)=>{
+        result.map((item,index)=>{
+          item.map((item,index)=>{
+            // alert(item.key)//地址
+            // alert(JSON.parse(item.value).meta.name)//用户名
+            // 添加用户到mobx
+            this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+          })
+        })
+      }
+    )
+    setTimeout(() => {
+      this.props.rootStore.stateStore.Account=1
+    }, 100);
+    //获取网络订单
+    let REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+        let map = {
+          method:'POST'
+        }
+        let privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8","pageNum":"1","pageSize":"10"}';
+        fetch(REQUEST_URL,map).then(
+          (result)=>{
+            this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
+            alert(this.props.rootStore.stateStore.transactions.tx_list.list)
+            // alert(typeof(this.props.rootStore.stateStore.transactions))
+
+            console.log("***************************")
+            console.log(result)
+          }
+        ).catch()
+  }
+  componentDidMount(){
+    // this.props.rootStore.stateStore.Account=1
+    }
+  componentDidUpdate(){
+    // this.props.rootStore.stateStore.Account=1
+    // alert('1')
+  }
   
   render() {
     const { balance, blockNumber } = this.state;
@@ -93,7 +161,9 @@ export default class New extends Component {
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
                 {/* 用户名 */}
-                <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>AliceAccount</Text>
+                <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>
+                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
+                </Text>
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
                 {/* 地址 */}
@@ -101,7 +171,9 @@ export default class New extends Component {
                   style={{fontWeight:"200",width:ScreenWidth*0.5,fontSize:ScreenHeight/45,color:'white'}}
                   ellipsizeMode={"middle"}
                   numberOfLines={1}
-                >5Dn8F1SUX6SoLt1BTfKEPL5VY9wMvG1A6tEJTSCHpLsinThm</Text>
+                >
+                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                </Text>
                 {/* 二维码 */}
                 <TouchableOpacity
                   onPress={this.QR_Code}
