@@ -6,33 +6,37 @@ import {
     TextInput,
     Dimensions,
     Text,
+    TouchableOpacity,
+    Image,
   } from 'react-native';
-  import QRCode from 'react-native-qrcode'; 
-  const screenWidth=Dimensions.get('window').width
-//   const screenWidth=Dimensions.get('window').width
-  export default class Product_ErWeiMa extends Component{
-      constructor(props){
-          super(props)
-          this.state={
-              text:'biubiubiu'
-          }
-      }   
+  import WsProvider from '@polkadot/rpc-provider/ws';
+  import Api from '@polkadot/api/promise';
+  import SInfo from 'react-native-sensitive-info';
+  import Keyring from '@polkadot/keyring'
+  const keyring = new Keyring();
+
+  const ENDPOINT = 'ws://127.0.0.1:9944/';
+
+  let ScreenWidth = Dimensions.get("screen").width;
+  let ScreenHeight = Dimensions.get("screen").height;
+//   import { observer, inject } from "mobx-react";
+//   @inject('rootStore')
+//   @observer
+  export default class Transfer extends Component{
+//      
+      componentWillMount(){
+        (async()=>{
+            const provider = new WsProvider(ENDPOINT);
+            const api = await Api.create(provider);
+
+            console.warn(api.tx.balances.transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq',3000))
+
+         })()
+      }
       render(){
           return(
-              <View style={{flex:1,backgroundColor:'white',alignItems:'center',justifyContent:'center'}}>
-                <TextInput 
-                  style={{height:40,borderColor:'red',borderWidth:2,margin:10,borderRadius:5,padding:5,width:screenWidth-50}}
-                  onChangeText={text=>this.setState({
-                      text:text
-                  })}
-                  value={this.state.text}
-                ></TextInput>
-                <QRCode
-                  value={this.state.text}
-                  size={200}
-                  bgColor='purple'
-                  fgColor='white'
-                ></QRCode>
+              <View>
+                
               </View>
           )
       }

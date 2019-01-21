@@ -14,7 +14,7 @@ import Drawer from 'react-native-drawer'
 import Right_menu from './secondary/right_menu'
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-import { Balance, BlockNumber } from '@polkadot/types';
+import { Balance, BlockNumber, Null } from '@polkadot/types';
 
 const { Keyring } = require('@polkadot/keyring');
 const { stringToU8a } = require('@polkadot/util');
@@ -33,8 +33,8 @@ export default class Assetes extends Component {
         super(props)
         this.state = {
             is: false,
-            s:1,
-            name:'AliceAccount'
+            name:'0',
+            address:'0'
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
@@ -42,31 +42,52 @@ export default class Assetes extends Component {
 
 
   QR_Code(){
-    this.props.navigation.navigate('QR_Code')
+    SInfo.deleteItem('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq',{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'})
+    // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account)
+    // alert(this.props.rootStore.stateStore.Account)
+    SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+      (result)=>{
+        // console.log(result)
+        alert(JSON.stringify(result))
+      }
+    )
+
+
+
+
+
+
+    // this.props.navigation.navigate('QR_Code')
   }
   Coin_details(){
     // alert(this.props.rootStore.stateStore.transactions.tx_list.list[0].tx_timestamp)
-    let a = this.props.rootStore.stateStore.transactions.tx_list.list
-    let size = this.props.rootStore.stateStore.transactions.tx_list.size
-    alert(a[6+1].tx_timestamp)
-    for(i=0;i<size;i++)
-    {
-      for(j=0;j<size-i-1;j++)
-      {
-        if(a[j].tx_timestamp<a[j+1].tx_timestamp)
-        {
-          temp=a[j].tx_timestamp
-          a[j].tx_timestamp=a[j+1].tx_timestamp
-          a[j+1].tx_timestamp=temp
-        }
-      }
-    }
+    // let a = this.props.rootStore.stateStore.transactions.tx_list.list
+    // let size = this.props.rootStore.stateStore.transactions.tx_list.size
+    // for(i=0;i<size;i++)
+    // {
+    //   for(j=0;j<size-i-1;j++)
+    //   {
+    //     if(a[j].tx_timestamp<a[j+1].tx_timestamp)
+    //     {
+    //       temp=a[j]
+    //       a[j]=a[j+1]
+    //       a[j+1]=temp
+    //     }
+    //   }
+    // }
+
     
     this.props.navigation.navigate('Coin_details')
   }
   componentWillMount(){
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
+        if(JSON.stringify(result)=='[[]]')
+        {
+          this.props.navigation.navigate('Create_Account',{t:this})
+        }else{
+          this.props.rootStore.stateStore.isfirst=1
+        }
         result.map((item,index)=>{
           item.map((item,index)=>{
             // alert(item.key)//地址
@@ -94,21 +115,18 @@ export default class Assetes extends Component {
         map.body = '{"user_address":"5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8","pageNum":"1","pageSize":"10"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
+            this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
             this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
-            alert(this.props.rootStore.stateStore.transactions.tx_list.list)
-            // alert(typeof(this.props.rootStore.stateStore.transactions))
-
-            console.log("***************************")
-            console.log(result)
           }
         ).catch()
   }
   componentDidMount(){
-    // this.props.rootStore.stateStore.Account=1
-    }
-  componentDidUpdate(){
-    // this.props.rootStore.stateStore.Account=1
-    // alert('1')
+    // this.setState({
+    //   name:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account
+    // })
+  }
+  componentWillReceiveProps(){
+    
   }
   
   render() {
@@ -162,7 +180,7 @@ export default class Assetes extends Component {
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
                 {/* 用户名 */}
                 <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
+                  {this.state.isfirst==0?'0':this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].account}                  
                 </Text>
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
@@ -172,7 +190,8 @@ export default class Assetes extends Component {
                   ellipsizeMode={"middle"}
                   numberOfLines={1}
                 >
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                  {/* {this.state.address} */}
+                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
                 </Text>
                 {/* 二维码 */}
                 <TouchableOpacity

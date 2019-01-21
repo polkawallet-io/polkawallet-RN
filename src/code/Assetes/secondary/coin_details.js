@@ -14,17 +14,7 @@ import {
   import Echarts from 'native-echarts';
   import moment from "moment/moment";
 
-  const Transfer_Records=[
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-  ]
+  
   const titlebottoms=['All','Out','In']
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
@@ -54,12 +44,48 @@ import { observer, inject } from "mobx-react";
                     data: [0, 0.02,0.03,0.06,0.04,0.06,0.10,0.04]
                 }]
             },
+            pageNum:1
           }
           this.back=this.back.bind(this)
+          this.Send=this.Send.bind(this)
+          this.Receive=this.Receive.bind(this)
+          this.Loadmore=this.Loadmore.bind(this)
       }  
       
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
+      }
+      Loadmore(){
+        this.setState({
+          pageNum:this.state.pageNum+1
+        })
+        let REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+        let map = {
+          method:'POST'
+        }
+        let privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+        fetch(REQUEST_URL,map).then(
+          (result)=>{
+              JSON.parse(result._bodyInit).tx_list.list.map((item,index)=>{
+              this.props.rootStore.stateStore.transactions.tx_list.list.push(item)
+            })
+            
+          }
+        ).catch()
+        
+
+      }
+      Send(){
+        this.props.navigation.navigate('Transfer')
+      }
+      Receive(){
+        alert('Receive')
       }
       render(){
           return(
@@ -83,11 +109,11 @@ import { observer, inject } from "mobx-react";
                     </TouchableOpacity>
                 </View>
                 {/* The line chart */}
-                <View style={{height:ScreenHeight/3,borderWidth:1}}>
+                {/* <View style={{height:ScreenHeight/3,borderWidth:1}}>
                   <Echarts 
                     option={this.state.option}
                     height={ScreenHeight/3}/>   
-                </View>
+                </View> */}
                 {/* The secondary title */}
                 <View style={{height:ScreenHeight/20}}>
                   {/* 次标题 */}
@@ -115,7 +141,8 @@ import { observer, inject } from "mobx-react";
                 </View>
                 {/* Sliding table */}
                 <View style={{marginTop:0,width:ScreenWidth,flex:1,backgroundColor:'white'}}>
-                  <ScrollView style={{flex:1}}>
+                  <ScrollView style={{flex:1}}
+                  >
                     {
                         this.props.rootStore.stateStore.transactions.tx_list.list.map((item,index)=>{
                           return(
@@ -139,6 +166,7 @@ import { observer, inject } from "mobx-react";
                                   style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
                                   {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
+                                  {/* {item.tx_timestamp} */}
                                 </Text>
                               </View>
                               {/* 余额 */}
@@ -167,7 +195,7 @@ import { observer, inject } from "mobx-react";
                                 <Text
                                   style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.tx_timestamp}
+                                  {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                 </Text>
                               </View>
                               <Text
@@ -194,7 +222,7 @@ import { observer, inject } from "mobx-react";
                                 <Text
                                   style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.tx_timestamp}
+                                  {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                 </Text>
                               </View>
                               {/* 余额 */}
@@ -208,12 +236,27 @@ import { observer, inject } from "mobx-react";
                           )
                         })
                     }
+                    {
+                      this.props.rootStore.stateStore.hasNextPage?
+                        <TouchableOpacity style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}
+                          onPress={this.Loadmore}
+                        >
+                          <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>To load more ~</Text>
+                        </TouchableOpacity>
+                      :
+                      <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>Bottom</Text>
+                      </View>
+                    }
+                    
                   </ScrollView>
                 </View>
                 <View style={{height:ScreenHeight/100,backgroundColor:'white'}}/>
                 {/* Send or Receive  */}
                 <View style={{height:ScreenHeight/15,flexDirection:'row'}}>
-                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#4dabd0'}]}>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#4dabd0'}]}
+                    onPress={this.Send}
+                  >
                     <Image 
                       style={styles.SorR_Image}
                       source={require('../../../images/Assetes/coin_details/send.png')}
@@ -221,7 +264,9 @@ import { observer, inject } from "mobx-react";
                     <Text style={styles.SorR_Text}>Send</Text>
                   </TouchableOpacity>
                   <View style={{flex:1}}/>
-                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#90cd49'}]}>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#90cd49'}]}
+                    onPress={this.Receive}
+                  >
                     <Image 
                       style={styles.SorR_Image}
                       source={require('../../../images/Assetes/coin_details/receive.png')}

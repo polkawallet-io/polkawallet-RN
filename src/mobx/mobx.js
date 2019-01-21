@@ -12,6 +12,9 @@ class stateStore{
     @observable
     name = 'Zoey';
 
+    // 是否是第一次登陆
+    @observable
+    isfirst=0
     // 所有账户
     @observable
     Accounts=[
@@ -25,6 +28,9 @@ class stateStore{
     // 交易信息
     @observable
     transactions={};
+    // 当前交易信息是否是最后一页
+    @observable
+    hasNextPage;
 
     //被观察的操作
     @action

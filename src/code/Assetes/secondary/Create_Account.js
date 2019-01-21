@@ -71,14 +71,15 @@ export default class Polkawallet extends Component {
     }) 
   }
   Reset(){
-    alert(this.props.rootStore.stateStore.name)
+    alert(this.props.t.state.isfirst)
   }
   Save_Account(){
     // alert(this.pair.address())
     this.pair.setMeta({'name':this.state.name})
     this.json = this.pair.toJson(this.state.password)
     this.json.meta = this.pair.getMeta()
-    SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});    
+    SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
+    this.props.rootStore.stateStore.isfirst=1
     this.props.navigation.navigate('Backup_Account')
     this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
   }
@@ -149,6 +150,7 @@ export default class Polkawallet extends Component {
                 placeholderTextColor = "black"
                 underlineColorAndroid="#ffffff00"
                 multiline={true}
+                maxLength={100}
                 onChangeText = {this.onChangekey}
             />
           </View>

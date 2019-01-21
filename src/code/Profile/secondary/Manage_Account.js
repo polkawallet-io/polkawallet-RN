@@ -39,25 +39,9 @@ export default class Manage_Account extends Component {
     this.Copy=this.Copy.bind(this)
   }
   ExportKey(){
-    // Alert.alert(
-    //   'Alert Title',
-    //   'My Alert Msg',
-    //   [
-    //     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-    //     {text: 'OK', onPress: () => console.log('OK Pressed')},
-    //   ],
-    //   { cancelable: false }
-    // )
     this.setState({
       isModal1:true
     })
-    // SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
-    //   (result)=>{
-    //     loadPair = keyring.addFromJson(JSON.parse(result))
-    //     // alert(loadPair.address())
-    //     alert(result)
-    //   }
-    // )
   }
   onChangepassword(changepassword){
     this.setState({
@@ -73,6 +57,7 @@ export default class Manage_Account extends Component {
   ok(){
     SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
+        alert(result)
         loadPair = keyring.addFromJson(JSON.parse(result))
         try{
           loadPair.decodePkcs8(this.state.password)
