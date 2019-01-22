@@ -12,8 +12,6 @@ import {
   } from 'react-native';
   import Api from '@polkadot/api/promise';
   import WsProvider from '@polkadot/rpc-provider/ws';
-  import { Balance } from '@polkadot/types';
-  
   const ENDPOINT = 'ws://127.0.0.1:9944/';
   
   let ScreenWidth = Dimensions.get("screen").width;
@@ -50,6 +48,7 @@ import {
             const provider = new WsProvider(ENDPOINT);
             const api = await Api.create(provider);
             api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
+                alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                 this.setState({
                   balance:balance
                 });

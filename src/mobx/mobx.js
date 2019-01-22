@@ -32,6 +32,15 @@ class stateStore{
     @observable
     hasNextPage;
 
+    
+    //balance
+    @observable
+    balance=0;
+    // 当前交易信息是否是最后一页
+
+    //监听余额
+    @observable
+    api = {}
     //被观察的操作
     @action
     setName(newName){

@@ -69,7 +69,7 @@ import { observer, inject } from "mobx-react";
         map.headers = privateHeaders;
         map.follow = 20;
         map.timeout = 0;
-        map.body = '{"user_address":"5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
               JSON.parse(result._bodyInit).tx_list.list.map((item,index)=>{
@@ -245,7 +245,7 @@ import { observer, inject } from "mobx-react";
                         </TouchableOpacity>
                       :
                       <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>Bottom</Text>
+                        <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>~ Bottom</Text>
                       </View>
                     }
                     

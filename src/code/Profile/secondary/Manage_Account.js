@@ -11,7 +11,7 @@ import {
   Alert,
   Modal,
   TextInput,
-  Clipboard
+  Clipboard,
 } from 'react-native';
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -19,14 +19,16 @@ const keyring = new Keyring();
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class Manage_Account extends Component {
   constructor(props)
   {
     super(props)
     this.state={
       password:'',
-      address:'5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq',
+      address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,
       isModal1:false,
       isModal2:false,
       msg:'',
@@ -57,7 +59,7 @@ export default class Manage_Account extends Component {
   ok(){
     SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
-        alert(result)
+        // alert(result)
         loadPair = keyring.addFromJson(JSON.parse(result))
         try{
           loadPair.decodePkcs8(this.state.password)
@@ -65,8 +67,7 @@ export default class Manage_Account extends Component {
           alert(error)
         }
   
-        // alert(this.state.password)
-        loadPair.isLocked()?'':
+        loadPair.isLocked()?alert('1'):
         this.setState({
           isModal1:false,
           isModal2:true
@@ -86,7 +87,19 @@ export default class Manage_Account extends Component {
     alert('Copy success')
   }
   delete_account(){
-    alert('Delete_Account')
+    Alert.alert(
+      'Alert',
+      'Confirm deleting this account ？',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => {
+          SInfo.deleteItem(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+            alert('Delete the success')
+          )
+        }},
+      ],
+      { cancelable: false }
+    )
   }
   componentWillMount(){
     SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
@@ -102,10 +115,20 @@ export default class Manage_Account extends Component {
     return (
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
         {/* The title */}
-        <View style={styles.title1}>
-          <View style={styles.title2}>
-              <Text style={styles.titletext}>Profile</Text>
-          </View>
+        <View style={styles.title}>
+          <TouchableOpacity
+            onPress={()=>{
+              this.props.navigation.navigate('Tabbed_Navigation')
+            }}
+          >
+            <Image
+              style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
+              source={require('../../../images/Assetes/Create_Account/back.png')}
+              />
+          </TouchableOpacity>
+          <Text style={styles.text_title}>Create Account</Text>
+          <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
+    
         </View>
           <View style={{height:ScreenHeight/4.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
               <View style={styles.head}>
@@ -224,6 +247,19 @@ export default class Manage_Account extends Component {
   }
 }
 const styles = StyleSheet.create({
+  title:{
+    padding:ScreenHeight/50,
+    height:ScreenHeight/9,
+    backgroundColor:'#776f71',
+    flexDirection:'row',
+    alignItems:'flex-end',
+    justifyContent:'space-between'
+  },
+  text_title:{
+    fontSize:ScreenHeight/37,
+    fontWeight:'bold',
+    color:'#e6e6e6'
+  },
   title1:{
     height:ScreenHeight/9,
     backgroundColor:'#776f71',

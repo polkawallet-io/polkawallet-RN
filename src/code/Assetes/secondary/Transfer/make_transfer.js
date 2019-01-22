@@ -8,6 +8,8 @@ import {
     Text,
     TouchableOpacity,
     Image,
+    Modal,
+    Alert,
   } from 'react-native';
   import WsProvider from '@polkadot/rpc-provider/ws';
   import Api from '@polkadot/api/promise';
@@ -15,7 +17,7 @@ import {
   import Keyring from '@polkadot/keyring'
   const keyring = new Keyring();
 
-  const ENDPOINT = 'ws://127.0.0.1:9944/';
+  const ENDPOINT = 'ws://192.168.8.145:9944/';
 
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
@@ -27,7 +29,8 @@ import {
           super(props)
           this.state={
             ispwd:true,
-            password:''
+            password:'',
+            isModal:false
           }
           this.lookpwd=this.lookpwd.bind(this)
           this.onChangepasswore=this.onChangepasswore.bind(this)
@@ -62,22 +65,69 @@ import {
                   const provider = new WsProvider(ENDPOINT);
                   const api = await Api.create(provider);
                   const accountNonce = await api.query.system.accountNonce(loadPair.address());
-                  alert(J)
                   // Do the transfer and track the actual status
-                  api.tx.balances.transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq',3000)
-                //   .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', 3369)
-                //   alert('1')
-                //   .sign(loadPair, accountNonce)
-                //   .send(({ events = [], status, type }) => {
+                  api.tx.balances
+                  .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', 30000000)
+                  .sign(loadPair, accountNonce)
+                  .send(({ status, type }) => {
                 //     console.log('Transaction status:', type);
-                //     alert('2')
-                //     if (type === 'Finalised') {
-                //     console.log('Completed at block hash', status.value.toHex());
-                //     console.log('Events:');
-
-                    
-                //     }
-                //   });
+                    if (type === 'Ready') {
+                        this.setState({
+                            isModal:true
+                        })
+                    }
+                    if (type === 'Finalised') {
+                        this.setState({
+                            isModal:false
+                        })
+                        setTimeout(() => {
+                            Alert.alert(
+                                'Alert',
+                                'Transfer success',
+                                [
+                                  {text: 'OK', onPress: () => {
+                                        //清除缓存
+                                        let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+                                        let map = {
+                                            method:'POST'
+                                            }
+                                            let privateHeaders = {
+                                            'Content-Type':'application/json'
+                                            }
+                                            map.headers = privateHeaders;
+                                            map.follow = 20;
+                                            map.timeout = 0;
+                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+                                            fetch(REQUEST_URL,map).then().catch()
+                                        //获取网络订单
+                                        REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+                                        map = {
+                                            method:'POST'
+                                            }
+                                            privateHeaders = {
+                                            'Content-Type':'application/json'
+                                            }
+                                            map.headers = privateHeaders;
+                                            map.follow = 20;
+                                            map.timeout = 0;
+                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+                                            fetch(REQUEST_URL,map).then(
+                                            (result)=>{
+                                                this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
+                                                this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
+                                            }
+                                            ).catch()
+                                      this.props.navigation.navigate('Coin_details')
+                                  }},
+                                ],
+                                { cancelable: false }
+                            )
+                        }, 500);
+                        
+                        // process.exit(0);
+                    // console.log('Completed at block hash', status.value.toHex());
+                    }
+                  });
                })()
             //    alert('1')
             }
@@ -164,14 +214,24 @@ import {
                           Sign and Submit
                         </Text>
                       </TouchableOpacity>
-                    <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
-                    <Text style={{fontSize:ScreenHeight/70}}>
-                        or
-                    </Text>
+                      <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
+                        <Text style={{fontSize:ScreenHeight/70}}>
+                            or
+                        </Text>
+                      </View>
                     </View>
+                  </View>
+                  <Modal
+                    animationType={'fade'}
+                    transparent={true}
+                    visible={this.state.isModal}
+                  >
+                    <View style={{flex:1,alignItems:'flex-end'}}>
+                      <View style={{borderRadius:ScreenHeight/100,marginTop:ScreenHeight/5.2,marginRight:ScreenWidth*0.06,width:ScreenWidth*0.3,height:ScreenHeight/20,backgroundColor:'#8bc34a',justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'white',fontSize:ScreenWidth/25,fontWeight:'bold'}}>pending...</Text>
+                      </View>
                     </View>
-                 </View>
-
+                  </Modal>
                 </View>
               </View>
           )

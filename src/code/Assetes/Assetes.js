@@ -14,7 +14,7 @@ import Drawer from 'react-native-drawer'
 import Right_menu from './secondary/right_menu'
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-import { Balance, BlockNumber, Null } from '@polkadot/types';
+const ENDPOINT = 'ws://192.168.8.145:9944/';
 
 const { Keyring } = require('@polkadot/keyring');
 const { stringToU8a } = require('@polkadot/util');
@@ -34,7 +34,7 @@ export default class Assetes extends Component {
         this.state = {
             is: false,
             name:'0',
-            address:'0'
+            address:'0',
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
@@ -42,44 +42,12 @@ export default class Assetes extends Component {
 
 
   QR_Code(){
-    SInfo.deleteItem('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq',{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'})
-    // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account)
-    // alert(this.props.rootStore.stateStore.Account)
-    SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
-      (result)=>{
-        // console.log(result)
-        alert(JSON.stringify(result))
-      }
-    )
-
-
-
-
-
-
-    // this.props.navigation.navigate('QR_Code')
+    this.props.navigation.navigate('QR_Code')
   }
   Coin_details(){
-    // alert(this.props.rootStore.stateStore.transactions.tx_list.list[0].tx_timestamp)
-    // let a = this.props.rootStore.stateStore.transactions.tx_list.list
-    // let size = this.props.rootStore.stateStore.transactions.tx_list.size
-    // for(i=0;i<size;i++)
-    // {
-    //   for(j=0;j<size-i-1;j++)
-    //   {
-    //     if(a[j].tx_timestamp<a[j+1].tx_timestamp)
-    //     {
-    //       temp=a[j]
-    //       a[j]=a[j+1]
-    //       a[j+1]=temp
-    //     }
-    //   }
-    // }
-
-    
     this.props.navigation.navigate('Coin_details')
   }
-  componentWillMount(){
+  componentDidMount(){
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
         if(JSON.stringify(result)=='[[]]')
@@ -101,9 +69,29 @@ export default class Assetes extends Component {
     setTimeout(() => {
       this.props.rootStore.stateStore.Account=1
     }, 100);
-    //获取网络订单
-    let REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
-        let map = {
+
+    // Query Balance
+    (async()=>{
+      const api = await Api.create(new WsProvider(ENDPOINT));
+      this.props.rootStore.stateStore.api=api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
+          // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+          this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+      });
+      
+      // api.combineLatest([
+      //   [api.query.balances.freeBalance, this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address]
+      // ],(freeBalance) => {
+      //   alert(freeBalance)
+      //   this.props.rootStore.stateStore.balance=(freeBalance/1000000).toFixed(2)
+      // }
+      // )
+    })()
+    
+  
+
+    //清除缓存
+    let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+    let map = {
           method:'POST'
         }
         let privateHeaders = {
@@ -112,7 +100,20 @@ export default class Assetes extends Component {
         map.headers = privateHeaders;
         map.follow = 20;
         map.timeout = 0;
-        map.body = '{"user_address":"5FmE1Adpwp1bT1oY95w59RiSPVu9QwzBGjKsE2hxemD2AFs8","pageNum":"1","pageSize":"10"}';
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+        fetch(REQUEST_URL,map).then().catch()
+    //获取网络订单
+    REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+    map = {
+          method:'POST'
+        }
+        privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
             this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
@@ -120,17 +121,14 @@ export default class Assetes extends Component {
           }
         ).catch()
   }
-  componentDidMount(){
-    // this.setState({
-    //   name:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account
-    // })
+  componentWillUpdate(){
+    
   }
   componentWillReceiveProps(){
     
   }
   
   render() {
-    const { balance, blockNumber } = this.state;
     return (
       <Drawer
         type='overlay'
@@ -190,7 +188,6 @@ export default class Assetes extends Component {
                   ellipsizeMode={"middle"}
                   numberOfLines={1}
                 >
-                  {/* {this.state.address} */}
                   {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
                 </Text>
                 {/* 二维码 */}
@@ -230,10 +227,10 @@ export default class Assetes extends Component {
                 </View>
                 <View style={{justifyContent:'center',flex:1,}}>
                   <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
-                  <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Polkadot RelayChain</Text>
+                  <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
                 </View>
                 <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>M</Text>
+                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{this.props.rootStore.stateStore.balance+' M'}</Text>
                 </View>
             </View>
           </TouchableOpacity>
