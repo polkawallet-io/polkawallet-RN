@@ -39,13 +39,11 @@ export default class New extends Component {
     }
     Switch_Account(){
       // Query Balance
-    (async()=>{
-      // this.props.rootStore.stateStore.api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
-      //     // alert(balance)
-      //     this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
-      (this.props.rootStore.stateStore.api)()
-      // });
-    })()
+      (async()=>{
+        const api = await Api.create(new WsProvider(ENDPOINT));
+        balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+        this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+      })()
       //清除缓存
       let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
       let map = {
@@ -98,7 +96,7 @@ export default class New extends Component {
                       this.props.rootStore.stateStore.Accounts.map((item,index)=>{
                         if(index!=0)
                         return(
-                          <TouchableOpacity style={[styles.account,{backgroundColor:(this.state.Account==index)?'#5c67a6':'#7582C9'}]} key={index}
+                          <TouchableOpacity style={[styles.account,{backgroundColor:(this.props.rootStore.stateStore.Account==index)?'#5c67a6':'#7582C9'}]} key={index}
                             onPress={()=>{
                               this.props.rootStore.stateStore.Account=index
                               this.setState({

@@ -20,7 +20,7 @@ export default class Polkawallet extends Component{
   {
     super(props)
     this.state={
-        text:'magic trap help enlist solve manual crush win base creek angry gate'
+        text:this.props.navigation.state.params.key
     }
     this.copy=this.copy.bind(this)
     this.Cancel=this.Cancel.bind(this)
@@ -36,6 +36,7 @@ export default class Polkawallet extends Component{
     Clipboard.setString(this.state.text);
     let  str = await Clipboard.getString()
   }
+  
   render(){
       return(
         <View style={styles.container}>

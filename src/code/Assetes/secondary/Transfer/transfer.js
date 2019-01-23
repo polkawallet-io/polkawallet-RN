@@ -48,7 +48,7 @@ import {
             const provider = new WsProvider(ENDPOINT);
             const api = await Api.create(provider);
             api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
-                alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+                // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                 this.setState({
                   balance:balance
                 });

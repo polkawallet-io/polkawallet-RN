@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  RefreshControl
 } from 'react-native';
 import SInfo from 'react-native-sensitive-info';
 import Drawer from 'react-native-drawer'
@@ -35,9 +36,12 @@ export default class Assetes extends Component {
             is: false,
             name:'0',
             address:'0',
+            isfirst:0,
+            isrefresh:false
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
+        this.refresh=this.refresh.bind(this)
     }
 
 
@@ -45,48 +49,91 @@ export default class Assetes extends Component {
     this.props.navigation.navigate('QR_Code')
   }
   Coin_details(){
-    this.props.navigation.navigate('Coin_details')
+    let REQUEST_URL ='http://192.168.8.127:8080/tx_money_date'
+        let map = {
+              method:'POST'
+            }
+        let privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ","UTCdate":"2019-01-22 13:22:00"}';
+        fetch(REQUEST_URL,map).then(
+          (result)=>{
+            // alert(this.props.rootStore.stateStore.option.series[0].data)
+            JSON.parse(result._bodyInit).map((item,index)=>{
+              if(index==10){alert((item.money/1000000).toFixed(1))}
+              this.props.rootStore.stateStore.option.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+              this.props.rootStore.stateStore.option.series[0].data.push((item.money/1000000).toFixed(1))
+            })
+            alert(this.props.rootStore.stateStore.option.xAxis.data)
+            // console.log('*************************************')
+            // console.log(result)
+            // console.log(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+          }
+        ).catch()
+        setTimeout(()=>{this.props.navigation.navigate('Coin_details')},200)
+    
   }
-  componentDidMount(){
+  // 刷新
+  refresh(){
+    this.setState({
+      isrefresh:true
+    })
+    setTimeout(()=>{
+      (async()=>{
+        const api = await Api.create(new WsProvider(ENDPOINT));
+        balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+        this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+      })()
+      this.setState({
+        isrefresh:false
+      })
+    },2000)
+  }
+  componentWillMount(){
+    // SInfo.getItem('isfirst', {}).then((result)=>{alert(result)})
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
-        if(JSON.stringify(result)=='[[]]')
+        // alert(JSON.stringify(result).length)
+        if(JSON.stringify(result).length<10 )
         {
+          // SInfo.setItem('isfirst', 'y', {})
           this.props.navigation.navigate('Create_Account',{t:this})
         }else{
-          this.props.rootStore.stateStore.isfirst=1
-        }
-        result.map((item,index)=>{
-          item.map((item,index)=>{
-            // alert(item.key)//地址
-            // alert(JSON.parse(item.value).meta.name)//用户名
-            // 添加用户到mobx
-            this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+          this.setState({
+            isfirst:1
           })
-        })
+          this.props.rootStore.stateStore.isfirst=1
+          result.map((item,index)=>{
+            item.map((item,index)=>{
+              // alert(item.key)//地址
+              // alert(JSON.parse(item.value).meta.name)//用户名
+              // 添加用户到mobx
+              this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+              this.props.rootStore.stateStore.Account++
+              this.props.rootStore.stateStore.Accountnum++
+            })
+          })
+        }
       }
     )
     setTimeout(() => {
-      this.props.rootStore.stateStore.Account=1
-    }, 100);
-
-    // Query Balance
-    (async()=>{
-      const api = await Api.create(new WsProvider(ENDPOINT));
-      this.props.rootStore.stateStore.api=api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
-          // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+      if(this.props.rootStore.stateStore.isfirst==1){this.props.rootStore.stateStore.Account=1}
+      this.setState({
+        address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address
+      })
+      if(this.props.rootStore.stateStore.Account!=0){
+        // Query Balance
+        (async()=>{
+          const api = await Api.create(new WsProvider(ENDPOINT));
+          balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
           this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
-      });
-      
-      // api.combineLatest([
-      //   [api.query.balances.freeBalance, this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address]
-      // ],(freeBalance) => {
-      //   alert(freeBalance)
-      //   this.props.rootStore.stateStore.balance=(freeBalance/1000000).toFixed(2)
-      // }
-      // )
-    })()
-    
+        })()
+      }
+   
   
 
     //清除缓存
@@ -120,12 +167,7 @@ export default class Assetes extends Component {
             this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
           }
         ).catch()
-  }
-  componentWillUpdate(){
-    
-  }
-  componentWillReceiveProps(){
-    
+      }, 200);
   }
   
   render() {
@@ -166,7 +208,11 @@ export default class Assetes extends Component {
             />
           </TouchableOpacity>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={<RefreshControl
+                            refreshing={this.state.isrefresh}
+                            onRefresh={this.refresh}/>}
+        >
           <View style={{height:ScreenHeight/3.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
               <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
                 {/* 头像 */}
@@ -178,7 +224,7 @@ export default class Assetes extends Component {
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
                 {/* 用户名 */}
                 <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>
-                  {this.state.isfirst==0?'0':this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].account}                  
+                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].account}
                 </Text>
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
