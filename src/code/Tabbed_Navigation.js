@@ -26,34 +26,35 @@ const TabRouteConfigs = {
             
         })
     },
-    B2:{
-        screen : Staking,
-        navigationOptions:()=>({
-            tabBarLabel:'Staking',
-            tabBarIcon:({b,tintColor})=>(
-              <Diceng
-                tintColor={tintColor} 
-                b = {b}
-                b1 = {require('../images/Bottom/staking_icon.png')}
-              />
-            )
+    // *************************Need Open**************************************
+    // B2:{
+    //     screen : Staking,
+    //     navigationOptions:()=>({
+    //         tabBarLabel:'Staking',
+    //         tabBarIcon:({b,tintColor})=>(
+    //           <Diceng
+    //             tintColor={tintColor} 
+    //             b = {b}
+    //             b1 = {require('../images/Bottom/staking_icon.png')}
+    //           />
+    //         )
             
-        })
-    },
-    B3:{
-        screen : Democracy,
-        navigationOptions:()=>({
-            tabBarLabel:'Democracy',
-            tabBarIcon:({b,tintColor})=>(
-              <Diceng
-                tintColor={tintColor} 
-                b = {b}
-                b1 = {require('../images/Bottom/democrscy_icon.png')}
-              />
-            )
+    //     })
+    // },
+    // B3:{
+    //     screen : Democracy,
+    //     navigationOptions:()=>({
+    //         tabBarLabel:'Democracy',
+    //         tabBarIcon:({b,tintColor})=>(
+    //           <Diceng
+    //             tintColor={tintColor} 
+    //             b = {b}
+    //             b1 = {require('../images/Bottom/democrscy_icon.png')}
+    //           />
+    //         )
             
-        })
-    },
+    //     })
+    // },
     // B4:{
     //     screen : CrossChain,
     //     navigationOptions:()=>({

@@ -20,6 +20,11 @@ class stateStore{
     Accounts=[
         {account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}
     ]
+    // 通讯录
+    @observable
+    Addresses=[
+        // {Name:'',Memo:'',Address:''}
+    ];
 
     // 正在登陆的账户
     @observable
@@ -34,14 +39,19 @@ class stateStore{
     // 当前交易信息是否是最后一页
     @observable
     hasNextPage;
-
-    
     //balance
     @observable
     balance=0;
-    // 当前交易信息是否是最后一页
-
-    //监听余额
+    // 转账地址
+    @observable
+    inaddress='';
+    //转账金额
+    @observable
+    value=0;
+    // 第几笔交易
+    @observable
+    accountNonce=0;
+    //折线图数据
     @observable
     option={
         title: {

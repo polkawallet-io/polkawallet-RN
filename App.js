@@ -14,6 +14,10 @@ import Manage_Account from './src/code/Profile/secondary/Manage_Account'
 import Transfer from './src/code/Assetes/secondary/Transfer/transfer'
 import Make_transfer from './src/code/Assetes/secondary/Transfer/make_transfer'
 import Transfer_details from './src/code/Assetes/secondary/Transfer/Transfer_details'
+import Addresses from './src/code/Profile/secondary/Addresses'
+import Add_address from './src/code/Profile/secondary/add_address'
+import Address_information from './src/code/Profile/secondary/address_information'
+
 import {Provider} from 'mobx-react'
  //获取store实例
 import AppState from './src/mobx/mobx'
@@ -29,6 +33,9 @@ const Polkawallet_App =  StackNavigator({
   Transfer:{screen:Transfer,navigationOptions:{header:null}},
   Make_transfer:{screen:Make_transfer,navigationOptions:{header:null}},
   Transfer_details:{screen:Transfer_details,navigationOptions:{header:null}},
+  Addresses:{screen:Addresses,navigationOptions:{header:null}},
+  Add_address:{screen:Add_address,navigationOptions:{header:null}},
+  Address_information:{screen:Address_information,navigationOptions:{header:null}},
 
  })
  

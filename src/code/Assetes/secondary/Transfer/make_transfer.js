@@ -17,11 +17,12 @@ import {
   import Keyring from '@polkadot/keyring'
   const keyring = new Keyring();
 
-  const ENDPOINT = 'ws://192.168.8.145:9944/';
+  const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
   import { observer, inject } from "mobx-react";
+import { set } from 'mobx';
   @inject('rootStore')
   @observer
   export default class Transfer extends Component{
@@ -30,7 +31,9 @@ import {
           this.state={
             ispwd:true,
             password:'',
-            isModal:false
+            isModal:false,
+            accountNonce:'',
+            onlyone:0
           }
           this.lookpwd=this.lookpwd.bind(this)
           this.onChangepasswore=this.onChangepasswore.bind(this)
@@ -49,9 +52,27 @@ import {
           })
       }
       Cancel(){
+        // alert(this.state.accountNonce)
         this.props.navigation.navigate('Transfer')
       }
+      componentWillMount(){
+        (async()=>{
+            const provider = new WsProvider(ENDPOINT);
+            const api = await Api.create(provider);
+            const accountNonce = await api.query.system.accountNonce(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+                this.setState({
+                    accountNonce:JSON.stringify(accountNonce)
+                });
+           
+        })()
+        
+        
+      }
       Sign_and_Submit(){
+        this.setState({
+            onlyone:1,
+            isModal:true
+        })
         SInfo.getItem(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
             (result)=>{
               loadPair = keyring.addFromJson(JSON.parse(result))
@@ -67,13 +88,12 @@ import {
                   const accountNonce = await api.query.system.accountNonce(loadPair.address());
                   // Do the transfer and track the actual status
                   api.tx.balances
-                  .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', 30000000)
+                  .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
                   .sign(loadPair, accountNonce)
                   .send(({ status, type }) => {
-                //     console.log('Transaction status:', type);
                     if (type === 'Ready') {
                         this.setState({
-                            isModal:true
+                            // isModal:true
                         })
                     }
                     if (type === 'Finalised') {
@@ -87,7 +107,7 @@ import {
                                 [
                                   {text: 'OK', onPress: () => {
                                         //清除缓存
-                                        let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+                                        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
                                         let map = {
                                             method:'POST'
                                             }
@@ -100,7 +120,7 @@ import {
                                             map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
                                             fetch(REQUEST_URL,map).then().catch()
                                         //获取网络订单
-                                        REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+                                        REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
                                         map = {
                                             method:'POST'
                                             }
@@ -126,15 +146,21 @@ import {
                         
                         // process.exit(0);
                     // console.log('Completed at block hash', status.value.toHex());
+                    }else{
+                        this.setState({
+                            isModal:false
+                        })
+                        setTimeout(()=>{
+                            alert('Transfer Failed!')
+                        },500)
+                        
                     }
                   });
                })()
             }
         )
       }
-      componentWillMount(){
-        
-      }
+      
       render(){
           return(
               <View style={styles.container}>
@@ -160,11 +186,11 @@ import {
                   <View style={{height:ScreenHeight/25,flexDirection:'row',alignItems:'center',marginTop:ScreenHeight/100}}>
                     <Text style={{fontSize:ScreenWidth/25,color:'black'}}>calling </Text>
                     <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>staking.transfer</Text>
+                        <Text style={styles.grey_t}>balances.transfer</Text>
                     </View>
                     <Text style={{fontSize:ScreenWidth/25,color:'black'}}> with an index of </Text>
                     <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>42</Text>
+                        <Text style={styles.grey_t}>{this.state.accountNonce}</Text>
                     </View>
                   </View>
                   {/* password */}
@@ -205,14 +231,26 @@ import {
                             Cancel
                           </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
-                        onPress={this.Sign_and_Submit}
-                      >
-                    
-                        <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
-                          Sign and Submit
-                        </Text>
-                      </TouchableOpacity>
+                      {this.state.onlyone==0?
+                        <TouchableOpacity 
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
+                            onPress={this.Sign_and_Submit}
+                        >
+                        
+                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
+                            Sign and Submit
+                            </Text>
+                        </TouchableOpacity>
+                        :
+                        <View 
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
+                        >
+                        
+                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
+                            Sign and Submit
+                            </Text>
+                        </View>
+                      }
                       <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
                         <Text style={{fontSize:ScreenHeight/70}}>
                             or

@@ -33,8 +33,8 @@ export default class Polkawallet extends Component{
     this.props.navigation.navigate('Tabbed_Navigation')
   }
   async copy(){
+    alert('Copy success')
     Clipboard.setString(this.state.text);
-    let  str = await Clipboard.getString()
   }
   
   render(){

@@ -11,7 +11,7 @@ import {
     Clipboard,
   } from 'react-native';
   import QRCode from 'react-native-qrcode'; 
-  
+  import Identicon from 'polkadot-identicon-react-native';
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
   import { observer, inject } from "mobx-react";
@@ -27,8 +27,8 @@ import {
           this.back=this.back.bind(this)
       }   
       async copy(){
-        Clipboard.setString(this.state.text);
-        let  str = await Clipboard.getString()
+        Clipboard.setString(this.state.address);
+        alert('Copy success')
       }
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
@@ -50,15 +50,18 @@ import {
                     <TouchableOpacity>
                         <Image 
                         style={styles.image_title}
-                        source={require('../../../images/Assetes/share.png')}
+                        //Need Open
+                        // source={require('../../../images/Assetes/share.png')}
                         />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.view}>
                     {/* Head_portrait */}
-                    <Image 
-                      style={styles.Head_portrait}
-                      source={require('../../../images/Assetes/accountIMG.png')}
+                    <Identicon
+                        style={styles.Head_portrait}
+                        value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                        size={ScreenHeight/14}
+                        theme={'polkadot'}
                     />
                     {/* username */}
                     <Text style={styles.username}>{this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}</Text>
@@ -66,7 +69,7 @@ import {
                       <Image style={styles.image_copy}/>
                       {/* address */}
                       <Text 
-                        style={{width:ScreenWidth*0.5,fontWeight:'200',fontSize:ScreenWidth/33}}
+                        style={{width:ScreenWidth*0.5,fontWeight:'200',fontSize:ScreenWidth/28}}
                         ellipsizeMode={"middle"}
                         numberOfLines={1}
                       >

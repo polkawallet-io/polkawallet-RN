@@ -8,14 +8,18 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  RefreshControl
+  RefreshControl,
+  SafeAreaView,
 } from 'react-native';
+import Identicon from 'polkadot-identicon-react-native';
+import moment from "moment/moment";
 import SInfo from 'react-native-sensitive-info';
 import Drawer from 'react-native-drawer'
 import Right_menu from './secondary/right_menu'
+
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'ws://192.168.8.145:9944/';
+const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 const { Keyring } = require('@polkadot/keyring');
 const { stringToU8a } = require('@polkadot/util');
@@ -49,7 +53,7 @@ export default class Assetes extends Component {
     this.props.navigation.navigate('QR_Code')
   }
   Coin_details(){
-    let REQUEST_URL ='http://192.168.8.127:8080/tx_money_date'
+    let REQUEST_URL ='http://107.173.250.124:8080/tx_money_date'
         let map = {
               method:'POST'
             }
@@ -59,22 +63,18 @@ export default class Assetes extends Component {
         map.headers = privateHeaders;
         map.follow = 20;
         map.timeout = 0;
-        map.body = '{"user_address":"5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ","UTCdate":"2019-01-22 13:22:00"}';
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
-            // alert(this.props.rootStore.stateStore.option.series[0].data)
+            this.props.rootStore.stateStore.option.xAxis.data=[]
+            this.props.rootStore.stateStore.option.series[0].data=[]
             JSON.parse(result._bodyInit).map((item,index)=>{
-              if(index==10){alert((item.money/1000000).toFixed(1))}
               this.props.rootStore.stateStore.option.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
               this.props.rootStore.stateStore.option.series[0].data.push((item.money/1000000).toFixed(1))
             })
-            alert(this.props.rootStore.stateStore.option.xAxis.data)
-            // console.log('*************************************')
-            // console.log(result)
-            // console.log(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+            this.props.navigation.navigate('Coin_details')
           }
         ).catch()
-        setTimeout(()=>{this.props.navigation.navigate('Coin_details')},200)
     
   }
   // 刷新
@@ -94,13 +94,10 @@ export default class Assetes extends Component {
     },2000)
   }
   componentWillMount(){
-    // SInfo.getItem('isfirst', {}).then((result)=>{alert(result)})
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
-        // alert(JSON.stringify(result).length)
         if(JSON.stringify(result).length<10 )
         {
-          // SInfo.setItem('isfirst', 'y', {})
           this.props.navigation.navigate('Create_Account',{t:this})
         }else{
           this.setState({
@@ -137,7 +134,7 @@ export default class Assetes extends Component {
   
 
     //清除缓存
-    let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+    let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
     let map = {
           method:'POST'
         }
@@ -150,7 +147,7 @@ export default class Assetes extends Component {
         map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
         fetch(REQUEST_URL,map).then().catch()
     //获取网络订单
-    REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+    REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
     map = {
           method:'POST'
         }
@@ -172,6 +169,7 @@ export default class Assetes extends Component {
   
   render() {
     return (
+      <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
       <Drawer
         type='overlay'
         side='right'
@@ -185,7 +183,7 @@ export default class Assetes extends Component {
       >
        <View style={{flex:1,backgroundColor:'white',}}>
         {/* 标题栏 */}
-        <View style={{height:ScreenHeight/9,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
+        <View style={{height:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
           <View style={{marginLeft:ScreenWidth/26.79,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}></View>
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
               {/* logo */}
@@ -216,10 +214,12 @@ export default class Assetes extends Component {
           <View style={{height:ScreenHeight/3.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
               <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
                 {/* 头像 */}
-                <Image
-                  style={{marginTop:ScreenHeight/30,backgroundColor:'white',borderRadius:ScreenHeight/28,height:ScreenHeight/14,width:ScreenHeight/14,resizeMode:'cover'}}
-                  source={require('../../images/Assetes/accountIMG.png')}
+                <Identicon
+                  value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                  size={ScreenHeight/14}
+                  theme={'polkadot'}
                 />
+                
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
                 {/* 用户名 */}
@@ -255,7 +255,8 @@ export default class Assetes extends Component {
                 >
                   <Image
                     style={{marginRight:ScreenWidth/20,height:ScreenHeight/30,width:ScreenHeight/30,opacity:0.9}}
-                    source={require('../../images/Assetes/addAssetes.png')}
+                    //Need Open
+                    // source={require('../../images/Assetes/addAssetes.png')}
                   />
                 </TouchableOpacity>
               </View>
@@ -282,7 +283,8 @@ export default class Assetes extends Component {
           </TouchableOpacity>
         </ScrollView>
        </View>
-      </Drawer>    
+      </Drawer> 
+      </SafeAreaView>   
       );
   }
 }
