@@ -143,6 +143,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-camera')
     compile project(':react-native-randombytes')
     compile project(':react-native-sensitive-info')
     compile project(':react-native-svg')

@@ -1,4 +1,4 @@
-import { observable,action } from 'mobx'
+import { observable,action, observe } from 'mobx'
 
 class RootStore {
     constructor() {
@@ -12,19 +12,54 @@ class stateStore{
     @observable
     name = 'Zoey';
 
+    // 是否是第一次登陆
+    @observable
+    isfirst=0
     // 所有账户
     @observable
     Accounts=[
-        {account:'AliceAccount',address:'5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ'}
+        {account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}
     ]
 
     // 正在登陆的账户
     @observable
     Account = 0;
+    // 账户数量(除默认账户以外)
+    @observable
+    Accountnum = 0;
 
     // 交易信息
     @observable
     transactions={};
+    // 当前交易信息是否是最后一页
+    @observable
+    hasNextPage;
+
+    
+    //balance
+    @observable
+    balance=0;
+    // 当前交易信息是否是最后一页
+
+    //监听余额
+    @observable
+    option={
+        title: {
+          show:false
+        },
+        tooltip: {},
+        legend: {
+            data: ['']
+        },
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            type: 'line',
+            data: []
+        }]
+    };
 
     //被观察的操作
     @action

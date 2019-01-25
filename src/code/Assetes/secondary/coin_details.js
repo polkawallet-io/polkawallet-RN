@@ -14,17 +14,7 @@ import {
   import Echarts from 'native-echarts';
   import moment from "moment/moment";
 
-  const Transfer_Records=[
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Receive',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-    {tx_type:'Send',time:'12/12/2018 09:17:31',tx_address:'5GqBzeuVYJBorP3oP7FgheoP5nb2twFeDUFZhoBhX7ExYsia',tx_value:1.1},
-  ]
+  
   const titlebottoms=['All','Out','In']
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
@@ -36,6 +26,7 @@ import { observer, inject } from "mobx-react";
       constructor(props){
           super(props)
           this.state={
+            isfirst:0,
             titlebottom:1,
             option: {
                 title: {
@@ -46,20 +37,85 @@ import { observer, inject } from "mobx-react";
                     data: ['']
                 },
                 xAxis: {
-                    data: ["12/5", "12/8", "12/11", "12/14", "12/17","12/20","12/23","12/26"]
+                    data: ["12/1", "12/2", "12/3", "12/4", "12/5","12/6","12/7","12/8","12/9","12/10","12/11","12/12"]
                 },
                 yAxis: {},
                 series: [{
                     type: 'line',
-                    data: [0, 0.02,0.03,0.06,0.04,0.06,0.10,0.04]
+                    data: [0, 0.02,0.04,0.06,0.04,0.06,0.10,0.04,0.1,0.2,0.3,0.5]
                 }]
             },
+            pageNum:1
           }
           this.back=this.back.bind(this)
+          this.Send=this.Send.bind(this)
+          this.Receive=this.Receive.bind(this)
+          this.Loadmore=this.Loadmore.bind(this)
       }  
       
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
+      }
+      Loadmore(){
+        this.setState({
+          pageNum:this.state.pageNum+1
+        })
+        let REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+        let map = {
+          method:'POST'
+        }
+        let privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+        fetch(REQUEST_URL,map).then(
+          (result)=>{
+              JSON.parse(result._bodyInit).tx_list.list.map((item,index)=>{
+              this.props.rootStore.stateStore.transactions.tx_list.list.push(item)
+            })
+            
+          }
+        ).catch()
+        
+
+      }
+      
+      Send(){
+        this.props.navigation.navigate('Transfer')
+      }
+      Receive(){
+        this.props.navigation.navigate('QR_Code')
+      }
+      componentWillMount(){
+        //获取网络订单
+        // let REQUEST_URL ='http://192.168.8.127:8080/tx_money_date'
+        // let map = {
+        //       method:'POST'
+        //     }
+        // let privateHeaders = {
+        //   'Content-Type':'application/json'
+        // }
+        // map.headers = privateHeaders;
+        // map.follow = 20;
+        // map.timeout = 0;
+        // map.body = '{"user_address":"5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ","UTCdate":"2019-01-22 13:22:00"}';
+        // fetch(REQUEST_URL,map).then(
+        //   (result)=>{
+        //     // alert(this.props.rootStore.stateStore.option.series[0].data)
+        //     JSON.parse(result._bodyInit).map((item,index)=>{
+        //       // if(index==1){alert((item.time).substring(5,10))}
+        //       this.props.rootStore.stateStore.option.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+        //       // this.props.rootStore.stateStore.option.series[0].data.push(item.money)
+        //     })
+        //     alert(this.props.rootStore.stateStore.option.xAxis.data)
+        //     // console.log('*************************************')
+        //     // console.log(result)
+        //     // console.log(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+        //   }
+        // ).catch()
       }
       render(){
           return(
@@ -85,7 +141,7 @@ import { observer, inject } from "mobx-react";
                 {/* The line chart */}
                 <View style={{height:ScreenHeight/3,borderWidth:1}}>
                   <Echarts 
-                    option={this.state.option}
+                    option={this.props.rootStore.stateStore.option}
                     height={ScreenHeight/3}/>   
                 </View>
                 {/* The secondary title */}
@@ -115,14 +171,80 @@ import { observer, inject } from "mobx-react";
                 </View>
                 {/* Sliding table */}
                 <View style={{marginTop:0,width:ScreenWidth,flex:1,backgroundColor:'white'}}>
-                  <ScrollView style={{flex:1}}>
+                  <ScrollView style={{flex:1}}
+                  >
                     {
                         this.props.rootStore.stateStore.transactions.tx_list.list.map((item,index)=>{
                           return(
                             (this.state.titlebottom==1)
                             ?
                             //All
-                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
+                              onPress={()=>{
+                                this.props.navigation.navigate('Transfer_details',{data:item})
+                              }}
+                            >
+                              <Image
+                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                              />
+                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
+                                <Text
+                                  ellipsizeMode={"middle"}
+                                  numberOfLines={1}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                >
+                                  {item.tx_address}
+                                </Text>
+                                <Text
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
+                                  {/* {item.tx_timestamp} */}
+                                </Text>
+                              </View>
+                              {/* 余额 */}
+                              <Text
+                                style={styles.value}
+                              >
+                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                              </Text>
+                            </TouchableOpacity>
+                            :(this.state.titlebottom==2&&item.tx_type=="Send")
+                            ?
+                            // Out
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
+                              onPress={this.Transfer_details}
+                            >
+                              <Image
+                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                              />
+                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
+                                <Text
+                                  ellipsizeMode={"middle"}
+                                  numberOfLines={1}
+                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                >
+                                  {item.tx_address}
+                                </Text>
+                                <Text
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                >
+                                  {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
+                                </Text>
+                              </View>
+                              <Text
+                                style={styles.value}
+                              >
+                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                              </Text>
+                            </TouchableOpacity>
+                            :(this.state.titlebottom==3&&item.tx_type=="Receive")?
+                            // in
+                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
+                              onPress={this.Transfer_details}
+                            >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
                                 source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
@@ -148,72 +270,31 @@ import { observer, inject } from "mobx-react";
                                 {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
                               </Text>
                             </TouchableOpacity>
-                            :(this.state.titlebottom==2&&item.tx_type=="Send")
-                            ?
-                            // Out
-                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
-                              <Image
-                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
-                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
-                              />
-                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
-                                <Text
-                                  ellipsizeMode={"middle"}
-                                  numberOfLines={1}
-                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
-                                >
-                                  {item.tx_address}
-                                </Text>
-                                <Text
-                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
-                                >
-                                  {item.tx_timestamp}
-                                </Text>
-                              </View>
-                              <Text
-                                style={styles.value}
-                              >
-                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
-                              </Text>
-                            </TouchableOpacity>
-                            :(this.state.titlebottom==3&&item.tx_type=="Receive")?
-                            // in
-                            <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
-                              <Image
-                                style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
-                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
-                              />
-                              <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
-                                <Text
-                                  ellipsizeMode={"middle"}
-                                  numberOfLines={1}
-                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
-                                >
-                                  {item.tx_address}
-                                </Text>
-                                <Text
-                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
-                                >
-                                  {item.tx_timestamp}
-                                </Text>
-                              </View>
-                              {/* 余额 */}
-                              <Text
-                                style={styles.value}
-                              >
-                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
-                              </Text>
-                            </TouchableOpacity>
                             :<View key={index}/>
                           )
                         })
                     }
+                    {
+                      this.props.rootStore.stateStore.hasNextPage?
+                        <TouchableOpacity style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}
+                          onPress={this.Loadmore}
+                        >
+                          <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>To load more ~</Text>
+                        </TouchableOpacity>
+                      :
+                      <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>~ Bottom</Text>
+                      </View>
+                    }
+                    
                   </ScrollView>
                 </View>
                 <View style={{height:ScreenHeight/100,backgroundColor:'white'}}/>
                 {/* Send or Receive  */}
                 <View style={{height:ScreenHeight/15,flexDirection:'row'}}>
-                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#4dabd0'}]}>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#4dabd0'}]}
+                    onPress={this.Send}
+                  >
                     <Image 
                       style={styles.SorR_Image}
                       source={require('../../../images/Assetes/coin_details/send.png')}
@@ -221,7 +302,9 @@ import { observer, inject } from "mobx-react";
                     <Text style={styles.SorR_Text}>Send</Text>
                   </TouchableOpacity>
                   <View style={{flex:1}}/>
-                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#90cd49'}]}>
+                  <TouchableOpacity style={[styles.SorR_View,{backgroundColor:'#90cd49'}]}
+                    onPress={this.Receive}
+                  >
                     <Image 
                       style={styles.SorR_Image}
                       source={require('../../../images/Assetes/coin_details/receive.png')}

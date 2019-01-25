@@ -39,6 +39,7 @@ export default class New extends Component {
     return (
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
         <View style={{height:ScreenHeight/9,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
+          
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
               {/* logo */}
               <Text style={{marginBottom:ScreenHeight/50,fontSize:ScreenHeight/37,fontWeight:'bold',color:'white'}}>Profile</Text>

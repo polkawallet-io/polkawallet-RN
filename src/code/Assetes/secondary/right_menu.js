@@ -9,6 +9,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
+const ENDPOINT = 'ws://192.168.8.145:9944/';
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -24,6 +27,8 @@ export default class New extends Component {
             Account: this.props.rootStore.stateStore.Account+1
         }
         this.Create_Account=this.Create_Account.bind(this)
+        this.Switch_Account=this.Switch_Account.bind(this)
+
     }
     Create_Account()
     {
@@ -31,6 +36,45 @@ export default class New extends Component {
         is:false
       })
       this.props.p.navigation.navigate('Create_Account')
+    }
+    Switch_Account(){
+      // Query Balance
+      (async()=>{
+        const api = await Api.create(new WsProvider(ENDPOINT));
+        balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+        this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+      })()
+      //清除缓存
+      let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+      let map = {
+            method:'POST'
+          }
+          let privateHeaders = {
+            'Content-Type':'application/json'
+          }
+          map.headers = privateHeaders;
+          map.follow = 20;
+          map.timeout = 0;
+          map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+          fetch(REQUEST_URL,map).then().catch()
+      //获取网络订单
+      REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+      map = {
+            method:'POST'
+          }
+          privateHeaders = {
+            'Content-Type':'application/json'
+          }
+          map.headers = privateHeaders;
+          map.follow = 20;
+          map.timeout = 0;
+          map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+          fetch(REQUEST_URL,map).then(
+            (result)=>{
+              this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
+              this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
+            }
+          ).catch()
     }
   componentWillMount(){
     
@@ -52,12 +96,13 @@ export default class New extends Component {
                       this.props.rootStore.stateStore.Accounts.map((item,index)=>{
                         if(index!=0)
                         return(
-                          <TouchableOpacity style={[styles.account,{backgroundColor:(this.state.Account==index)?'#5c67a6':'#7582C9'}]} key={index}
+                          <TouchableOpacity style={[styles.account,{backgroundColor:(this.props.rootStore.stateStore.Account==index)?'#5c67a6':'#7582C9'}]} key={index}
                             onPress={()=>{
                               this.props.rootStore.stateStore.Account=index
                               this.setState({
                                 Account:index
                               })
+                              this.Switch_Account()
                             }}
                           >
                             {/* 账户头像 */}

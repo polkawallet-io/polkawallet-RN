@@ -69,7 +69,7 @@ export default class IntegralMall extends Component {
           yAxis: {},
           series: [{
               type: 'line',
-              data: [0, 0.02,0.03,0.06,0.04,0.06,0.10,0.04]
+              data: [0, 0.02,0.03,0.06,0.04,0.06,0,0.04]
           }]
         },
         text: 'text'

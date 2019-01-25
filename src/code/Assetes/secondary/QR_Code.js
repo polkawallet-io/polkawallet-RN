@@ -14,11 +14,14 @@ import {
   
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
+  import { observer, inject } from "mobx-react";
+  @inject('rootStore')
+  @observer
   export default class Product_ErWeiMa extends Component{
       constructor(props){
           super(props)
           this.state={
-              address:'5ELIdjfbsjkbfdsdfjksbdjBEFWUBWbfdblfjdsh;bfdsjfdkfdns'
+              address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
           }
           this.copy=this.copy.bind(this)
           this.back=this.back.bind(this)
@@ -58,7 +61,7 @@ import {
                       source={require('../../../images/Assetes/accountIMG.png')}
                     />
                     {/* username */}
-                    <Text style={styles.username}>AliceAccount</Text>
+                    <Text style={styles.username}>{this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}</Text>
                     <View style={styles.address}>
                       <Image style={styles.image_copy}/>
                       {/* address */}
