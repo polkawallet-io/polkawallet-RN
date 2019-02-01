@@ -55,7 +55,8 @@ export default class Transfer_details extends PureComponent {
                     <TouchableOpacity>
                         <Image 
                         style={styles.image_title}
-                        source={require('../../../../images/Assetes/share.png')}
+                        // Need Open
+                        // source={require('../../../../images/Assetes/share.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -74,7 +75,7 @@ export default class Transfer_details extends PureComponent {
                   {/* Balance */}
                   <View style={styles.list_View}>
                     <Text style={styles.list_text1}>Balance:</Text>
-                    <Text style={[styles.list_text2,{fontSize:ScreenWidth/20}]}>{this.state.data.tx_value} M</Text>
+                    <Text style={[styles.list_text2,{fontSize:ScreenWidth/20}]}>{this.state.data.tx_value} femto</Text>
                   </View>
                   {/* Fees */}
                   <View style={styles.list_View}>
@@ -86,7 +87,7 @@ export default class Transfer_details extends PureComponent {
                     <Text style={[styles.list_text1,{width:ScreenWidth*0.23-ScreenHeight/200}]}>To:</Text>
                     <View style={styles.grey_text}>
                         <Text style={styles.address}>
-                          {(this.state.tx_type=="Send")?this.state.data.tx_address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                          {(this.state.data.tx_type=="Send")?this.state.data.tx_address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
                         </Text>
                     </View>
                     <TouchableOpacity
@@ -106,7 +107,7 @@ export default class Transfer_details extends PureComponent {
                     <Text style={[styles.list_text1,{width:ScreenWidth*0.23-ScreenHeight/200}]}>From:</Text>
                     <View style={styles.grey_text}>
                         <Text style={styles.address}>
-                          {this.state.tx_type=="Send"?this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address:this.state.data.tx_address}
+                          {this.state.data.tx_type=="Send"?this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address:this.state.data.tx_address}
                         </Text>
                     </View>
                     

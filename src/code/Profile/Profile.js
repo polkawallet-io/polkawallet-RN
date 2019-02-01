@@ -12,13 +12,14 @@ import {
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const Custom_Components=[
-  {image:require('../../images/Profile/Notifications.png'),text:'Notifications'},
-  {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
-  {image:require('../../images/Profile/Settings.png'),text:'Settings'},
-  {image:require('../../images/Profile/Support.png'),text:'Support'},
-  {image:require('../../images/Profile/About.png'),text:'About'},
+  //Need Open
+  // {image:require('../../images/Profile/Notifications.png'),text:'Notifications'},
+  // {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
+  // {image:require('../../images/Profile/Settings.png'),text:'Settings'},
+  // {image:require('../../images/Profile/Support.png'),text:'Support'},
+  // {image:require('../../images/Profile/About.png'),text:'About'},
 ]
-
+import Identicon from 'polkadot-identicon-react-native';
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
@@ -31,9 +32,13 @@ export default class New extends Component {
             s:1
         }
         this.Manage_Account=this.Manage_Account.bind(this)
+        this.Addresses=this.Addresses.bind(this)
     }
   Manage_Account(){
     this.props.navigation.navigate('Manage_Account')
+  }
+  Addresses(){
+    this.props.navigation.navigate('Addresses')
   }
   render() {
     return (
@@ -49,9 +54,10 @@ export default class New extends Component {
           <View style={{height:ScreenHeight/3.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
               <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
                 {/* 头像 */}
-                <Image
-                  style={{marginTop:ScreenHeight/30,backgroundColor:'white',borderRadius:ScreenHeight/28,height:ScreenHeight/14,width:ScreenHeight/14,resizeMode:'cover'}}
-                  source={require('../../images/Profile/accountIMG.png')}
+                <Identicon
+                  value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                  size={ScreenHeight/14}
+                  theme={'polkadot'}
                 />
               </View>
               <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
@@ -75,7 +81,9 @@ export default class New extends Component {
             Custom_Components.map((item,index)=>{
               return (
                 <TouchableOpacity key={index}
-                  onPress={()=>{alert(this.props.rootStore.stateStore.name)}}
+                  onPress={()=>{
+                    if(index==0){this.Addresses()}
+                  }}
                   style={{backgroundColor:'white',marginTop:(index==3)?ScreenHeight/35:0,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',borderRadius:ScreenHeight/130,marginHorizontal:1,borderBottomWidth:(index==4||index==2)?1:0.5}}
                 >
                   <Image

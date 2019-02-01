@@ -13,9 +13,10 @@ import {
   Picker,
   AsyncStorage,
 } from 'react-native';
+import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'ws://192.168.8.145:9944/';
+const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -61,6 +62,7 @@ export default class Polkawallet extends Component {
       key:key,
       address:this.pair.address()
     })
+    this.props.rootStore.stateStore.balance=(0).toFixed(2)
     // alert(this.pair.address())
     
   }
@@ -145,15 +147,25 @@ export default class Polkawallet extends Component {
     {
       alert('Please enter your password')
     }else{
-      this.pair.setMeta({'name':this.state.name})
-      this.json = this.pair.toJson(this.state.password)
-      this.json.meta = this.pair.getMeta()
-      SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
-      this.props.rootStore.stateStore.isfirst=1
-      this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
-      this.props.rootStore.stateStore.Accountnum++
-      this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
-      this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+      SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+        (result)=>{
+          if(result==null){
+            this.pair.setMeta({'name':this.state.name})
+            this.json = this.pair.toJson(this.state.password)
+            this.json.meta = this.pair.getMeta()
+            SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
+            this.props.rootStore.stateStore.isfirst=1
+            this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
+            this.props.rootStore.stateStore.Accountnum++
+            this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+            this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+          }
+          else{
+            alert('The address already exists!')
+          }
+        }
+      )
+      
     }
   }
   render() {
@@ -163,6 +175,11 @@ export default class Polkawallet extends Component {
         <View style={styles.title}>
           <TouchableOpacity
             onPress={()=>{
+              (async()=>{
+                const api = await Api.create(new WsProvider(ENDPOINT));
+                balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+                this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+              })()
               this.props.navigation.navigate('Tabbed_Navigation')
             }}
           >
@@ -179,9 +196,10 @@ export default class Polkawallet extends Component {
           <View style={{height:ScreenHeight/3.5,alignItems:'center'}}>
               {/* 头像 */}
               <View style={[styles.imageview]}>
-                <Image
-                  style={styles.image}
-                  source={require('../../../images/Assetes/accountIMG.png')}
+                <Identicon
+                  value={this.state.address}
+                  size={ScreenHeight/14}
+                  theme={'polkadot'}
                 />
               </View>
               {/* 地址 */}
@@ -244,6 +262,7 @@ export default class Polkawallet extends Component {
                 placeholder = "Please enter your password"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
+                secureTextEntry={true}
                 onChangeText = {this.onChangepassword}
             />
           </View>

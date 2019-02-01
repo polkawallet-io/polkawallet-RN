@@ -13,6 +13,7 @@ import {
   TextInput,
   Clipboard,
 } from 'react-native';
+import Identicon from 'polkadot-identicon-react-native';
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
 const keyring = new Keyring();
@@ -67,7 +68,7 @@ export default class Manage_Account extends Component {
           alert(error)
         }
   
-        loadPair.isLocked()?alert('1'):
+        loadPair.isLocked()?console.log('error'):
         this.setState({
           isModal1:false,
           isModal2:true
@@ -164,16 +165,17 @@ export default class Manage_Account extends Component {
               source={require('../../../images/Assetes/Create_Account/back.png')}
               />
           </TouchableOpacity>
-          <Text style={styles.text_title}>Create Account</Text>
+          <Text style={styles.text_title}>Manage Account</Text>
           <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
     
         </View>
           <View style={{height:ScreenHeight/4.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
               <View style={styles.head}>
                 {/* head */}
-                <Image
-                  style={styles.image}
-                  source={require('../../../images/Profile/accountIMG.png')}
+                <Identicon
+                  value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                  size={ScreenHeight/14}
+                  theme={'polkadot'}
                 />
               </View>
               <View style={styles.adderss}>
@@ -232,7 +234,7 @@ export default class Manage_Account extends Component {
                 <View style={{flex:1}}/>
                 <View style={styles.yorn}>
                   <TouchableOpacity 
-                    style={styles.choose}
+                    style={[styles.choose,{borderRightWidth:1}]}
                     onPress={this.cancel}
                   >
                     <Text style={styles.textchoose}>cancel</Text>
@@ -243,7 +245,7 @@ export default class Manage_Account extends Component {
                       (this.state.password=='')?alert('Please enter your password'):this.ok()
                     }}
                   >
-                    <Text style={[styles.textchoose,{borderRightWidth:0}]}>ok</Text>
+                    <Text style={styles.textchoose}>ok</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -267,7 +269,7 @@ export default class Manage_Account extends Component {
                 <View style={{flex:1}}/>
                 <View style={styles.yorn}>
                   <TouchableOpacity 
-                    style={styles.choose}
+                    style={[styles.choose,{borderRightWidth:1}]}
                     onPress={this.Continue}
                   >
                     <Text style={styles.textchoose}>Continue</Text>
@@ -276,7 +278,7 @@ export default class Manage_Account extends Component {
                     style={styles.choose}
                     onPress={this.Copy}
                   >
-                    <Text style={[styles.textchoose,{borderRightWidth:0}]}>Copy</Text>
+                    <Text style={styles.textchoose}>Copy</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -400,7 +402,6 @@ const styles = StyleSheet.create({
     height:ScreenHeight/20,
     width:ScreenWidth*0.4-1,
     borderTopWidth:1,
-    borderRightWidth:1,
     borderColor:'#DCDCDC',
     justifyContent:'center',
     alignItems:'center'

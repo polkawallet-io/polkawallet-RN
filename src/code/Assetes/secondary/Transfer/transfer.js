@@ -12,14 +12,14 @@ import {
   } from 'react-native';
   import Api from '@polkadot/api/promise';
   import WsProvider from '@polkadot/rpc-provider/ws';
-  const ENDPOINT = 'ws://127.0.0.1:9944/';
+  const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
   
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
   const t=[
-      {text1:'to the recipient address',text2:'5GoKvZWG5ZP...Y4Q6iMaDtZ'},
+      {text1:'to the recipient address',text2:''},
       {text1:'send a value of',text2:'0'},
-      {text1:'witn fees totalling',text2:'4.06m'},
+      {text1:'witn fees totalling',text2:'0'},
       {text1:'total transaction amount(fees + value)',text2:'4.06m'},
   ]
 
@@ -30,18 +30,42 @@ import {
       constructor(props){
           super(props)
           this.state={
-              balance:0
+              balance:0,
+              address:'',
+              value:0,
           }
           this.Make_transfer=this.Make_transfer.bind(this)
           this.back=this.back.bind(this)
-
+          this.ChangeAddress=this.ChangeAddress.bind(this)
+          this.ChangeValue=this.ChangeValue.bind(this)
       }  
       back(){
         this.props.navigation.navigate('Coin_details')
       } 
       Make_transfer()
       {
-        this.props.navigation.navigate('Make_transfer')
+        if(this.state.address==''){alert('Please enter address')}
+        else{
+            // (async()=>{
+            //       const provider = new WsProvider(ENDPOINT);
+            //       const api = await Api.create(provider);
+            //       const accountNonce = await api.query.system.accountNonce(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+            //       this.props.rootStore.stateStore.accountNonce=accountNonce
+            // })()
+            this.props.rootStore.stateStore.value=this.state.value
+            this.props.rootStore.stateStore.inaddress=this.state.address
+            this.props.navigation.navigate('Make_transfer')
+        }
+      }
+      ChangeAddress(changeAddress){
+          this.setState({
+              address:changeAddress
+          })
+      }
+      ChangeValue(changeValue){
+        this.setState({
+            value:changeValue
+        })
       }
       componentWillMount(){
         (async()=>{
@@ -52,13 +76,11 @@ import {
                 this.setState({
                   balance:balance
                 });
-                // alert(balance)
             });
         })()
         
       }
       render(){
-        //   const {balance} = this.state
           return(
               <View style={styles.container}>
                 {/* 标题栏 */}
@@ -75,7 +97,8 @@ import {
                     <TouchableOpacity>
                         <Image 
                         style={styles.image_title}
-                        source={require('../../../../images/Assetes/transfer/camera.png')}
+                        //Need Open
+                        // source={require('../../../../images/Assetes/transfer/camera.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -83,7 +106,7 @@ import {
                     t.map((item,index)=>{
                         return(
                           <View style={[styles.NandP,{marginTop:(index==0)?ScreenHeight/40:0}]} key={index}>
-                            <View style={{flexDirection:'row',width:ScreenWidth*0.65}}>
+                            <View style={{flexDirection:'row',width:ScreenWidth*0.9}}>
                                 <Text style={{fontSize:ScreenWidth/26,color:'black'}}>{item.text1}</Text>
                                 <View style={{flex:1}}/>
                                 {
@@ -93,17 +116,22 @@ import {
                             </View>
                             <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
                                 <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
-                                    placeholder = {item.text2}
+                                    placeholder = {(index==3)?(this.state.value).toString():item.text2}
                                     placeholderTextColor = "#666666"
                                     underlineColorAndroid="#ffffff00"
-                                    onChangeText = {this.onChangename}
+                                    editable={index==3?false:true}
+                                    onChangeText = {(changeText)=>{
+                                        if(index==0){this.ChangeAddress(changeText)}
+                                        if(index==1){this.ChangeValue(changeText)}
+                                    }}
                                 />
                                 {
                                     (index==0)?
                                     <TouchableOpacity>
                                          <Image
                                             style={styles.image}
-                                            source={require('../../../../images/Assetes/transfer/address.png')}
+                                            //Need Open
+                                            // source={require('../../../../images/Assetes/transfer/address.png')}
                                           />
                                     </TouchableOpacity>
                                     :<View/>

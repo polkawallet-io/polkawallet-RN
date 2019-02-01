@@ -10,10 +10,12 @@ import {
     Image,
     Clipboard,
     ScrollView,
+    RefreshControl,
+    SafeAreaView
   } from 'react-native';
   import Echarts from 'native-echarts';
   import moment from "moment/moment";
-
+  
   
   const titlebottoms=['All','Out','In']
   let ScreenWidth = Dimensions.get("screen").width;
@@ -26,41 +28,70 @@ import { observer, inject } from "mobx-react";
       constructor(props){
           super(props)
           this.state={
+            isrefresh:false,
             isfirst:0,
             titlebottom:1,
-            option: {
-                title: {
-                  show:false
-                },
-                tooltip: {},
-                legend: {
-                    data: ['']
-                },
-                xAxis: {
-                    data: ["12/1", "12/2", "12/3", "12/4", "12/5","12/6","12/7","12/8","12/9","12/10","12/11","12/12"]
-                },
-                yAxis: {},
-                series: [{
-                    type: 'line',
-                    data: [0, 0.02,0.04,0.06,0.04,0.06,0.10,0.04,0.1,0.2,0.3,0.5]
-                }]
-            },
+            
             pageNum:1
           }
           this.back=this.back.bind(this)
           this.Send=this.Send.bind(this)
           this.Receive=this.Receive.bind(this)
           this.Loadmore=this.Loadmore.bind(this)
+          this.refresh=this.refresh.bind(this)
       }  
       
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
       }
+      // 刷新
+      refresh(){
+        this.setState({
+          isrefresh:true
+        })
+        setTimeout(()=>{
+          //清除缓存
+        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
+        let map = {
+              method:'POST'
+            }
+            let privateHeaders = {
+              'Content-Type':'application/json'
+            }
+            map.headers = privateHeaders;
+            map.follow = 20;
+            map.timeout = 0;
+            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+            fetch(REQUEST_URL,map).then().catch()
+        //获取网络订单
+        REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
+        map = {
+              method:'POST'
+            }
+            privateHeaders = {
+              'Content-Type':'application/json'
+            }
+            map.headers = privateHeaders;
+            map.follow = 20;
+            map.timeout = 0;
+            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+            fetch(REQUEST_URL,map).then(
+              (result)=>{
+                this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
+                this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
+              }
+            ).catch()
+          }, 200);
+          this.setState({
+            isrefresh:false
+          })
+        
+      }
       Loadmore(){
         this.setState({
           pageNum:this.state.pageNum+1
         })
-        let REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
         let map = {
           method:'POST'
         }
@@ -90,35 +121,10 @@ import { observer, inject } from "mobx-react";
         this.props.navigation.navigate('QR_Code')
       }
       componentWillMount(){
-        //获取网络订单
-        // let REQUEST_URL ='http://192.168.8.127:8080/tx_money_date'
-        // let map = {
-        //       method:'POST'
-        //     }
-        // let privateHeaders = {
-        //   'Content-Type':'application/json'
-        // }
-        // map.headers = privateHeaders;
-        // map.follow = 20;
-        // map.timeout = 0;
-        // map.body = '{"user_address":"5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ","UTCdate":"2019-01-22 13:22:00"}';
-        // fetch(REQUEST_URL,map).then(
-        //   (result)=>{
-        //     // alert(this.props.rootStore.stateStore.option.series[0].data)
-        //     JSON.parse(result._bodyInit).map((item,index)=>{
-        //       // if(index==1){alert((item.time).substring(5,10))}
-        //       this.props.rootStore.stateStore.option.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
-        //       // this.props.rootStore.stateStore.option.series[0].data.push(item.money)
-        //     })
-        //     alert(this.props.rootStore.stateStore.option.xAxis.data)
-        //     // console.log('*************************************')
-        //     // console.log(result)
-        //     // console.log(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-        //   }
-        // ).catch()
       }
       render(){
           return(
+            // <SafeAreaView style={{flex:1,ba}}>
               <View style={styles.container}>
                 {/* 标题栏 */}
                 <View style={styles.title}>
@@ -134,7 +140,8 @@ import { observer, inject } from "mobx-react";
                     <TouchableOpacity>
                         <Image 
                         style={styles.image_title}
-                        source={require('../../../images/Assetes/coin_details/books.png')}
+                        //Need Open
+                        // source={require('../../../images/Assetes/coin_details/books.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -171,7 +178,11 @@ import { observer, inject } from "mobx-react";
                 </View>
                 {/* Sliding table */}
                 <View style={{marginTop:0,width:ScreenWidth,flex:1,backgroundColor:'white'}}>
-                  <ScrollView style={{flex:1}}
+                  <ScrollView 
+                    style={{flex:1}}
+                    refreshControl={<RefreshControl
+                      refreshing={this.state.isrefresh}
+                      onRefresh={this.refresh}/>}
                   >
                     {
                         this.props.rootStore.stateStore.transactions.tx_list.list.map((item,index)=>{
@@ -207,14 +218,16 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
                               </Text>
                             </TouchableOpacity>
                             :(this.state.titlebottom==2&&item.tx_type=="Send")
                             ?
                             // Out
                             <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
-                              onPress={this.Transfer_details}
+                                onPress={()=>{
+                                  this.props.navigation.navigate('Transfer_details',{data:item})
+                                }}
                             >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
@@ -237,13 +250,15 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
                               </Text>
                             </TouchableOpacity>
                             :(this.state.titlebottom==3&&item.tx_type=="Receive")?
                             // in
                             <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
-                              onPress={this.Transfer_details}
+                                onPress={()=>{
+                                  this.props.navigation.navigate('Transfer_details',{data:item})
+                                }}
                             >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
@@ -267,7 +282,7 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+item.tx_value:"- "+item.tx_value} M
+                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
                               </Text>
                             </TouchableOpacity>
                             :<View key={index}/>
@@ -283,7 +298,7 @@ import { observer, inject } from "mobx-react";
                         </TouchableOpacity>
                       :
                       <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>~ Bottom</Text>
+                        <Text style={{color:'#A9A9A9',fontSize:ScreenHeight/52}}>~ Bottom</Text>
                       </View>
                     }
                     

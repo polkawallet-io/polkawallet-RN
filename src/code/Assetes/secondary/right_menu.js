@@ -9,9 +9,10 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'ws://192.168.8.145:9944/';
+const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -45,7 +46,7 @@ export default class New extends Component {
         this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
       })()
       //清除缓存
-      let REQUEST_URL = 'http://192.168.8.127:8080/tx_list_for_redis'
+      let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
       let map = {
             method:'POST'
           }
@@ -58,7 +59,7 @@ export default class New extends Component {
           map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
           fetch(REQUEST_URL,map).then().catch()
       //获取网络订单
-      REQUEST_URL = 'http://192.168.8.127:8080/tx_list'
+      REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
       map = {
             method:'POST'
           }
@@ -106,9 +107,11 @@ export default class New extends Component {
                             }}
                           >
                             {/* 账户头像 */}
-                            <Image
-                              style={[styles.image,{}]}
-                              source={require('../../../images/Assetes/accountIMG.png')}
+                            <Identicon
+                              style={styles.image}
+                              value={item.address}
+                              size={ScreenHeight/22}
+                              theme={'polkadot'}
                             />
                             {/* 账户名 and 地址 */}
                             <View style={{marginLeft:ScreenWidth/30,flex:1}}>
@@ -133,16 +136,19 @@ export default class New extends Component {
                 <View style={styles.line}/>
                 <View style={styles.SandC}>
                   {/* 摄像头 */} 
-                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.45-0.5}]}>
+                  {/* //Need Open */}
+                  {/* <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.45-0.5}]}>
                     <Image
                       style={[{height:ScreenHeight/38,width:ScreenHeight/38,resizeMode:'contain'}]}
                       source={require('../../../images/Assetes/right_menu/Scan.png')}
                     />
                     <Text style={{marginTop:ScreenHeight/200,fontSize:ScreenWidth/25,color:'#333333'}}>Scan</Text>
-                  </TouchableOpacity>
-                  <View style={{width:1,height:ScreenHeight/40,backgroundColor:'#A9A9A9'}}/>
+                  </TouchableOpacity> */}
+                  {/* <View style={{width:1,height:ScreenHeight/40,backgroundColor:'#A9A9A9'}}/> */}
                   {/* 创建钱包 */}
-                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.55-0.5}]}
+                  {/* //Need Open */}
+                  {/* <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.55-0.5}]} */}
+                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57}]}
                     onPress={()=>{this.Create_Account()}}
                   >
                     <Image
@@ -154,15 +160,17 @@ export default class New extends Component {
                 </View>
                 <View style={{flex:1}}/>
                 {/* 下线 */}
-                <View style={styles.line}/>
+                {/* //Need Open */}
+                {/* <View style={styles.line}/> */}
                 {/* 帮助 */}
-                <TouchableOpacity style={[styles.middle,{height:ScreenHeight/13,flexDirection:'row'}]}>
+                {/* //Need Open */}
+                {/* <TouchableOpacity style={[styles.middle,{height:ScreenHeight/13,flexDirection:'row'}]}>
                   <Image
                     style={[{height:ScreenHeight/48,width:ScreenHeight/48,resizeMode:'contain'}]}
                     source={require('../../../images/Assetes/right_menu/help.png')}
                   />
                   <Text style={{fontWeight:'500',color:'white',marginLeft:ScreenWidth/70,fontSize:ScreenWidth/38}}>Can I help you?</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
             
@@ -186,7 +194,7 @@ const styles = StyleSheet.create({
     height:ScreenHeight/20,
     width:ScreenHeight/20,
     resizeMode:'contain',
-    marginLeft:ScreenWidth/20
+    marginLeft:ScreenWidth/35
   },
   line:{
     marginTop:ScreenHeight/70,
