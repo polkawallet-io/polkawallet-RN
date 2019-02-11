@@ -51,9 +51,12 @@ export default class New extends Component {
         (result)=>{
             if(result!=null)
             {
-                // alert(result)
-                // this.props.rootStore.rootStore.Addresses.push(JSON.parse(result))
-                alert(this.props.rootStore.stateStore.Addresses)
+                // alert(typeof((result)))
+                JSON.parse(result).map((item,index)=>{
+                    alert(item.Name)
+                    // this.props.rootStore.rootStore.Addresses.push(JSON.parse(result))
+                })
+                // alert(this.props.rootStore.stateStore.Addresses)
               //   AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(
               //     alert('Save success')
               //   )

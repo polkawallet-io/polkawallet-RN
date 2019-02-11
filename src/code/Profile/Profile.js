@@ -14,7 +14,7 @@ let ScreenHeight = Dimensions.get("screen").height;
 const Custom_Components=[
   //Need Open
   // {image:require('../../images/Profile/Notifications.png'),text:'Notifications'},
-  // {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
+  {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
   // {image:require('../../images/Profile/Settings.png'),text:'Settings'},
   // {image:require('../../images/Profile/Support.png'),text:'Support'},
   // {image:require('../../images/Profile/About.png'),text:'About'},
