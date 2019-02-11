@@ -70,6 +70,15 @@ class stateStore{
             data: []
         }]
     };
+    //转到通讯录
+    @observable
+    transfer_address=0;
+    //选中地址
+    @observable
+    t_address='';
+    //是否是从通讯录中选出的地址
+    @observable
+    isaddresses=0;
 
     //被观察的操作
     @action

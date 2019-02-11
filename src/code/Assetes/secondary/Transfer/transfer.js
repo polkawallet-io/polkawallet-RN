@@ -38,26 +38,36 @@ import {
           this.back=this.back.bind(this)
           this.ChangeAddress=this.ChangeAddress.bind(this)
           this.ChangeValue=this.ChangeValue.bind(this)
+          this.addresses=this.addresses.bind(this)
       }  
       back(){
         this.props.navigation.navigate('Coin_details')
       } 
+      addresses(){
+        this.props.rootStore.stateStore.transfer_address=1
+        this.props.navigation.navigate('Addresses')
+      }
       Make_transfer()
       {
-        if(this.state.address==''){alert('Please enter address')}
+        if(this.state.address==''&&this.props.rootStore.stateStore.transfer_address==0){alert('Please enter address')}
         else{
-            // (async()=>{
-            //       const provider = new WsProvider(ENDPOINT);
-            //       const api = await Api.create(provider);
-            //       const accountNonce = await api.query.system.accountNonce(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-            //       this.props.rootStore.stateStore.accountNonce=accountNonce
-            // })()
             this.props.rootStore.stateStore.value=this.state.value
-            this.props.rootStore.stateStore.inaddress=this.state.address
+            this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0)?this.state.address:this.props.rootStore.stateStore.t_address
+            this.props.rootStore.stateStore.isaddresses=0
+            this.props.rootStore.stateStore.transfer_address=0
+            alert(this.props.rootStore.stateStore.inaddress)
             this.props.navigation.navigate('Make_transfer')
         }
       }
       ChangeAddress(changeAddress){
+          if(changeAddress!=''){
+            this.props.rootStore.stateStore.isaddresses=0
+          }else{
+              if(this.props.rootStore.stateStore.transfer_address==1)
+              {
+                this.props.rootStore.stateStore.isaddresses=1
+              }
+          }
           this.setState({
               address:changeAddress
           })
@@ -116,7 +126,7 @@ import {
                             </View>
                             <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
                                 <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
-                                    placeholder = {(index==3)?(this.state.value).toString():item.text2}
+                                    placeholder = {(index==0)?this.props.rootStore.stateStore.t_address:(index==3)?(this.state.value).toString():item.text2}
                                     placeholderTextColor = "#666666"
                                     underlineColorAndroid="#ffffff00"
                                     editable={index==3?false:true}
@@ -127,11 +137,13 @@ import {
                                 />
                                 {
                                     (index==0)?
-                                    <TouchableOpacity>
+                                    <TouchableOpacity
+                                      onPress={this.addresses}
+                                    >
                                          <Image
                                             style={styles.image}
-                                            //Need Open
-                                            // source={require('../../../../images/Assetes/transfer/address.png')}
+                                            // Need Open
+                                            source={require('../../../../images/Assetes/transfer/address.png')}
                                           />
                                     </TouchableOpacity>
                                     :<View/>

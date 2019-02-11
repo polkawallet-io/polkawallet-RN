@@ -11,6 +11,7 @@ import {
   RefreshControl,
   SafeAreaView,
 } from 'react-native';
+
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
 import SInfo from 'react-native-sensitive-info';

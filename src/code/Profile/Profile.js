@@ -38,6 +38,7 @@ export default class New extends Component {
     this.props.navigation.navigate('Manage_Account')
   }
   Addresses(){
+    this.props.rootStore.stateStore.transfer_address=0
     this.props.navigation.navigate('Addresses')
   }
   render() {

@@ -8,7 +8,9 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Clipboard
+  Clipboard,
+  Alert,
+  AsyncStorage,
 } from 'react-native';
 
 let ScreenWidth = Dimensions.get("screen").width;
@@ -27,11 +29,13 @@ export default class New extends Component {
         super(props)
         this.state = {
             is: false,
-            s:1
+            s:1,
+            index:this.props.navigation.state.params.index
         }
         this.back=this.back.bind(this)
         this.save=this.save.bind(this)
         this.copy=this.copy.bind(this)
+        this.delete=this.delete.bind(this)
     }
   back(){
       this.props.navigation.navigate('Addresses')
@@ -41,6 +45,40 @@ export default class New extends Component {
   copy(){
     Clipboard.setString('5sklfdsnfnskjvbckjvbcndfkdsjfkjdsklfsdhjghskdjfklsdvlznlkvnsjkcnvks');
     alert('Copy success')
+  }
+  delete(){
+      Alert.alert(
+          'Alert',
+          'Confirm deleting this address ？',
+          [
+            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+            {text: 'OK', onPress: () => {
+                // this.props.navigation.navigate('Tabbed_Navigation')
+                let addresses=[]
+                AsyncStorage.getItem('Addresses').then(
+                    (result)=>{
+                        if(result!=null)
+                        {
+                            JSON.parse(result).map((item,index)=>{
+                                if(index!=this.state.index){
+                                    addresses.push(item)
+                                }
+                            })
+                            AsyncStorage.setItem('Addresses',JSON.stringify(addresses)).then(
+                                this.props.navigation.navigate('Tabbed_Navigation')
+                            )
+                            // alert(JSON.stringify(addresses))
+                        }
+                    }
+                )
+
+            }}
+          ],
+          { cancelable: false }
+      )
+  }
+  componentWillMount(){
+    //   alert(this.state.index)
   }
   render() {
     return (
@@ -86,7 +124,7 @@ export default class New extends Component {
                                       ellipsizeMode={"middle"}
                                       numberOfLines={1}
                                     >
-                                        {item.value}
+                                        {this.props.rootStore.stateStore.Addresses[this.state.index].Address}
                                     </Text>
                                   </View>
                                   
@@ -101,13 +139,20 @@ export default class New extends Component {
                                 </View>
                             :
                                 <Text style = {[styles.textvalue]}>
-                                  {item.value}
+                                  {(index==0)?this.props.rootStore.stateStore.Addresses[this.state.index].Name:this.props.rootStore.stateStore.Addresses[this.state.index].Memo}
                                 </Text>
                         }
                     </View>
                   )
               })
           }
+          <View style={styles.delete}>
+            <TouchableOpacity
+              onPress={this.delete}
+            >
+                <Text style={{fontSize:ScreenHeight/50,color:'red'}}>Delete Address</Text>
+            </TouchableOpacity>
+          </View>
         </KeyboardAvoidingView>
       </View>
     );
@@ -123,6 +168,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#776f71'
     },
     text_title:{
+        marginLeft:ScreenWidth*0.08,
         fontSize:ScreenHeight/37,
         fontWeight:'bold',
         color:'#e6e6e6'
@@ -133,13 +179,13 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     },
     save_touch:{
-        width:ScreenHeight/33.35+ScreenWidth*0.06,
+        width:ScreenHeight/33.35+ScreenWidth*0.08,
         justifyContent:'center',
         alignItems:'center',
     },
     save_text:{
         color:'white',
-        fontSize:ScreenWidth/28,
+        fontSize:ScreenWidth/25,
     },
     view:{
         justifyContent:'center',
@@ -185,5 +231,11 @@ const styles = StyleSheet.create({
         height:ScreenWidth*0.05,
         width:ScreenWidth*0.05,
         resizeMode:'contain'
+    },
+    delete:{
+        height:ScreenHeight/8,
+        width:ScreenWidth,
+        justifyContent:'center',
+        alignItems:'center'
     }
 })
