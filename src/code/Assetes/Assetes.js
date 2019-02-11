@@ -11,6 +11,7 @@ import {
   RefreshControl,
   SafeAreaView,
 } from 'react-native';
+
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
 import SInfo from 'react-native-sensitive-info';
@@ -94,6 +95,7 @@ export default class Assetes extends Component {
     },2000)
   }
   componentWillMount(){
+    var Platform = require('Platform');
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
         if(JSON.stringify(result).length<10 )
@@ -104,16 +106,27 @@ export default class Assetes extends Component {
             isfirst:1
           })
           this.props.rootStore.stateStore.isfirst=1
-          result.map((item,index)=>{
-            item.map((item,index)=>{
-              // alert(item.key)//地址
-              // alert(JSON.parse(item.value).meta.name)//用户名
-              // 添加用户到mobx
-              this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+          if (Platform.OS === 'android') {
+            //android
+            for(var o in result){
+              this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(result[o]).meta.name,address:JSON.parse(result[o]).address})
               this.props.rootStore.stateStore.Account++
               this.props.rootStore.stateStore.Accountnum++
+            }
+          }else{
+            //ios
+            // alert(JSON.stringify(result))
+            result.map((item,index)=>{
+              item.map((item,index)=>{
+                // alert(item.key)//地址
+                // alert(JSON.parse(item.value).meta.name)//用户名
+                // 添加用户到mobx
+                this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+                this.props.rootStore.stateStore.Account++
+                this.props.rootStore.stateStore.Accountnum++
+              })
             })
-          })
+          }
         }
       }
     )

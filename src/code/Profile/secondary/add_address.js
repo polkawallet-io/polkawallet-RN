@@ -60,17 +60,19 @@ export default class New extends Component {
                     alert('Save success')
                 )
               }else{
-                  alert(result)
-                  a=JSON.parse(result)
-                  a.push({Name:this.state.name,Memo:this.state.memo,Address:this.state.address})
-                //   AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(
-                //     alert('Save success')
-                //   )
+                  if(this.state.address=='')
+                  {
+                      alert('The address cannot be empty')
+                  }else{
+                    a=JSON.parse(result)
+                    a.push({Name:this.state.name,Memo:this.state.memo,Address:this.state.address})
+                    AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(
+                      this.props.navigation.navigate('Tabbed_Navigation')
+                    )
+                  }
               }
           }
       )
-
-    // AsyncStorage.setItem('Addresses',)
   }
   render() {
     return (

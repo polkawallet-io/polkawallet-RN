@@ -3,6 +3,10 @@ package com.polkawallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.tradle.react.UdpSocketsModule;
+import com.peel.react.TcpSocketsModule;
+import li.yunqi.rnsecurestorage.RNSecureStoragePackage;
+import com.peel.react.rnos.RNOSModule;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
@@ -27,6 +31,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new UdpSocketsModule(),
+            new TcpSocketsModule(),
+            new RNSecureStoragePackage(),
+            new RNOSModule(),
             new RNCameraPackage(),
             new RandomBytesPackage(),
             new RNSensitiveInfoPackage(),

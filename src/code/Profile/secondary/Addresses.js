@@ -15,11 +15,11 @@ import Identicon from 'polkadot-identicon-react-native';
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const Addresses=[
-  {name:'chevdor',memo:'frind from riot',address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
-  {name:'chevdor',memo:'frind from riot',address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'}, 
-  {name:'chevdor',memo:'frind from riot',address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},  
-  {name:'chevdor',memo:'frind from riot',address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
-  {name:'chevdor',memo:'frind from riot',address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
+  {Name:'chevdor',Memo:'frind from riot',Address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
+  {Name:'chevdor',Memo:'frind from riot',Address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'}, 
+  {Name:'chevdor',Memo:'frind from riot',Address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},  
+  {Name:'chevdor',Memo:'frind from riot',Address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
+  {Name:'chevdor',Memo:'frind from riot',Address:'5djdkhfskjhkjsvbjksbvksjvjcknvjcxbvkbcxkbvklevfdvfd'},
 ]
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
@@ -30,7 +30,8 @@ export default class New extends Component {
         super(props)
         this.state = {
             is: false,
-            s:1
+            s:1,
+            index:0,
         }
         this.back=this.back.bind(this)
         this.add_address=this.add_address.bind(this)
@@ -44,19 +45,18 @@ export default class New extends Component {
     this.props.navigation.navigate('Add_address')
   }
   address(){
-      this.props.navigation.navigate('Address_information')
+     
   }
   componentWillMount(){
+    // AsyncStorage.setItem('Addresses','')
+    this.props.rootStore.stateStore.Addresses=[]
     AsyncStorage.getItem('Addresses').then(
         (result)=>{
             if(result!=null)
             {
-                // alert(result)
-                // this.props.rootStore.rootStore.Addresses.push(JSON.parse(result))
-                alert(this.props.rootStore.stateStore.Addresses)
-              //   AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(
-              //     alert('Save success')
-              //   )
+                JSON.parse(result).map((item,index)=>{
+                    this.props.rootStore.stateStore.Addresses.push(item)
+                })
             }
         }
     )
@@ -89,27 +89,37 @@ export default class New extends Component {
         </View>
         <ScrollView>
             {
-                Addresses.map((item,index)=>{
+                // Addresses.map((item,index)=>{
+                this.props.rootStore.stateStore.Addresses.map((item,index)=>{
                     return(
                         <TouchableOpacity style={[styles.view,{borderTopWidth:(index==0)?1:0}]} key={index}
-                          onPress={this.address}
+                          onPress={()=>{
+                              if(this.props.rootStore.stateStore.transfer_address==0){
+                                this.props.navigation.navigate('Address_information',{index:index})
+                              }else{
+                                this.props.rootStore.stateStore.t_address=item.Address
+                                this.props.rootStore.stateStore.isaddresses=1
+                                this.props.navigation.navigate('Transfer')
+                              }
+        
+                          }}
                         >
                           {/* 头像 */}
                           <Identicon
                             style={styles.image}
-                            value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                            value={item.Address}
                             size={ScreenHeight/18}
                             theme={'polkadot'}
                           />
                           {/* 信息 */}
                           <View style={styles.text}>
-                            <Text style={styles.text1}>{item.name}</Text>
-                            <Text style={styles.text2}>{item.memo}</Text>
+                            <Text style={styles.text1}>{item.Name}</Text>
+                            <Text style={styles.text2}>{item.Memo}</Text>
                             <Text style={styles.text3}
                               ellipsizeMode={"middle"}
                               numberOfLines={1}
                             >
-                              {item.address}
+                              {item.Address}
                             </Text>
                           </View>
                           {/* 查看详细信息 */}
@@ -172,8 +182,8 @@ const styles = StyleSheet.create({
         marginBottom:ScreenHeight/200
     },
     text3:{
-        width:ScreenWidth*0.75,
-        fontSize:ScreenWidth/35,
+        width:ScreenWidth*0.5,
+        fontSize:ScreenWidth/30,
         color:'black',
     },
     next:{

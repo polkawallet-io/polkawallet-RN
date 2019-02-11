@@ -52,7 +52,7 @@ import { set } from 'mobx';
           })
       }
       Cancel(){
-        // alert(this.state.accountNonce)
+        this.props.rootStore.stateStore.t_address=''
         this.props.navigation.navigate('Transfer')
       }
       componentWillMount(){
