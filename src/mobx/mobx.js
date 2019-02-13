@@ -12,6 +12,11 @@ class stateStore{
     @observable
     name = 'Zoey';
 
+    //wss
+    @observable
+    ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
+    // ENDPOINT = 'ws://107.173.250.124:9944/';
+
     // 是否是第一次登陆
     @observable
     isfirst=0
@@ -79,6 +84,34 @@ class stateStore{
     //是否是从通讯录中选出的地址
     @observable
     isaddresses=0;
+
+    //判断是从哪里扫过来的
+    @observable
+    tocamera=0;//0代表从Assets界面，1代表transfer，2代表通讯录
+    //是否是扫码得到的地址
+    @observable
+    iscamera=0;
+    //二维码扫描到的地址
+    @observable
+    QRaddress='';
+
+
+
+
+
+
+
+    //Staking
+    //validators
+    // @observable
+    // validators='';
+
+
+
+
+
+
+
 
     //被观察的操作
     @action

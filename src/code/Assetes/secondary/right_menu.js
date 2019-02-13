@@ -12,7 +12,6 @@ import {
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -29,7 +28,15 @@ export default class New extends Component {
         }
         this.Create_Account=this.Create_Account.bind(this)
         this.Switch_Account=this.Switch_Account.bind(this)
+        this.camera=this.camera.bind(this)
 
+    }
+    camera(){
+      this.props.t.setState({
+        is:false
+      })
+      this.props.p.rootStore.stateStore.tocamera=0
+      this.props.p.navigation.navigate('Camera')
     }
     Create_Account()
     {
@@ -41,7 +48,7 @@ export default class New extends Component {
     Switch_Account(){
       // Query Balance
       (async()=>{
-        const api = await Api.create(new WsProvider(ENDPOINT));
+        const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
         this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
       })()
@@ -137,18 +144,20 @@ export default class New extends Component {
                 <View style={styles.SandC}>
                   {/* 摄像头 */} 
                   {/* //Need Open */}
-                  {/* <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.45-0.5}]}>
+                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.45-0.5}]}
+                    onPress={this.camera}
+                  >
                     <Image
                       style={[{height:ScreenHeight/38,width:ScreenHeight/38,resizeMode:'contain'}]}
                       source={require('../../../images/Assetes/right_menu/Scan.png')}
                     />
                     <Text style={{marginTop:ScreenHeight/200,fontSize:ScreenWidth/25,color:'#333333'}}>Scan</Text>
-                  </TouchableOpacity> */}
-                  {/* <View style={{width:1,height:ScreenHeight/40,backgroundColor:'#A9A9A9'}}/> */}
+                  </TouchableOpacity>
+                  <View style={{width:1,height:ScreenHeight/40,backgroundColor:'#A9A9A9'}}/>
                   {/* 创建钱包 */}
                   {/* //Need Open */}
-                  {/* <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.55-0.5}]} */}
-                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57}]}
+                  <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57*0.55-0.5}]}
+                  // <TouchableOpacity style={[styles.middle,{width:ScreenWidth*0.57}]}
                     onPress={()=>{this.Create_Account()}}
                   >
                     <Image

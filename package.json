@@ -15,7 +15,6 @@
     "@babel/runtime": "^7.2.0",
     "@polkadot/api": "^0.40.11",
     "@tradle/react-native-http": "^2.0.1",
-    "ac-qrcode": "^1.0.1",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.1",
     "dns.js": "^1.0.1",

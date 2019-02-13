@@ -31,10 +31,16 @@ export default class New extends Component {
         this.save=this.save.bind(this)
         this.onChangeName=this.onChangeName.bind(this)
         this.onChangeMemo=this.onChangeMemo.bind(this)
-        this.onChangeAddress=this.onChangeAddress.bind(this)        
+        this.onChangeAddress=this.onChangeAddress.bind(this)  
+        this.camrea=this.camrea.bind(this)      
     }
   back(){
+      this.props.rootStore.stateStore.iscamera=0
       this.props.navigation.navigate('Addresses')
+  }
+  camrea(){
+    this.props.rootStore.stateStore.tocamera=2
+    this.props.navigation.navigate('Camera')
   }
   onChangeName(ChangeName){
       this.setState({
@@ -47,6 +53,9 @@ export default class New extends Component {
     })
   }
   onChangeAddress(ChangeAddress){
+    if(this.props.rootStore.stateStore.iscamera==1){
+        this.props.rootStore.stateStore.iscamera=0
+    }
     this.setState({
         address:ChangeAddress
     })
@@ -60,14 +69,15 @@ export default class New extends Component {
                     alert('Save success')
                 )
               }else{
-                  if(this.state.address=='')
+                  if(this.state.address==''&&this.props.rootStore.stateStore.iscamera==0)
                   {
                       alert('The address cannot be empty')
                   }else{
                     a=JSON.parse(result)
-                    a.push({Name:this.state.name,Memo:this.state.memo,Address:this.state.address})
-                    AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(
-                      this.props.navigation.navigate('Tabbed_Navigation')
+                    a.push({Name:this.state.name,Memo:this.state.memo,Address:(this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.QRaddress})
+                    AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(()=>{
+                      this.props.rootStore.stateStore.iscamera=0
+                      this.props.navigation.navigate('Tabbed_Navigation')}
                     )
                   }
               }
@@ -113,11 +123,14 @@ export default class New extends Component {
                             ?
                                 <View style={styles.inputview}>
                                   <TextInput style = {[styles.textInputStyle,{marginTop:0}]}  
+                                    placeholder = {(this.props.rootStore.stateStore.iscamera==1)?this.props.rootStore.stateStore.QRaddress:''}
                                     autoCorrect={false}          
                                     underlineColorAndroid="#ffffff00"
                                     onChangeText = {this.onChangeAddress}
                                   />
-                                  <TouchableOpacity>
+                                  <TouchableOpacity
+                                    onPress={this.camrea}
+                                  >
                                     <Image
                                         style={styles.inputimage}
                                         source={require('../../../images/Profile/secondary/camera.png')}
