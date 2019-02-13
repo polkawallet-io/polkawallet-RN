@@ -389,7 +389,8 @@ const styles = StyleSheet.create({
     borderColor:'grey',
     borderRadius:ScreenHeight/100,
     paddingLeft:ScreenHeight/100,
-    marginTop:ScreenHeight/70
+    marginTop:ScreenHeight/70,
+    paddingVertical: 0
   },
   NandP:{
     paddingTop:ScreenHeight/100,
