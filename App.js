@@ -17,6 +17,8 @@ import Transfer_details from './src/code/Assetes/secondary/Transfer/Transfer_det
 import Addresses from './src/code/Profile/secondary/Addresses'
 import Add_address from './src/code/Profile/secondary/add_address'
 import Address_information from './src/code/Profile/secondary/address_information'
+import Camera from './src/code/Assetes/secondary/camera'
+
 
 import {Provider} from 'mobx-react'
  //获取store实例
@@ -36,6 +38,7 @@ const Polkawallet_App =  StackNavigator({
   Addresses:{screen:Addresses,navigationOptions:{header:null}},
   Add_address:{screen:Add_address,navigationOptions:{header:null}},
   Address_information:{screen:Address_information,navigationOptions:{header:null}},
+  Camera:{screen:Camera,navigationOptions:{header:null}},
 
  })
  

@@ -16,7 +16,6 @@ import {
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -120,7 +119,7 @@ export default class Polkawallet extends Component {
       }
     }
     (async()=>{
-      const api = await Api.create(new WsProvider(ENDPOINT));
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
       balance = await api.query.balances.freeBalance(this.state.address);
       this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
     })()
@@ -181,7 +180,7 @@ export default class Polkawallet extends Component {
           <TouchableOpacity
             onPress={()=>{
               (async()=>{
-                const api = await Api.create(new WsProvider(ENDPOINT));
+                const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
                 balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
                 this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
               })()
