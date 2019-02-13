@@ -10,6 +10,7 @@ import {
   Image,
   
 } from 'react-native';
+import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import Echarts from 'native-echarts';
@@ -27,29 +28,8 @@ const MyNominstors=[
   {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',balance:'30,222,333'},
   {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsflkbdsjf',balance:'22,446,633'}
 ]
-const Vailators=[
-  {address:'5hfg3hofnvdoJhUidfjslfhdsfsdgrgdfbtnhgfhdgfd',num1:'33,333,567',num2:'34,443,333'},
-  {address:'5IHhjhfdksjfuvbuUHUlfhshUHUBFifhdslhfudsivbh',num1:'213,344,565',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvernvkvNL',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsflkbdsjf',num1:'22,446,633',num2:'34,443,333'}
-]
-const Next_up=[
-  {address:'5hfg3hofnvdoJhUidfjslfhdsfsdgrgdfhgdkfjhgjdf',num1:'33,333,567',num2:'34,443,333'},
-  {address:'5IHhjhfdksjfuvbuUHUlfhshUHUBFifhdsffgfdghfhg',num1:'213,344,565',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmyhkbdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdskvNLHjkbdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfombdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfombdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
-  {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsHjkfrrjd',num1:'22,446,633',num2:'34,443,333'}
-]
 import { observer, inject } from "mobx-react";
+import { string } from 'prop-types';
 @inject('rootStore')
 @observer
 export default class IntegralMall extends Component {
@@ -58,7 +38,12 @@ export default class IntegralMall extends Component {
       super(props)
       this.state={
         validators:[],
+        intentions:[],
+        next_up:[],
         validatorBalances:[],
+        next_upBalances:[],
+        sumnominatorsBalance:[],
+        sumnominatorsBalance2:[],
         title:1,
         titlebottomAA:1,
         titlebottomSO:1,
@@ -82,10 +67,13 @@ export default class IntegralMall extends Component {
         text: 'text'
       }
       this.validators=this.validators.bind(this)
+      this.QueryNominators=this.QueryNominators.bind(this)
   }
   validators(){
-    console.log(this.state.intentions)
-    alert(this.state.intentions)
+    alert(this.state.sumnominatorsBalance)  
+  }
+  QueryNominators(){
+    
   }
   componentWillMount(){
     (async()=>{
@@ -93,41 +81,104 @@ export default class IntegralMall extends Component {
       //查询all
       [validators,intentions] = await Promise.all([
         api.query.session.validators(),
-        api.query.staking.intentions()
+        api.query.staking.intentions(),
       ]);
       
-      for (let i = intentions.length - 1; i >= 0; i--) {
-        a = intentions[i];
-        for (let j = validators.length - 1; j >= 0; j--) {
-            b = validators[j];
-            if (a == b) {
-              intentions.splice(i, 1);
-              validators.splice(j, 1);
-                break;
-            }
+      nominators = await Promise.all(
+        validators.map(authorityId =>
+          api.query.staking.nominatorsFor(authorityId)
+        )
+      );
+      
+      //求出给validators的提名者们nominators的额度总和
+      
+      sumnominatorsBalance=[]
+      for(i=0;i<nominators.length;i++){
+        nominatorsBalance = await Promise.all(
+          nominators[i].map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        sum=0
+        for(j=0;j<nominatorsBalance.length;j++){
+          sum=sum+Number(nominatorsBalance[j])
         }
+        sumnominatorsBalance.push(sum)
+      }
+
+    // 找出等候提名者
+    _intentions=[]
+    _validators=[]
+    _next_up=[]
+    intentions.map((item,index)=>{
+      _intentions.push(String(item))
+    })
+    validators.map((item,index)=>{
+      _validators.push(String(item))
+    })
+    _intentions.filter((address) =>{
+       if(!_validators.includes(address)){
+         _next_up.push(address)
+       }
+    })
+    //找到next_up的提名者
+    nominators2 = await Promise.all(
+      _next_up.map(authorityId =>
+        api.query.staking.nominatorsFor(authorityId)
+      )
+    );
+    //求出给next_up的提名者们nominators的额度总和
+    
+    sumnominatorsBalance2=[]
+    for(i=0;i<nominators2.length;i++){
+      nominatorsBalance2 = await Promise.all(
+        nominators2[i].map(authorityId =>
+          api.query.balances.freeBalance(authorityId)
+        )
+      );
+      sum2=0
+      for(j=0;j<nominatorsBalance2.length;j++){
+        sum2=sum2+Number(nominatorsBalance2[j])
+      }
+      sumnominatorsBalance2.push(sum2)
     }
-      alert(intentions)
+      
+      
         
-      //查询提名者额度
+      
       if (validators && validators.length > 0) {
-        // Retrieve the balances for all validators
+        //查询validators额度
         validatorBalances = await Promise.all(
           validators.map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        //查询next_up额度
+        next_upBalances = await Promise.all(
+          _next_up.map(authorityId =>
             api.query.balances.freeBalance(authorityId)
           )
         );
         this.setState({
           validators: validators,
           validatorBalances: validatorBalances,
-          intentions: intentions
+          intentions: intentions,
+          next_up:_next_up,
+          next_upBalances:next_upBalances,
+          sumnominatorsBalance:sumnominatorsBalance,
+          sumnominatorsBalance2:sumnominatorsBalance2
         })
+        
+        // this.state.validators.map((item,index)=>{
+        //   if(index=0){
+        //     nominators = await api.query.staking.nominatorsFor(item)
+        //     alert(nominators)
+        //   }
+        // })
+        alert(this.state.sumnominatorsBalance)
+        
       }
-      
-      //查询等候提名者额度
-
     })()
-    
   }
   render() {
     return (
@@ -396,49 +447,65 @@ export default class IntegralMall extends Component {
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
                             onPress={this.validators}
                           >
-                                <Image
+                                {/* 头像 */}
+                                <Identicon
+                                  style={{marginLeft:ScreenWidth/20}}
+                                  value={String(item)}
+                                  size={ScreenHeight/21}
+                                  theme={'polkadot'}
+                                />
+                                {/* <Image
                                   style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
                                   source={require('../../images/Staking/accountIMG.png')}
-                                />
-                                <View style={{marginLeft:ScreenWidth/20,flex:1}}>
+                                /> */}
+                                {/* 地址 */}
+                                <View style={{marginLeft:ScreenWidth/40,flex:1}}>
                                   <Text
-                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64}}
+                                    style={{width:ScreenWidth/3.5,fontSize:ScreenHeight/47.64}}
                                     ellipsizeMode={"middle"}
                                     numberOfLines={1}
                                   >
                                     {String(item)}
                                   </Text>
                                 </View>
+                                {/* 余额 */}
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {String(this.state.validatorBalances[index])}
+                                  {((Number(this.state.validatorBalances[index])+this.state.sumnominatorsBalance[index])/1000000000000).toFixed(2)+'(+'+(this.state.sumnominatorsBalance[index]/1000000000000).toFixed(2)+')'}
                                 </Text>
                           </TouchableOpacity>
                       )
                     })
                     :
                     // Next_up
-                    Next_up.map((item,index)=>{
+                    this.state.next_up.map((item,index)=>{
                       return(
                           <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
-                                <Image
-                                  style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
-                                  source={require('../../images/Staking/accountIMG.png')}
+                                {/* 头像 */}
+                                <Identicon
+                                  style={{marginLeft:ScreenWidth/20}}
+                                  value={item}
+                                  size={ScreenHeight/21}
+                                  theme={'polkadot'}
                                 />
-                                <View style={{marginLeft:ScreenWidth/20,flex:1}}>
+                                {/* 地址 */}
+                                <View style={{marginLeft:ScreenWidth/40,flex:1}}>
                                   <Text
-                                    style={{width:ScreenWidth/4,fontSize:ScreenHeight/47.64}}
+                                    style={{width:ScreenWidth/3.5,fontSize:ScreenHeight/47.64}}
                                     ellipsizeMode={"middle"}
                                     numberOfLines={1}
                                   >
-                                    {item.address}
+                                    {/* String类型 */}
+                                    {item}
                                   </Text>
                                 </View>
+                                {/* 余额 */}
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.num1+'(+'+item.num2+')'} 
+                                  {/* {Number(this.state.next_upBalances[index])} */}
+                                  {((Number(this.state.next_upBalances[index])+this.state.sumnominatorsBalance2[index])/1000000000000).toFixed(2)+'(+'+(this.state.sumnominatorsBalance2[index]/1000000000000).toFixed(2)+')'}
                                 </Text>
                           </View>
                       )
