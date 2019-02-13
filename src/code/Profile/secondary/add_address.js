@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
         fontSize:ScreenHeight/45,
         borderRadius:ScreenHeight/150,
         paddingLeft:ScreenHeight/100,
+        paddingVertical: 0
     },
     inputview:{
         marginTop:ScreenHeight/70,

@@ -208,6 +208,7 @@ import {
         borderColor:'grey',
         borderRadius:ScreenHeight/100,
         paddingLeft:ScreenHeight/100,
+        paddingVertical: 0
     },
     image:{
         marginLeft:ScreenWidth/32,

@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     borderRadius:ScreenHeight/100,
     paddingLeft:ScreenHeight/100,
     marginTop:ScreenHeight/30,
-    
+    paddingVertical: 0
   },
   choose:{
     height:ScreenHeight/20,
