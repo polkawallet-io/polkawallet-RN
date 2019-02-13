@@ -10,6 +10,8 @@ import {
   Image,
   
 } from 'react-native';
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
 import Echarts from 'native-echarts';
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -47,11 +49,16 @@ const Next_up=[
   {address:'5DKofjgvldfjJKLHjkbdjsbgkjdsfelmfomvdjsbgkjd',num1:'30,222,333',num2:'34,443,333'},
   {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsHjkfrrjd',num1:'22,446,633',num2:'34,443,333'}
 ]
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class IntegralMall extends Component {
   constructor(props)
   {
       super(props)
       this.state={
+        validators:[],
+        validatorBalances:[],
         title:1,
         titlebottomAA:1,
         titlebottomSO:1,
@@ -74,6 +81,53 @@ export default class IntegralMall extends Component {
         },
         text: 'text'
       }
+      this.validators=this.validators.bind(this)
+  }
+  validators(){
+    console.log(this.state.intentions)
+    alert(this.state.intentions)
+  }
+  componentWillMount(){
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      //查询all
+      [validators,intentions] = await Promise.all([
+        api.query.session.validators(),
+        api.query.staking.intentions()
+      ]);
+      
+      for (let i = intentions.length - 1; i >= 0; i--) {
+        a = intentions[i];
+        for (let j = validators.length - 1; j >= 0; j--) {
+            b = validators[j];
+            if (a == b) {
+              intentions.splice(i, 1);
+              validators.splice(j, 1);
+                break;
+            }
+        }
+    }
+      alert(intentions)
+        
+      //查询提名者额度
+      if (validators && validators.length > 0) {
+        // Retrieve the balances for all validators
+        validatorBalances = await Promise.all(
+          validators.map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        this.setState({
+          validators: validators,
+          validatorBalances: validatorBalances,
+          intentions: intentions
+        })
+      }
+      
+      //查询等候提名者额度
+
+    })()
+    
   }
   render() {
     return (
@@ -277,7 +331,7 @@ export default class IntegralMall extends Component {
                 }
               </ScrollView>
               :
-              //Staking Overview
+              //***************************************   */Staking Overview     ****************************
               <ScrollView>
                 <View style={{marginTop:6,marginLeft:2,marginRight:2,height:ScreenHeight/5,borderWidth:2,borderColor:'grey',borderRadius:ScreenHeight/100}}>
                   <View style={{flexDirection:'row',height:ScreenHeight/12}}>
@@ -337,9 +391,11 @@ export default class IntegralMall extends Component {
                   {
                     (this.state.titlebottomSO==1)?
                     //Vailators
-                    Vailators.map((item,index)=>{
+                    this.state.validators.map((item,index)=>{
                       return(
-                          <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                          <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
+                            onPress={this.validators}
+                          >
                                 <Image
                                   style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
                                   source={require('../../images/Staking/accountIMG.png')}
@@ -350,15 +406,15 @@ export default class IntegralMall extends Component {
                                     ellipsizeMode={"middle"}
                                     numberOfLines={1}
                                   >
-                                    {item.address}
+                                    {String(item)}
                                   </Text>
                                 </View>
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.num1+'(+'+item.num2+')'} 
+                                  {String(this.state.validatorBalances[index])}
                                 </Text>
-                          </View>
+                          </TouchableOpacity>
                       )
                     })
                     :

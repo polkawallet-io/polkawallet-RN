@@ -20,6 +20,7 @@ const keyring = new Keyring();
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+var Platform = require('Platform');
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
@@ -111,21 +112,31 @@ export default class Manage_Account extends Component {
                       }else{                        
                         this.props.rootStore.stateStore.Account=0
                         this.props.rootStore.stateStore.Accountnum=0
-                        this.props.rootStore.stateStore.Accounts=[{account:'AliceAccount',address:'5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDtZ'}]
+                        this.props.rootStore.stateStore.Accounts=[{account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}]
                       
                         // this.props.rootStore.stateStore.isfirst=1
-                        result.map((item,index)=>{
-                          item.map((item,index)=>{
-                            // alert(item.key)//地址
-                            // alert(JSON.parse(item.value).meta.name)//用户名
-                            // 添加用户到mobx
-                            this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
-                            this.props.rootStore.stateStore.Account=1
+                        if (Platform.OS === 'android') {
+                          //android
+                          for(var o in result){
+                            this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(result[o]).meta.name,address:JSON.parse(result[o]).address})
+                            this.props.rootStore.stateStore.Account++
                             this.props.rootStore.stateStore.Accountnum++
-                            
-                            
+                          }
+                        }else{
+                          //ios
+                          result.map((item,index)=>{
+                            item.map((item,index)=>{
+                              // alert(item.key)//地址
+                              // alert(JSON.parse(item.value).meta.name)//用户名
+                              // 添加用户到mobx
+                              this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
+                              this.props.rootStore.stateStore.Account=1
+                              this.props.rootStore.stateStore.Accountnum++
+                              
+                              
+                            })
                           })
-                        })
+                        }
                         this.props.navigation.navigate('Tabbed_Navigation')
                       }
                     }

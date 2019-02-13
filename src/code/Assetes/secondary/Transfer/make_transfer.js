@@ -17,7 +17,6 @@ import {
   import Keyring from '@polkadot/keyring'
   const keyring = new Keyring();
 
-  const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
@@ -52,12 +51,12 @@ import { set } from 'mobx';
           })
       }
       Cancel(){
-        // alert(this.state.accountNonce)
+        this.props.rootStore.stateStore.t_address=''
         this.props.navigation.navigate('Transfer')
       }
       componentWillMount(){
         (async()=>{
-            const provider = new WsProvider(ENDPOINT);
+            const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
             const api = await Api.create(provider);
             const accountNonce = await api.query.system.accountNonce(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                 this.setState({
@@ -83,7 +82,7 @@ import { set } from 'mobx';
               }
               loadPair.isLocked()?'':
                (async()=>{
-                  const provider = new WsProvider(ENDPOINT);
+                  const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
                   const accountNonce = await api.query.system.accountNonce(loadPair.address());
                   // Do the transfer and track the actual status

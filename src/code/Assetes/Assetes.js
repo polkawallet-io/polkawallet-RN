@@ -19,7 +19,6 @@ import Right_menu from './secondary/right_menu'
 
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
-const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
 
 const { Keyring } = require('@polkadot/keyring');
 const { stringToU8a } = require('@polkadot/util');
@@ -84,7 +83,7 @@ export default class Assetes extends Component {
     })
     setTimeout(()=>{
       (async()=>{
-        const api = await Api.create(new WsProvider(ENDPOINT));
+        const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
         this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
       })()
@@ -137,7 +136,7 @@ export default class Assetes extends Component {
       if(this.props.rootStore.stateStore.Account!=0){
         // Query Balance
         (async()=>{
-          const api = await Api.create(new WsProvider(ENDPOINT));
+          const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
           balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
           this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
         })()

@@ -26,21 +26,20 @@ const TabRouteConfigs = {
             
         })
     },
-    // *************************Need Open**************************************
-    // B2:{
-    //     screen : Staking,
-    //     navigationOptions:()=>({
-    //         tabBarLabel:'Staking',
-    //         tabBarIcon:({b,tintColor})=>(
-    //           <Diceng
-    //             tintColor={tintColor} 
-    //             b = {b}
-    //             b1 = {require('../images/Bottom/staking_icon.png')}
-    //           />
-    //         )
+    B2:{
+        screen : Staking,
+        navigationOptions:()=>({
+            tabBarLabel:'Staking',
+            tabBarIcon:({b,tintColor})=>(
+              <Diceng
+                tintColor={tintColor} 
+                b = {b}
+                b1 = {require('../images/Bottom/staking_icon.png')}
+              />
+            )
             
-    //     })
-    // },
+        })
+    },
     // B3:{
     //     screen : Democracy,
     //     navigationOptions:()=>({
