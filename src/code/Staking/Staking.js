@@ -29,7 +29,6 @@ const MyNominstors=[
   {address:'5LJdjhsfJhjksfjLVTnkdsfbsjkbshjlgbdsflkbdsjf',balance:'22,446,633'}
 ]
 import { observer, inject } from "mobx-react";
-import { string } from 'prop-types';
 @inject('rootStore')
 @observer
 export default class IntegralMall extends Component {
@@ -37,6 +36,13 @@ export default class IntegralMall extends Component {
   {
       super(props)
       this.state={
+        validatorNum:0,
+        validatorCount:0,
+        intentionNum:0,
+        sessionProgress:0,
+        sessionLength:0,
+        eraProgress:0,
+        eraLength:0,
         validators:[],
         intentions:[],
         next_up:[],
@@ -67,21 +73,20 @@ export default class IntegralMall extends Component {
         text: 'text'
       }
       this.validators=this.validators.bind(this)
-      this.QueryNominators=this.QueryNominators.bind(this)
   }
   validators(){
-    alert(this.state.sumnominatorsBalance)  
-  }
-  QueryNominators(){
-    
+    this.props.navigation.navigate('Validator_Info')
   }
   componentWillMount(){
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
       //查询all
-      [validators,intentions] = await Promise.all([
+      [validators,intentions,validatorCount,sessionLength,eraLength] = await Promise.all([
         api.query.session.validators(),
         api.query.staking.intentions(),
+        api.query.staking.validatorCount(),
+        api.query.session.sessionLength(),
+        api.derive.session.eraLength(),
       ]);
       
       nominators = await Promise.all(
@@ -89,6 +94,7 @@ export default class IntegralMall extends Component {
           api.query.staking.nominatorsFor(authorityId)
         )
       );
+      
       
       //求出给validators的提名者们nominators的额度总和
       
@@ -160,22 +166,36 @@ export default class IntegralMall extends Component {
           )
         );
         this.setState({
+          validatorNum: validators.length,
+          intentionNum: intentions.length,
+          validatorCount: validatorCount,
+          sessionLength: sessionLength,
+          eraLength: eraLength,
           validators: validators,
           validatorBalances: validatorBalances,
           intentions: intentions,
-          next_up:_next_up,
-          next_upBalances:next_upBalances,
-          sumnominatorsBalance:sumnominatorsBalance,
-          sumnominatorsBalance2:sumnominatorsBalance2
+          next_up: _next_up,
+          next_upBalances: next_upBalances,
+          sumnominatorsBalance: sumnominatorsBalance,
+          sumnominatorsBalance2: sumnominatorsBalance2
         })
-        
+        await api.derive.session.sessionProgress((sessionProgress)=>{
+          this.setState({
+            sessionProgress: sessionProgress,
+          })
+        })
+        await api.derive.session.eraProgress((eraProgress)=>{
+          this.setState({
+            eraProgress: eraProgress,
+          })
+        })
         // this.state.validators.map((item,index)=>{
         //   if(index=0){
         //     nominators = await api.query.staking.nominatorsFor(item)
         //     alert(nominators)
         //   }
         // })
-        alert(this.state.sumnominatorsBalance)
+        // alert(this.state.sumnominatorsBalance)
         
       }
     })()
@@ -384,32 +404,33 @@ export default class IntegralMall extends Component {
               :
               //***************************************   */Staking Overview     ****************************
               <ScrollView>
-                <View style={{marginTop:6,marginLeft:2,marginRight:2,height:ScreenHeight/5,borderWidth:2,borderColor:'grey',borderRadius:ScreenHeight/100}}>
+                {/* <View style={{marginTop:6,marginLeft:2,marginRight:2,height:ScreenHeight/5,borderWidth:2,borderColor:'grey',borderRadius:ScreenHeight/100}}> */}
+                <View style={{justifyContent:'center',marginTop:6,marginLeft:2,marginRight:2,height:ScreenHeight/8,borderWidth:2,borderColor:'grey',borderRadius:ScreenHeight/100}}>
                   <View style={{flexDirection:'row',height:ScreenHeight/12}}>
                     {/* vailators */}
                     <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
                       <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>vailators</Text>
-                      <Text style={{fontSize:ScreenHeight/51.31}}>35/35</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>{this.state.validatorNum+'/'+this.state.validatorCount}</Text>
                     </View>
                     {/* intentions */}
                     <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
                       <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>intentions</Text>
-                      <Text style={{fontSize:ScreenHeight/51.31}}>35</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>{this.state.intentionNum}</Text>
                     </View>
                     {/* session */}
                     <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
                       <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>session</Text>
-                      <Text style={{fontSize:ScreenHeight/51.31}}>8/60</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>{this.state.sessionProgress+'/'+this.state.sessionLength}</Text>
                     </View>
                     {/* era */}
                     <View style={{alignItems:'center',justifyContent:'center',height:ScreenHeight/12,width:ScreenWidth/4}}>
                       <Text style={{fontSize:ScreenHeight/51.31,color:'#696969'}}>era</Text>
-                      <Text style={{fontSize:ScreenHeight/51.31}}>608/720</Text>
+                      <Text style={{fontSize:ScreenHeight/51.31}}>{this.state.eraProgress+'/'+this.state.eraLength}</Text>
                     </View>
                   </View>
-                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3,color:'#696969'}}>balance</Text>
+                  {/* <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3,color:'#696969'}}>balance</Text>
                   <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3}}>lowest vailidator 2,181,791(+1,570,443)</Text>
-                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3}}>highest intention unknown</Text>
+                  <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenHeight/51.31,height:ScreenHeight/10/3}}>highest intention unknown</Text> */}
                 </View>
                 {/* Vailators and Next_up */}
                 <View style={{padding:1,borderBottomColor:'grey',height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',borderBottomWidth:1,borderBottomColor:'black'}}>
@@ -445,7 +466,9 @@ export default class IntegralMall extends Component {
                     this.state.validators.map((item,index)=>{
                       return(
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
-                            onPress={this.validators}
+                            onPress={()=>{
+                              this.props.navigation.navigate('Validator_Info',{address:String(item)})
+                            }}
                           >
                                 {/* 头像 */}
                                 <Identicon
@@ -481,7 +504,11 @@ export default class IntegralMall extends Component {
                     // Next_up
                     this.state.next_up.map((item,index)=>{
                       return(
-                          <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>
+                          <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
+                            onPress={()=>{
+                              this.props.navigation.navigate('Validator_Info',{address:String(item)})
+                            }}
+                          >
                                 {/* 头像 */}
                                 <Identicon
                                   style={{marginLeft:ScreenWidth/20}}
@@ -507,7 +534,7 @@ export default class IntegralMall extends Component {
                                   {/* {Number(this.state.next_upBalances[index])} */}
                                   {((Number(this.state.next_upBalances[index])+this.state.sumnominatorsBalance2[index])/1000000000000).toFixed(2)+'(+'+(this.state.sumnominatorsBalance2[index]/1000000000000).toFixed(2)+')'}
                                 </Text>
-                          </View>
+                          </TouchableOpacity>
                       )
                     })
                   }

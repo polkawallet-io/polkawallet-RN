@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
         fontWeight:'400'
     },
     textInputStyle:{
+        paddingVertical: 0,
         marginTop:ScreenHeight/70,
         color:'#696969',
         marginLeft:ScreenWidth*0.06,

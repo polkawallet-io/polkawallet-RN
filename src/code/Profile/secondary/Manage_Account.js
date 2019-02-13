@@ -400,6 +400,7 @@ const styles = StyleSheet.create({
     color:'black'
   },
   textInputStyle:{
+    paddingVertical: 0,
     height:ScreenHeight/18,
     width:ScreenWidth*0.6,
     borderWidth:1,

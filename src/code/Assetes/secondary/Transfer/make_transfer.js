@@ -320,6 +320,7 @@ import { set } from 'mobx';
         fontWeight:'500'
     },
     textInputStyle:{
+        paddingVertical: 0,
         height:ScreenHeight/23,
         width:ScreenWidth*0.65,
         borderWidth:1,
