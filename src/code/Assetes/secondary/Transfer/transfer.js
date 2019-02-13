@@ -45,7 +45,11 @@ import {
         this.props.rootStore.stateStore.isaddresses=0
         this.props.rootStore.stateStore.transfer_address=0
         this.props.rootStore.stateStore.iscamera=0
-        this.props.navigation.navigate('Coin_details')
+        if(this.props.rootStore.stateStore.tocamera==0){
+            this.props.navigation.navigate('Tabbed_Navigation')
+        }else{
+            this.props.navigation.navigate('Coin_details')
+        }
       } 
       camera(){
         this.props.rootStore.stateStore.tocamera=1
@@ -88,6 +92,7 @@ import {
       }
       componentWillMount(){
         (async()=>{
+            this.props.rootStore.stateStore.tocamera=1
             const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
             const api = await Api.create(provider);
             api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
@@ -202,6 +207,7 @@ import {
         height:ScreenHeight/7,
     },
     textInputStyle:{
+        paddingVertical:0,
         height:ScreenHeight/23,
         width:ScreenWidth*0.65,
         borderWidth:1,

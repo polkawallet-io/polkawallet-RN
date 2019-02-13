@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     textInputStyle:{
+        paddingVertical: 0,
         height:ScreenHeight/10,
         width:ScreenWidth*0.75,
         borderWidth:1,

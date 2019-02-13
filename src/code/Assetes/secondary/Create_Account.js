@@ -382,6 +382,7 @@ const styles = StyleSheet.create({
     color:'#666666'
   },
   textInputStyle:{
+    paddingVertical: 0,
     height:ScreenHeight/18,
     width:ScreenWidth*0.8,
     borderWidth:1,
