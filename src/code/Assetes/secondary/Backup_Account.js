@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
         borderRadius:ScreenHeight/100,
         paddingLeft:ScreenHeight/100,
         fontSize:ScreenHeight/40,
+        paddingVertical: 0
     },
     image:{
         marginLeft:ScreenWidth*0.025,
