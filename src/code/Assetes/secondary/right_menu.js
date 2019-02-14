@@ -51,6 +51,20 @@ export default class New extends Component {
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
         this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+        this.props.rootStore.stateStore.StakingState=0
+        //查询Staking状态
+        intentions = await api.query.staking.intentions()
+        nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+        intentions.filter((address) =>{
+          if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
+            this.props.rootStore.stateStore.StakingState=1
+          }
+        })
+        if (nominating!=null&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
+        {
+          // alert(typeof(nominating))
+          this.props.rootStore.stateStore.StakingState=2
+        }
       })()
       //清除缓存
       let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'

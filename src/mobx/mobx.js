@@ -12,6 +12,11 @@ class stateStore{
     @observable
     name = 'Zoey';
 
+    //账户的Staking状态 0:false , 1:Stake , 2:Nominate
+    @observable
+    StakingState = 0;
+
+    
     //wss
     @observable
     ENDPOINT = 'wss://poc3-rpc.polkadot.io/';

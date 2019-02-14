@@ -8,7 +8,7 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  
+  Clipboard
 } from 'react-native';
 import Echarts from 'native-echarts';
 import Api from '@polkadot/api/promise';
@@ -49,12 +49,17 @@ export default class IntegralMall extends Component {
     }
     this.back=this.back.bind(this)
     this.nominate=this.nominate.bind(this)
+    this.copy=this.copy.bind(this)
   }  
   back(){
     this.props.navigation.navigate('Tabbed_Navigation')
   }  
   nominate(){
     
+  }
+  async copy(){
+    Clipboard.setString(this.state.address);
+    alert('Copy success')
   }
   componentWillMount(){
       (async()=>{
@@ -111,12 +116,16 @@ export default class IntegralMall extends Component {
                       // source={require('../../images/Staking/greysharp.png')}
                     />
                     {/* 头像 */}
-                    <Identicon
-                        style={{marginTop:ScreenHeight/40}}
-                        value={this.state.address}
-                        size={ScreenHeight/14.5}
-                        theme={'polkadot'}
-                    />
+                    <TouchableOpacity
+                      onPress={this.copy}
+                    >
+                      <Identicon
+                          style={{marginTop:ScreenHeight/40}}
+                          value={this.state.address}
+                          size={ScreenHeight/14.5}
+                          theme={'polkadot'}
+                      />
+                    </TouchableOpacity>
                     <View style={{marginRight:ScreenWidth/4,height:ScreenHeight/35,width:ScreenHeight/35}}></View>
                   </View>
                   {/* 地址 */}
@@ -182,6 +191,12 @@ export default class IntegralMall extends Component {
                 {
                       (this.state.titlebottomAA==1)?
                         //Nominators
+                        (this.state.nominators[0]==null)
+                        ?
+                            <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
+                                <Text style={{marginTop:20,color:'#696969'}}>- Not have Nominator.</Text>
+                            </View>
+                        :
                         this.state.nominators.map((item,index)=>{
                             return(
                                 <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}>

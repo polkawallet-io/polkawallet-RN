@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableOpacity,Dimensions,Image} from 'react-native';
 import {QRscanner} from 'react-native-qr-scanner';
 import { observer, inject } from "mobx-react";
 import {NavigationActions, StackActions} from "react-navigation";
-
+let ScreenWidth = Dimensions.get("screen").width;
+let ScreenHeight = Dimensions.get("screen").height;
 @inject('rootStore')
 @observer
 export default class Scanner extends Component {
@@ -13,10 +14,25 @@ export default class Scanner extends Component {
       flashMode: false,
       zoom: 0.2
     };
+    this.back=this.back.bind(this)
+  }
+  back(){
+    this.props.navigation.navigate('Tabbed_Navigation')
   }
   render() {
     return (
       <View style={styles.container}>
+        {/* 标题栏 */}
+        <View style={styles.title}>
+            <TouchableOpacity
+                onPress={this.back}
+            >
+                <Image
+                style={styles.image_title}
+                source={require('../../../images/Assetes/Create_Account/back.png')}
+                />
+            </TouchableOpacity>
+        </View>
         <QRscanner onRead={this.onRead} renderBottomView={this.bottomView} flashMode={this.state.flashMode} zoom={this.state.zoom} finderY={50}/>
       </View>
     );
@@ -24,8 +40,8 @@ export default class Scanner extends Component {
   bottomView = ()=>{
     return(
     <View style={{flex:1,flexDirection:'row',backgroundColor:'#0000004D'}}>
-      <TouchableOpacity style={{flex:1,alignItems:'center', justifyContent:'center'}} onPress={()=>this.setState({flashMode:!this.state.flashMode})}>
-        <Text style={{color:'#fff'}}>点我开启/关闭手电筒</Text>
+      <TouchableOpacity style={{flex:1,alignItems:'center'}} onPress={()=>this.setState({flashMode:!this.state.flashMode})}>
+        <Text style={{color:'#fff'}}>Click on/off the flashlight</Text>
       </TouchableOpacity>
     </View>
     );
@@ -65,5 +81,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000'
-  }
+  },
+  title:{
+    padding:ScreenHeight/50,
+    height:ScreenHeight/9,
+    flexDirection:'row',
+    alignItems:'flex-end',
+    justifyContent:'space-between',
+    },
+    image_title:{
+        height:ScreenHeight/33.35,
+        width:ScreenHeight/33.35,
+        resizeMode:'contain'
+    },
 });

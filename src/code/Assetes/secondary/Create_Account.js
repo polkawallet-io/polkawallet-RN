@@ -56,7 +56,6 @@ export default class Polkawallet extends Component {
 
   }
   componentWillMount(){
-    alert(this.state.israndom)
     let key = mnemonicGenerate()
     this.pair = keyring.addFromMnemonic(key)
     this.setState({

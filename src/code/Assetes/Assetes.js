@@ -138,6 +138,9 @@ export default class Assetes extends Component {
         (async()=>{
           const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
           balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+          fees = await api.derive.balances.fees()
+          // console.log('***************************************\n'+JSON.stringify(fees))
+          // alert(fees)
           this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
         })()
       }

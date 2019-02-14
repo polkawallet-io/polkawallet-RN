@@ -51,8 +51,7 @@ import { set } from 'mobx';
           })
       }
       Cancel(){
-        this.props.rootStore.stateStore.t_address=''
-        this.props.navigation.navigate('Transfer')
+        this.props.navigation.navigate('Tabbed_Navigation')
       }
       componentWillMount(){
         (async()=>{
@@ -84,78 +83,72 @@ import { set } from 'mobx';
                (async()=>{
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
-                  const accountNonce = await api.query.system.accountNonce(loadPair.address());
+                  await api.tx.staking.stake().signAndSend(loadPair,({ status, type }) => {
+                    //   console.warn(type)
+                        if(type === 'Finalised'){
+                            setTimeout(() => {
+                                Alert.alert(
+                                    'Alert',
+                                    'Transfer success',
+                                    [
+                                      {text: 'OK', onPress: () => {
+                                            this.setState({
+                                                isModal:false
+                                            })
+                                            this.props.navigation.navigate('Tabbed_Navigation')
+                                      }},
+                                    ],
+                                    { cancelable: false }
+                                )
+                            }, 500);
+                        }
+                        // else{
+                            // this.setState({
+                            //     isModal:false
+                            // })
+                    //         setTimeout(()=>{
+                    //             alert('Stake Failed!')
+                    //         },500)
+                    //     }
+                    // }
+
+                  })
                   // Do the transfer and track the actual status
-                  api.tx.balances
-                  .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
-                //   .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', this.props.rootStore.stateStore.value)
-                  .sign(loadPair, accountNonce)
-                  .send(({ status, type }) => {
-                    console.warn(type)
-                    if (type === 'Ready'||type==='Broadcast') {
-                       
-                    }else{
-                        if (type === 'Finalised') {
-                        this.setState({
-                            isModal:false
-                        })
-                        setTimeout(() => {
-                            Alert.alert(
-                                'Alert',
-                                'Transfer success',
-                                [
-                                  {text: 'OK', onPress: () => {
-                                        //清除缓存
-                                        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
-                                        let map = {
-                                            method:'POST'
-                                            }
-                                            let privateHeaders = {
-                                            'Content-Type':'application/json'
-                                            }
-                                            map.headers = privateHeaders;
-                                            map.follow = 20;
-                                            map.timeout = 0;
-                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
-                                            fetch(REQUEST_URL,map).then().catch()
-                                        //获取网络订单
-                                        REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
-                                        map = {
-                                            method:'POST'
-                                            }
-                                            privateHeaders = {
-                                            'Content-Type':'application/json'
-                                            }
-                                            map.headers = privateHeaders;
-                                            map.follow = 20;
-                                            map.timeout = 0;
-                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
-                                            fetch(REQUEST_URL,map).then(
-                                            (result)=>{
-                                                this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
-                                                this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
-                                            }
-                                            ).catch()
-                                      this.props.navigation.navigate('Coin_details')
-                                  }},
-                                ],
-                                { cancelable: false }
-                            )
-                        }, 500);
+                //   api.tx.balances
+                //   .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
+                //   .sign(loadPair, accountNonce)
+                //   .send(({ status, type }) => {
+                //     if (type === 'Ready') {
+                //     }
+                //     if (type === 'Finalised') {
+                //         this.setState({
+                //             isModal:false
+                //         })
+                        // setTimeout(() => {
+                        //     Alert.alert(
+                        //         'Alert',
+                        //         'Transfer success',
+                        //         [
+                        //           {text: 'OK', onPress: () => {
+                        //               this.props.navigation.navigate('Coin_details')
+                        //           }},
+                        //         ],
+                        //         { cancelable: false }
+                        //     )
+                        // }, 500);
                         
-                        // process.exit(0);
-                    // console.log('Completed at block hash', status.value.toHex());
-                    }else{
-                        this.setState({
-                            isModal:false
-                        })
-                        setTimeout(()=>{
-                            alert('Transfer Failed!')
-                        },500)
+                //         // process.exit(0);
+                //     // console.log('Completed at block hash', status.value.toHex());
+                //     }else{
+                //         this.setState({
+                //             isModal:false
+                //         })
+                //         setTimeout(()=>{
+                //             alert('Transfer Failed!')
+                //         },500)
                         
-                    }
-                }
-                  });
+                //     }
+                //   });
                })()
             }
         )
@@ -166,7 +159,7 @@ import { set } from 'mobx';
               <View style={styles.container}>
                 {/* 标题栏 */}
                 <View style={styles.title}>
-                    <Text style={styles.text_title}>Transfer DOT</Text>
+                    <Text style={styles.text_title}>Stake</Text>
                 </View>
                 <View style={styles.submit_view}>
                   <Text style={styles.title_b}>Submit Transaction</Text>
@@ -186,7 +179,7 @@ import { set } from 'mobx';
                   <View style={{height:ScreenHeight/25,flexDirection:'row',alignItems:'center',marginTop:ScreenHeight/100}}>
                     <Text style={{fontSize:ScreenWidth/25,color:'black'}}>calling </Text>
                     <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>balances.transfer</Text>
+                        <Text style={styles.grey_t}>staking.stake</Text>
                     </View>
                     <Text style={{fontSize:ScreenWidth/25,color:'black'}}> with an index of </Text>
                     <View style={styles.grey_text}>
@@ -213,7 +206,7 @@ import { set } from 'mobx';
                         >
                           <Image
                             style={styles.image}
-                            source={require('../../../../images/Assetes/transfer/eye.png')}
+                            source={require('../../../images/Assetes/transfer/eye.png')}
                           />
                         </TouchableOpacity>
                     </View>
