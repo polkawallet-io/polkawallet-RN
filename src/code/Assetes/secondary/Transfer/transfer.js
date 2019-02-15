@@ -12,6 +12,7 @@ import {
   } from 'react-native';
   import Api from '@polkadot/api/promise';
   import WsProvider from '@polkadot/rpc-provider/ws';
+  import formatBalance from '../../../../util/formatBalance'
   
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
@@ -136,7 +137,7 @@ import {
                                 <View style={{flex:1}}/>
                                 {
                                     (index==1)?
-                                    <Text style={{fontSize:ScreenWidth/30,color:'#0981d0'}}>{'Balance :'+this.state.balance}</Text>:<View/>
+                                    <Text style={{fontSize:ScreenWidth/30,color:'#0981d0'}}>{'Balance :'+formatBalance(String(this.state.balance))}</Text>:<View/>
                                 }
                             </View>
                             <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>

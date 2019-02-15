@@ -62,7 +62,7 @@ class stateStore{
 
     //balance
     @observable
-    balance=0;
+    balance='0';
     // 转账地址
     @observable
     inaddress='';

@@ -15,15 +15,16 @@ import moment from "moment/moment";
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
+import formatBalance from '../../util/formatBalance'
 import Echarts from 'native-echarts';
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-const Staking_Records=[
-  {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:35},
-  {Staking_Record:'Staking Slashed',time:'12/12/2018 09:17:31',num:1000},
-  {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:30},
-  {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:26}
-]
+// const Staking_Records=[
+//   {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:35},
+//   {Staking_Record:'Staking Slashed',time:'12/12/2018 09:17:31',num:1000},
+//   {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:30},
+//   {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:26}
+// ]
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
@@ -108,8 +109,8 @@ export default class IntegralMall extends Component {
         }
       })
       validators.filter((address) =>{
-        if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
-        // if('5H4787dXL43BaA6PvTwUTyA38JBbfC9r8QyK3ay8Nozc2Ta3'.includes(address)){
+        // if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
+        if('5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'.includes(address)){
           this.props.rootStore.stateStore.isvalidators=1
         }
       })
@@ -386,7 +387,7 @@ export default class IntegralMall extends Component {
                   </Text>
                   {/* 余额 */}
                   <Text style={{marginBottom:ScreenHeight/80,fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>
-                    {'balance  '+this.props.rootStore.stateStore.balance+' M'}
+                    {'balance  '+formatBalance(this.props.rootStore.stateStore.balance)}
                   </Text>
                   {/* transactions */}
                   {/* <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text> */}
@@ -556,7 +557,7 @@ export default class IntegralMall extends Component {
                               <Text
                                 style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                               >
-                                {Number(this.state.nominatingBalance)} 
+                                {formatBalance(this.state.nominatingBalance)} 
                               </Text>
                             </View>
                       :
@@ -590,7 +591,7 @@ export default class IntegralMall extends Component {
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {Number(this.state.mynominatorsBalance[index])} 
+                                  {formatBalance(this.state.mynominatorsBalance[index])} 
                                 </Text>
                               </View>
                             )
@@ -730,7 +731,7 @@ export default class IntegralMall extends Component {
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {this.state.validatorBalances[0]==null?0:((Number(this.state.validatorBalances[index])+this.state.sumnominatorsBalance[index])/1000000000000).toFixed(2)+'(+'+(this.state.sumnominatorsBalance[index]/1000000000000).toFixed(2)+') M'}
+                                  {this.state.validatorBalances[0]==null?0:formatBalance(String(Number(this.state.validatorBalances[index])+this.state.sumnominatorsBalance[index]))+'(+'+formatBalance(this.state.sumnominatorsBalance[index])+')'}
                                 </Text>
                           </TouchableOpacity>
                       )
@@ -797,7 +798,7 @@ export default class IntegralMall extends Component {
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {((Number(this.state.next_upBalances[index])+this.state.sumnominatorsBalance2[index])/1000000000000).toFixed(2)+'(+'+(this.state.sumnominatorsBalance2[index]/1000000000000).toFixed(2)+') M'}
+                                  {formatBalance(String(Number(this.state.next_upBalances[index])+this.state.sumnominatorsBalance2[index]))+'(+'+formatBalance(String(this.state.sumnominatorsBalance2[index]))+')'}
                                 </Text>
                           </TouchableOpacity>
                       )

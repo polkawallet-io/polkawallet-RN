@@ -15,6 +15,7 @@ import {
   } from 'react-native';
   import Echarts from 'native-echarts';
   import moment from "moment/moment";
+  import formatBalance from '../../../util/formatBalance'
   
   
   const titlebottoms=['All','Out','In']
@@ -216,7 +217,7 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
+                                {(item.tx_type=="Receive")?"+ "+formatBalance(String(item.tx_value)):"- "+formatBalance(String(item.tx_value))}
                               </Text>
                             </TouchableOpacity>
                             :(this.state.titlebottom==2&&item.tx_type=="Send")
@@ -248,7 +249,7 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
+                                {(item.tx_type=="Receive")?"+ "+formatBalance(String(item.tx_value)):"- "+formatBalance(String(item.tx_value))}
                               </Text>
                             </TouchableOpacity>
                             :(this.state.titlebottom==3&&item.tx_type=="Receive")?
@@ -280,7 +281,7 @@ import { observer, inject } from "mobx-react";
                               <Text
                                 style={styles.value}
                               >
-                                {(item.tx_type=="Receive")?"+ "+(item.tx_value/1000000).toFixed(2):"- "+(item.tx_value/1000000).toFixed(2)} M
+                                {(item.tx_type=="Receive")?"+ "+formatBalance(String(item.tx_value)):"- "+formatBalance(String(item.tx_value))}
                               </Text>
                             </TouchableOpacity>
                             :<View key={index}/>
