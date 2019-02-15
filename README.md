@@ -66,7 +66,7 @@ In order to give users a more humane and more convenient experience, as the entr
 - [x] Display page jump logic (plan: 2019.01.15 done)
 
 
-- [ ] Display page implementation (plan: 2019.01.26 done)
+- [x] Display page implementation (plan: 2019.01.26 done)
 (then have the Chinese New Year, 14 days holiday)
 - [ ] Functional & logic implementation  (plan: 2019.02. 27 done)
 - [ ] Release Beta version (plan: 2019.02.28 release)

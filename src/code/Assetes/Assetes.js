@@ -19,6 +19,7 @@ import Right_menu from './secondary/right_menu'
 
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
+import formatBalance from '../../util/formatBalance'
 
 const { Keyring } = require('@polkadot/keyring');
 const { stringToU8a } = require('@polkadot/util');
@@ -85,7 +86,7 @@ export default class Assetes extends Component {
       (async()=>{
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-        this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+        this.props.rootStore.stateStore.balance=String(Balance)
       })()
       this.setState({
         isrefresh:false
@@ -141,7 +142,7 @@ export default class Assetes extends Component {
           fees = await api.derive.balances.fees()
           // console.log('***************************************\n'+JSON.stringify(fees))
           // alert(fees)
-          this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+          this.props.rootStore.stateStore.balance=String(balance)
         })()
       }
    
@@ -334,7 +335,7 @@ export default class Assetes extends Component {
                   <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
                 </View>
                 <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{this.props.rootStore.stateStore.balance+' M'}</Text>
+                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{formatBalance(this.props.rootStore.stateStore.balance)}</Text>
                 </View>
             </View>
           </TouchableOpacity>

@@ -16,6 +16,7 @@ import {
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
+import formatBalance from '../../../util/formatBalance'
 
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -62,7 +63,7 @@ export default class Polkawallet extends Component {
       keyrandom:key,
       address:this.pair.address()
     })
-    this.props.rootStore.stateStore.balance=(0).toFixed(2)
+    this.props.rootStore.stateStore.balance='0'
     
   }
   Modify_way(){
@@ -120,7 +121,7 @@ export default class Polkawallet extends Component {
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
       balance = await api.query.balances.freeBalance(this.state.address);
-      this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+      this.props.rootStore.stateStore.balance=String(balance)
     })()
     
 
@@ -181,7 +182,7 @@ export default class Polkawallet extends Component {
               (async()=>{
                 const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
                 balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-                this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+                this.props.rootStore.stateStore.balance=String(balance)
               })()
               this.props.navigation.navigate('Tabbed_Navigation')
             }}
@@ -215,7 +216,7 @@ export default class Polkawallet extends Component {
                   {this.state.address}
                 </Text>
               </View>
-              <Text style={styles.text1}>{'balance '+this.props.rootStore.stateStore.balance}</Text>
+              <Text style={styles.text1}>{'balance '+formatBalance(this.props.rootStore.stateStore.balance)}</Text>
               {/* <Text style={[styles.text1,{marginTop:ScreenHeight/200}]}>transactions 0</Text> */}
           </View>
           {/* 密钥 */}

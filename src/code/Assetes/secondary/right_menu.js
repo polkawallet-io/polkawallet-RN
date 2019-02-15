@@ -52,7 +52,7 @@ export default class New extends Component {
         this.props.rootStore.stateStore.StakingState=0
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-        this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
+        this.props.rootStore.stateStore.balance=String(balance)
         
         //查询Staking状态
         intentions = await api.query.staking.intentions()

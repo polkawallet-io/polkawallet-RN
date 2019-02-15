@@ -14,6 +14,7 @@ import Echarts from 'native-echarts';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import Identicon from 'polkadot-identicon-react-native';
+import formatBalance from '../../../util/formatBalance'
 import moment from "moment/moment";
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -219,7 +220,7 @@ export default class IntegralMall extends Component {
                   </Text>
                   {/* 余额 */}
                   <Text style={{marginBottom:ScreenHeight/80,fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>
-                    {'balance  '+((Number(this.state.validatorBalances))/1000000000000).toFixed(2)+' M'}
+                    {'balance  '+formatBalance(String(this.state.validatorBalances))}
                   </Text>
                   {/* transactions */}
                   {/* <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text> */}
@@ -302,7 +303,7 @@ export default class IntegralMall extends Component {
                                         <Text
                                           style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                         >
-                                          {((Number(this.state.nominatorsBalance[index]))/1000000000000).toFixed(2)}
+                                          {formatBalance(String(this.state.nominatorsBalance[index]))}
                                         </Text>
                                 </View>
                             )
@@ -333,7 +334,7 @@ export default class IntegralMall extends Component {
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/41.69,color:'black'}}
                                 >
-                                  {(item.st_type=="slashed")?"- "+item.st_balance:"+ "+item.st_balance} 
+                                  {(item.st_type=="slashed")?"- "+formatBalance(String(item.st_balance)):"+ "+formatBalance(String(item.st_balance))} 
                                 </Text>
                               </View>
                             )
