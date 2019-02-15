@@ -88,9 +88,6 @@ import { observer, inject } from "mobx-react";
         
       }
       Loadmore(){
-        this.setState({
-          pageNum:this.state.pageNum+1
-        })
         let REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
         let map = {
           method:'POST'
@@ -101,9 +98,10 @@ import { observer, inject } from "mobx-react";
         map.headers = privateHeaders;
         map.follow = 20;
         map.timeout = 0;
-        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
+              this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).tx_list.hasNextPage
               JSON.parse(result._bodyInit).tx_list.list.map((item,index)=>{
               this.props.rootStore.stateStore.transactions.tx_list.list.push(item)
             })

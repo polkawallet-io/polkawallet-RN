@@ -174,11 +174,54 @@ export default class Assetes extends Component {
         map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
         fetch(REQUEST_URL,map).then(
           (result)=>{
-            this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
+            this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).tx_list.hasNextPage
             this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
           }
         ).catch()
       }, 200);
+      //获取本地账户的Staking Records
+      let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
+      let map = {
+            method:'POST'
+          }
+      let privateHeaders = {
+            'Content-Type':'application/json'
+          }
+          map.headers = privateHeaders;
+          map.follow = 20;
+          map.timeout = 0;
+          map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
+          // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"1","pageSize":"10"}';
+          fetch(REQUEST_URL,map).then(
+            (result)=>{
+              this.props.rootStore.stateStore.StakingNextPage=JSON.parse(result._bodyInit).staking_list_alexander.hasNextPage
+              this.props.rootStore.stateStore.StakingRecords=JSON.parse(result._bodyInit)
+            }
+      ).catch()
+
+      //获取本地账户staking折线图数据
+      REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+        map = {
+              method:'POST'
+            }
+        privateHeaders = {
+          'Content-Type':'application/json'
+        }
+        map.headers = privateHeaders;
+        map.follow = 20;
+        map.timeout = 0;
+        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+        // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+        fetch(REQUEST_URL,map).then(
+          (result)=>{
+            this.props.rootStore.stateStore.StakingOption.xAxis.data=[]
+            this.props.rootStore.stateStore.StakingOption.series[0].data=[]
+            JSON.parse(result._bodyInit).map((item,index)=>{
+              this.props.rootStore.stateStore.StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+              this.props.rootStore.stateStore.StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
+            })
+          }
+        ).catch()
   }
   
   render() {

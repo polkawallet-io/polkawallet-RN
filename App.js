@@ -20,6 +20,10 @@ import Address_information from './src/code/Profile/secondary/address_informatio
 import Camera from './src/code/Assetes/secondary/camera'
 import Validator_Info from './src/code/Staking/secondary/Validator_Info'
 import Stake from './src/code/Staking/secondary/stake'
+import Nominate from './src/code/Staking/secondary/nominate'
+import Unstake from './src/code/Staking/secondary/unstake'
+import Unnominate from './src/code/Staking/secondary/unnominate'
+import Preferences from './src/code/Staking/secondary/preferences'
 
 
 
@@ -44,6 +48,10 @@ const Polkawallet_App =  StackNavigator({
   Camera:{screen:Camera,navigationOptions:{header:null}},
   Validator_Info:{screen:Validator_Info,navigationOptions:{header:null}},
   Stake:{screen:Stake,navigationOptions:{header:null}},
+  Nominate:{screen:Nominate,navigationOptions:{header:null}},
+  Unstake:{screen:Unstake,navigationOptions:{header:null}},
+  Unnominate:{screen:Unnominate,navigationOptions:{header:null}},
+  Preferences:{screen:Preferences,navigationOptions:{header:null}},
 
  })
  
