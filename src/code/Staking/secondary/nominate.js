@@ -29,16 +29,17 @@ import { set } from 'mobx';
           super(props)
           this.state={
             ispwd:true,
+            address:this.props.navigation.state.params.address,
             password:'',
             isModal:false,
-            accountNonce:'',
             onlyone:0,
-            type:'pending...'
+            type:'pending...',
           }
           this.lookpwd=this.lookpwd.bind(this)
-          this.onChangepasswore=this.onChangepasswore.bind(this)
+          this.onChangepassword=this.onChangepassword.bind(this)
+          this.onChangeAddress=this.onChangeAddress.bind(this)
           this.Cancel=this.Cancel.bind(this)
-          this.Sign_and_Submit=this.Sign_and_Submit.bind(this)
+          this.Nominate=this.Nominate.bind(this)
       }   
       lookpwd()
       {
@@ -46,14 +47,18 @@ import { set } from 'mobx';
               ispwd:!this.state.ispwd
           })
       }
-      onChangepasswore(Changepasswore){
+      onChangeAddress(ChangeAddress){
           this.setState({
-              password:Changepasswore
+              address:ChangeAddress
+          })
+      }
+      onChangepassword(Changepassword){
+          this.setState({
+              password:Changepassword
           })
       }
       Cancel(){
-        this.props.rootStore.stateStore.t_address=''
-        this.props.navigation.navigate('Transfer')
+        this.props.navigation.navigate('Tabbed_Navigation')
       }
       componentWillMount(){
         (async()=>{
@@ -68,7 +73,8 @@ import { set } from 'mobx';
         
         
       }
-      Sign_and_Submit(){
+      Nominate(){
+        //   alert(this.state.address+','+this.state.password)
         this.setState({
             onlyone:1,
             isModal:true
@@ -97,81 +103,30 @@ import { set } from 'mobx';
                (async()=>{
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
-                  const accountNonce = await api.query.system.accountNonce(loadPair.address());
-                  // Do the transfer and track the actual status
-                  api.tx.balances
-                  .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
-                //   .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', this.props.rootStore.stateStore.value)
-                  .sign(loadPair, accountNonce)
-                  .send(({ status, type }) => {
+                  await api.tx.staking.nominate(this.state.address).signAndSend(loadPair,({ status, type }) => {
                       this.setState({
-                          type:type
+                        type:type
                       })
-                    console.warn(type)
-                    if (type === 'Ready'||type==='Broadcast') {
-                       
-                    }else{
-                        if (type === 'Finalised') {
-                        this.setState({
-                            isModal:false
-                        })
-                        setTimeout(() => {
-                            Alert.alert(
-                                'Alert',
-                                'Transfer success',
-                                [
-                                  {text: 'OK', onPress: () => {
-                                        //清除缓存
-                                        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
-                                        let map = {
-                                            method:'POST'
-                                            }
-                                            let privateHeaders = {
-                                            'Content-Type':'application/json'
-                                            }
-                                            map.headers = privateHeaders;
-                                            map.follow = 20;
-                                            map.timeout = 0;
-                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
-                                            fetch(REQUEST_URL,map).then().catch()
-                                        //获取网络订单
-                                        REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
-                                        map = {
-                                            method:'POST'
-                                            }
-                                            privateHeaders = {
-                                            'Content-Type':'application/json'
-                                            }
-                                            map.headers = privateHeaders;
-                                            map.follow = 20;
-                                            map.timeout = 0;
-                                            map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
-                                            fetch(REQUEST_URL,map).then(
-                                            (result)=>{
-                                                this.props.rootStore.stateStore.hasNextPage=JSON.parse(result._bodyInit).hasNextPage
-                                                this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
-                                            }
-                                            ).catch()
-                                      this.props.navigation.navigate('Coin_details')
-                                  }},
-                                ],
-                                { cancelable: false }
-                            )
-                        }, 500);
-                        
-                        // process.exit(0);
-                    // console.log('Completed at block hash', status.value.toHex());
-                    }else{
-                        this.setState({
-                            isModal:false
-                        })
-                        setTimeout(()=>{
-                            alert('Transfer Failed!')
-                        },500)
-                        
-                    }
-                }
-                  });
+                      console.warn(type)
+                        if(type === 'Finalised'){
+                            setTimeout(() => {
+                                Alert.alert(
+                                    'Alert',
+                                    'Nominate success',
+                                    [
+                                      {text: 'OK', onPress: () => {
+                                            this.props.rootStore.stateStore.StakingState=3
+                                            this.setState({
+                                                isModal:false
+                                            })
+                                            this.props.navigation.navigate('Tabbed_Navigation')
+                                      }},
+                                    ],
+                                    { cancelable: false }
+                                )
+                            }, 500);
+                        }
+                  })
                })()
             }
         )
@@ -182,33 +137,21 @@ import { set } from 'mobx';
               <View style={styles.container}>
                 {/* 标题栏 */}
                 <View style={styles.title}>
-                    <Text style={styles.text_title}>Transfer DOT</Text>
+                    <Text style={styles.text_title}>Nominate</Text>
                 </View>
-                <View style={styles.submit_view}>
-                  <Text style={styles.title_b}>Submit Transaction</Text>
+                <View style={styles.nominate_view}>
+                  <Text style={styles.title_b}>Nominate Validator</Text>
                   <Text style={{fontSize:ScreenWidth/25,color:'black',marginTop:ScreenHeight/50}}>
-                    You are about to sugn a message from 
+                    nominate the following address (validator or intention)
                   </Text>
-                  <View style={[styles.grey_text,{marginTop:ScreenHeight/100,width:ScreenWidth*0.8}]}>
-                    {/* address */}
-                    <Text 
-                      style={{fontSize:ScreenHeight/55,fontWeight:'500',width:ScreenWidth*0.76}}
-                      ellipsizeMode={"middle"}
-                      numberOfLines={1}
-                    >
-                      {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
-                    </Text>
-                  </View>
-                  <View style={{height:ScreenHeight/25,flexDirection:'row',alignItems:'center',marginTop:ScreenHeight/100}}>
-                    <Text style={{fontSize:ScreenWidth/25,color:'black'}}>calling </Text>
-                    <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>balances.transfer</Text>
-                    </View>
-                    <Text style={{fontSize:ScreenWidth/25,color:'black'}}> with an index of </Text>
-                    <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>{this.state.accountNonce}</Text>
-                    </View>
-                  </View>
+                  {/* address */}
+                  <TextInput style = {[styles.textInputStyle,{marginTop:ScreenHeight/70,fontSize:ScreenHeight/50,width:ScreenWidth*0.9,borderColor:this.props.rootStore.stateStore.tonominate==0?'#97BEC7':'grey'}]}
+                            placeholder = {this.state.address}
+                            placeholderTextColor = "#666666"
+                            underlineColorAndroid="#ffffff00"
+                            editable={this.props.rootStore.stateStore.tonominate==0?true:false}
+                            onChangeText = {this.onChangeAddress}
+                  />
                   {/* password */}
                   <View style={[styles.NandP,{marginTop:ScreenHeight/30}]}>
                     <View style={{flexDirection:'row',width:ScreenWidth*0.65}}>
@@ -221,7 +164,7 @@ import { set } from 'mobx';
                             placeholderTextColor = "#666666"
                             underlineColorAndroid="#ffffff00"
                             secureTextEntry={this.state.ispwd}
-                            onChangeText = {this.onChangepasswore}
+                            onChangeText = {this.onChangepassword}
                         />
                         <TouchableOpacity 
                           style={styles.eye}
@@ -229,13 +172,13 @@ import { set } from 'mobx';
                         >
                           <Image
                             style={styles.image}
-                            source={require('../../../../images/Assetes/transfer/eye.png')}
+                            source={require('../../../images/Assetes/transfer/eye.png')}
                           />
                         </TouchableOpacity>
                     </View>
                   </View>
 
-                  {/* Reset or Save */}
+                  {/* Cancel or nominate */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
                       <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/>
@@ -243,18 +186,18 @@ import { set } from 'mobx';
                         onPress={this.Cancel}
                         >
                         
-                          <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
+                          <Text style={styles.choessText}>
                             Cancel
                           </Text>
                       </TouchableOpacity>
                       {this.state.onlyone==0?
                         <TouchableOpacity 
                             style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
-                            onPress={this.Sign_and_Submit}
+                            onPress={this.Nominate}
                         >
                         
-                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
-                            Sign and Submit
+                            <Text style={styles.choessText}>
+                            nominate
                             </Text>
                         </TouchableOpacity>
                         :
@@ -262,13 +205,13 @@ import { set } from 'mobx';
                             style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
                         >
                         
-                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/33,color:'white'}}>
-                            Sign and Submit
+                            <Text style={styles.choessText}>
+                            nominate
                             </Text>
                         </View>
                       }
                       <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
-                        <Text style={{fontSize:ScreenHeight/70}}>
+                        <Text style={{fontSize:ScreenHeight/60}}>
                             or
                         </Text>
                       </View>
@@ -308,7 +251,7 @@ import { set } from 'mobx';
         fontWeight:'bold',
         color:'#e6e6e6'
     },
-    submit_view:{
+    nominate_view:{
         marginTop:ScreenHeight/15,
         alignSelf:'center',
         height:ScreenHeight/2,
@@ -356,6 +299,9 @@ import { set } from 'mobx';
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'#97BEC7'
+    },
+    choessText:{
+        fontWeight:'500',fontSize:ScreenWidth/28,color:'white'
     }
     
 })

@@ -48,22 +48,32 @@ export default class New extends Component {
     Switch_Account(){
       // Query Balance
       (async()=>{
+        this.props.rootStore.stateStore.isvalidators=0
+        this.props.rootStore.stateStore.StakingState=0
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
         this.props.rootStore.stateStore.balance=(balance/1000000).toFixed(2)
-        this.props.rootStore.stateStore.StakingState=0
+        
         //查询Staking状态
         intentions = await api.query.staking.intentions()
+        validators = await api.query.session.validators()
         nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
         intentions.filter((address) =>{
           if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
-            this.props.rootStore.stateStore.StakingState=1
+            this.props.rootStore.stateStore.StakingState=2
+          }
+        })
+        validators.filter((address) =>{
+          if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
+            this.props.rootStore.stateStore.isvalidators=1
           }
         })
         if (nominating!=null&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
         {
-          // alert(typeof(nominating))
-          this.props.rootStore.stateStore.StakingState=2
+          this.props.rootStore.stateStore.StakingState=3
+        }
+        if(this.props.rootStore.stateStore.StakingState!=2&&this.props.rootStore.stateStore.StakingState!=3){
+          this.props.rootStore.stateStore.StakingState=1
         }
       })()
       //清除缓存

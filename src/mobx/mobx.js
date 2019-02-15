@@ -12,9 +12,12 @@ class stateStore{
     @observable
     name = 'Zoey';
 
-    //账户的Staking状态 0:false , 1:Stake , 2:Nominate
+    //账户的Staking状态 0:Off click , 1:false , 2:Stake , 3:Nominate ,
     @observable
     StakingState = 0;
+    //账户是否在validators里面,
+    @observable
+    isvalidators = 0;
 
     
     //wss
@@ -49,6 +52,14 @@ class stateStore{
     // 当前交易信息是否是最后一页
     @observable
     hasNextPage;
+
+    // 本地账户的Staking Records
+    @observable
+    StakingRecords={};
+    // 是否是本地账户的Staking Records的最后一页
+    @observable
+    StakingNextPage;
+
     //balance
     @observable
     balance=0;
@@ -61,9 +72,28 @@ class stateStore{
     // 第几笔交易
     @observable
     accountNonce=0;
-    //折线图数据
+    //conin_details折线图数据
     @observable
     option={
+        title: {
+          show:false
+        },
+        tooltip: {},
+        legend: {
+            data: ['']
+        },
+        xAxis: {
+            data: []
+        },
+        yAxis: {},
+        series: [{
+            type: 'line',
+            data: []
+        }]
+    };
+    //staking折线图数据
+    @observable
+    StakingOption={
         title: {
           show:false
         },
@@ -90,9 +120,14 @@ class stateStore{
     @observable
     isaddresses=0;
 
+    //判断是从哪里进入的nominate
+    @observable
+    tonominate=0;//0代表从Account Actions界面，1代表Staking Overview
+
     //判断是从哪里扫过来的
     @observable
     tocamera=0;//0代表从Assets界面，1代表transfer，2代表通讯录
+    
     //是否是扫码得到的地址
     @observable
     iscamera=0;

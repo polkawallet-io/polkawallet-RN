@@ -11,6 +11,7 @@ import {
   RefreshControl,
   
 } from 'react-native';
+import moment from "moment/moment";
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
@@ -53,7 +54,8 @@ export default class IntegralMall extends Component {
         titlebottomAA:1,
         titlebottomSO:1,
         isrefresh:false,
-        option: {
+        pageNum:1,
+        StakingOption: {
           title: {
             show:false
           },
@@ -62,12 +64,12 @@ export default class IntegralMall extends Component {
               data: ['']
           },
           xAxis: {
-              data: ["12/5", "12/8", "12/11", "12/14", "12/17","12/20","12/23","12/26"]
+              data: []
           },
           yAxis: {},
           series: [{
               type: 'line',
-              data: [0, 0.02,0.03,0.06,0.04,0.06,0,0.04]
+              data: []
           }]
         },
         text: 'text'
@@ -77,10 +79,17 @@ export default class IntegralMall extends Component {
       this.stake=this.stake.bind(this)
       this.nominate=this.nominate.bind(this)
       this.Unstake=this.Unstake.bind(this)
+      this.OffClick=this.OffClick.bind(this)
+      this.Unnominate=this.Unnominate.bind(this)
+      this.Set_Prefs=this.Set_Prefs.bind(this)
+      this.Loadmore=this.Loadmore.bind(this)
   }
   //加载信息
   loding(){
     (async()=>{
+
+      
+        
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
 
       //查询all
@@ -95,8 +104,13 @@ export default class IntegralMall extends Component {
       //查询Staking状态
       intentions.filter((address) =>{
         if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
+          this.props.rootStore.stateStore.StakingState=2
+        }
+      })
+      validators.filter((address) =>{
+        if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
         // if('5H4787dXL43BaA6PvTwUTyA38JBbfC9r8QyK3ay8Nozc2Ta3'.includes(address)){
-          this.props.rootStore.stateStore.StakingState=1
+          this.props.rootStore.stateStore.isvalidators=1
         }
       })
       
@@ -137,12 +151,15 @@ export default class IntegralMall extends Component {
       nominatingBalance = await api.query.balances.freeBalance(nominating)
       if (nominating!=null&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
       {
-        this.props.rootStore.stateStore.StakingState=2
+        this.props.rootStore.stateStore.StakingState=3
       }
       this.setState({
         nominating: nominating,
         nominatingBalance: nominatingBalance,
       })
+      if(this.props.rootStore.stateStore.StakingState==0){
+        this.props.rootStore.stateStore.StakingState=1
+      }
       
       nominators = await Promise.all(
         validators.map(authorityId =>
@@ -245,6 +262,7 @@ export default class IntegralMall extends Component {
       isrefresh:true
     })
     setTimeout(()=>{
+      this.props.rootStore.stateStore.isvalidators=0
       this.props.rootStore.stateStore.StakingState=0
       this.loding()
       this.setState({
@@ -252,12 +270,48 @@ export default class IntegralMall extends Component {
       })
     },2000)
   }
+  Loadmore(){
+    
+      let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
+      let map = {
+        method:'POST'
+      }
+      let privateHeaders = {
+        'Content-Type':'application/json'
+      }
+      map.headers = privateHeaders;
+      map.follow = 20;
+      map.timeout = 0;
+      map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+      // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
+      fetch(REQUEST_URL,map).then(
+        (result)=>{
+            this.props.rootStore.stateStore.StakingNextPage=JSON.parse(result._bodyInit).staking_list_alexander.hasNextPage
+            JSON.parse(result._bodyInit).staking_list_alexander.list.map((item,index)=>{
+              this.props.rootStore.stateStore.StakingRecords.staking_list_alexander.list.push(item)
+            })
+        }
+      ).catch()
+  }
+    
   stake(){
     this.props.navigation.navigate('Stake')
   }
-  Unstake(){}
-  nominate(){}
+  Unstake(){
+    this.props.navigation.navigate('Unstake')
+  }
+  Set_Prefs(){
+    this.props.navigation.navigate('Preferences')
+  }
+  Unnominate(){
+    this.props.navigation.navigate('Unnominate')
+  }
+  nominate(){
+    this.props.rootStore.stateStore.tonominate=0
+    this.props.navigation.navigate('Nominate',{address:''})
+  }
 
+  OffClick(){}
   componentWillMount(){
     this.loding()
   }
@@ -298,14 +352,14 @@ export default class IntegralMall extends Component {
                 {/* *********************** 点线图 *********************** */}
                 <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}>
                   <Echarts 
-                    option={this.state.option}
+                    option={this.props.rootStore.stateStore.StakingOption}
                     height={ScreenHeight/3}/>                
                 </View>
                 <View style={{height:ScreenHeight*0.45,width:ScreenWidth,alignItems:'center'}}>
                   <View style={{alignItems:'center',justifyContent:'space-between',width:ScreenWidth,flexDirection:'row',height:ScreenHeight*0.4/3}}>
                     {/* 灰色尖锐 */}
                     <Image
-                      style={{tintColor:(this.props.rootStore.stateStore.StakingState==1)?'#FF4081C7':'#C0C0C0',marginLeft:ScreenWidth/4,marginBottom:ScreenHeight/29-ScreenHeight/40,height:ScreenHeight/35,width:ScreenHeight/35,resizeMode:'cover'}}
+                      style={{tintColor:(this.props.rootStore.stateStore.isvalidators==1)?'#FF4081C7':'#C0C0C0',marginLeft:ScreenWidth/4,marginBottom:ScreenHeight/29-ScreenHeight/40,height:ScreenHeight/35,width:ScreenHeight/35,resizeMode:'cover'}}
                       source={require('../../images/Staking/greysharp.png')}
                     />
                     {/* 头像 */}
@@ -336,13 +390,14 @@ export default class IntegralMall extends Component {
                   </Text>
                   {/* transactions */}
                   {/* <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text> */}
+                  
                   {/* Stake or nominate */}
                   {
-                    (this.props.rootStore.stateStore.StakingState==2)
+                    (this.props.rootStore.stateStore.StakingState==3)
                     ?
                       <View style={{flexDirection:'row',flex:1,alignItems:'center',justifyContent:'center',width:ScreenWidth}}>
                         <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081C7',height:ScreenHeight/16,width:ScreenWidth*0.5}}
-                          onPress={this.nominate}
+                          onPress={this.Unnominate}
                         >
                           <Image
                             style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
@@ -356,27 +411,27 @@ export default class IntegralMall extends Component {
                       </View>
                     :
                       <View style={{flexDirection:'row',flex:1,alignItems:'center',justifyContent:'center',width:ScreenWidth}}>
-                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==1?'#FF4081C7':'#4eacd1',height:ScreenHeight/16,width:ScreenWidth*0.4}}
-                          onPress={(this.props.rootStore.stateStore.StakingState==1)?this.Unstake:this.stake}
+                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==2?'#FF4081C7':(this.props.rootStore.stateStore.StakingState==1)?'#4eacd1':'#D3D3D3',height:ScreenHeight/16,width:ScreenWidth*0.4}}
+                          onPress={(this.props.rootStore.stateStore.StakingState==2)?this.Unstake:(this.props.rootStore.stateStore.StakingState==1)?this.stake:this.OffClick}
                         >
                           <Image
                             style={{height:ScreenHeight/30,width:ScreenHeight/30,resizeMode:'cover'}}
                             source={require('../../images/Staking/whitesharp.png')}
                           />
                           <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
-                            {this.props.rootStore.stateStore.StakingState==1?'Unstake':'Stake'}
+                            {this.props.rootStore.stateStore.StakingState==2?'Unstake':'Stake'}
                             
                           </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#4eacd1',marginLeft:ScreenWidth/100,height:ScreenHeight/16,width:ScreenWidth*0.4}}
-                          onPress={this.nominate}
+                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==0?'#D3D3D3':'#4eacd1',marginLeft:ScreenWidth/100,height:ScreenHeight/16,width:ScreenWidth*0.4}}
+                          onPress={(this.props.rootStore.stateStore.StakingState==2)?this.Set_Prefs:(this.props.rootStore.stateStore.StakingState==1)?this.nominate:this.OffClick}
                         >
                           <Image
                             style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
                             source={require('../../images/Staking/branch.png')}
                           />
                           <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
-                            {(this.props.rootStore.stateStore.StakingState==1)?'Set Prefs':'nominate'}
+                            {(this.props.rootStore.stateStore.StakingState==2)?'Set Prefs':'nominate'}
                           </Text>
                         </TouchableOpacity>
                         <View style={{borderRadius:ScreenHeight/16/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/16/7*4,width:ScreenHeight/16/7*4,alignItems:'center',justifyContent:'center'}}>
@@ -394,7 +449,6 @@ export default class IntegralMall extends Component {
                   <TouchableOpacity 
                     style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.titlebottomAA==1?'#005baf':'#ffffff00'}}
                     onPress={()=>{
-                      // alert(this.props.rootStore.stateStore.StakingState)
                       this.setState({
                         titlebottomAA:1
                       })
@@ -429,38 +483,51 @@ export default class IntegralMall extends Component {
                     </Text>
                   </TouchableOpacity>
                 </View>
+                
                 {
                     (this.state.titlebottomAA==1)?
                     // Staking Records
                     <View>
                       {
-                        Staking_Records.map((item,index)=>{
+                        this.props.rootStore.stateStore.StakingRecords.staking_list_alexander.list.map((item,index)=>{
                           return(
                             <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:(index==0)?1:0,borderBottomWidth:1,borderColor:'grey'}} key={index}>
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/21,width:ScreenHeight/21,resizeMode:'cover'}}
-                                source={(item.Staking_Record=="Staking Reward")?require('../../images/Staking/profit.png'):require('../../images/Staking/loss.png')}
+                                source={(item.st_type=="slashed")?require('../../images/Staking/loss.png'):require('../../images/Staking/profit.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
                                   style={{fontSize:ScreenHeight/47.64,color:'black'}}
                                 >
-                                  {item.Staking_Record}
+                                  {'Staking '+item.st_type}
                                 </Text>
                                 <Text
                                   style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
                                 >
-                                  {item.time}
+                                  {moment(item.st_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                 </Text>
                               </View>
                               <Text
                                 style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/41.69,color:'black'}}
                               >
-                                {(item.Staking_Record=="Staking Reward")?"+ "+item.num:"- "+item.num} 
+                                {(item.st_type=="slashed")?"- "+item.st_balance:"+ "+item.st_balance} 
                               </Text>
                             </View>
                           )
                         })
+                      }
+                      {
+                      this.props.rootStore.stateStore.StakingNextPage?
+                        <TouchableOpacity style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}
+                          onPress={this.Loadmore}
+                        >
+                          <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>To load more ~</Text>
+                        </TouchableOpacity>
+                      :
+                        <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
+                          <Text style={{color:'#A9A9A9',fontSize:ScreenHeight/52}}>~ Bottom</Text>
+                        </View>
                       }
                     </View>
                     :(this.state.titlebottomAA==2)?
@@ -531,6 +598,7 @@ export default class IntegralMall extends Component {
                         }
                       </View>
                 }
+                
               </ScrollView>
               :
               //***************************************   */Staking Overview     ****************************
@@ -608,7 +676,33 @@ export default class IntegralMall extends Component {
                       return(
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
                             onPress={()=>{
-                              this.props.navigation.navigate('Validator_Info',{address:String(item)})
+                              //获取选中账户staking折线图数据
+                              let REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+                              let map = {
+                                    method:'POST'
+                                  }
+                              let privateHeaders = {
+                                'Content-Type':'application/json'
+                              }
+                              map.headers = privateHeaders;
+                              map.follow = 20;
+                              map.timeout = 0;
+                              map.body = '{"user_address":"'+String(item)+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+                              fetch(REQUEST_URL,map).then(
+                                (result)=>{
+                                  _StakingOption=this.state.StakingOption
+                                  JSON.parse(result._bodyInit).map((item,index)=>{
+                                    _StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+                                    _StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
+                                  })
+                                  this.setState({
+                                    StakingOption:_StakingOption
+                                  })
+                                  this.props.navigation.navigate('Validator_Info',{address:String(item),StakingOption:this.state.StakingOption})
+                                }
+                              ).catch()
+
+                              
                             }}
                           >
                                 {/* 头像 */}
@@ -653,7 +747,32 @@ export default class IntegralMall extends Component {
                       return(
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
                             onPress={()=>{
-                              this.props.navigation.navigate('Validator_Info',{address:item})
+                              //获取选中账户staking折线图数据
+                              let REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+                              let map = {
+                                    method:'POST'
+                                  }
+                              let privateHeaders = {
+                                'Content-Type':'application/json'
+                              }
+                              map.headers = privateHeaders;
+                              map.follow = 20;
+                              map.timeout = 0;
+                              map.body = '{"user_address":"'+item+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+                              fetch(REQUEST_URL,map).then(
+                                (result)=>{
+                                  _StakingOption=this.state.StakingOption
+                                  JSON.parse(result._bodyInit).map((item,index)=>{
+                                    _StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+                                    _StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
+                                  })
+                                  this.setState({
+                                    StakingOption:_StakingOption
+                                  })
+                                  this.props.navigation.navigate('Validator_Info',{address:item,StakingOption:this.state.StakingOption})
+                                }
+                              ).catch()
+
                             }}
                           >
                                 {/* 头像 */}

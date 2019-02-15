@@ -29,15 +29,21 @@ import { set } from 'mobx';
           super(props)
           this.state={
             ispwd:true,
+            address:'',
             password:'',
             isModal:false,
             onlyone:0,
-            type:'pending...'
+            type:'pending...',
+            stakeIndex:0,
+            queryPref:'',
+            onChangetext1:'',
+            onChangetext2:'',
           }
           this.lookpwd=this.lookpwd.bind(this)
-          this.onChangepasswore=this.onChangepasswore.bind(this)
           this.Cancel=this.Cancel.bind(this)
-          this.Sign_and_Submit=this.Sign_and_Submit.bind(this)
+          this.Set_Prefs=this.Set_Prefs.bind(this)
+          this.onChangetext1=this.onChangetext1.bind(this)
+          this.onChangetext2=this.onChangetext2.bind(this)
       }   
       lookpwd()
       {
@@ -45,16 +51,25 @@ import { set } from 'mobx';
               ispwd:!this.state.ispwd
           })
       }
-      onChangepasswore(Changepasswore){
+      onChangetext1(onChangetext1){
           this.setState({
-              password:Changepasswore
+            onChangetext1:onChangetext1
           })
       }
+      onChangetext2(onChangetext2){
+        this.setState({
+            onChangetext2:onChangetext2
+        })
+      }
+      
       Cancel(){
         this.props.navigation.navigate('Tabbed_Navigation')
       }
-      componentWillMount(){}
-      Sign_and_Submit(){
+      
+     
+      Set_Prefs(){
+          alert(this.state.onChangetext1+','+this.state.onChangetext2)
+        /*
         this.setState({
             onlyone:1,
             isModal:true
@@ -83,19 +98,21 @@ import { set } from 'mobx';
                (async()=>{
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
-                  await api.tx.staking.stake().signAndSend(loadPair,({ status, type }) => {
-                      this.setState({
-                          type:type
-                      })
+                  nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+                  stakeIndex = intentions.indexOf((account)=>account.eq(String(nominating)))
+                  await api.tx.staking.unnominate(stakeIndex).signAndSend(loadPair,({ status, type }) => {
                       console.warn(type)
+                        this.setState({
+                            type:type
+                        })
                         if(type === 'Finalised'){
                             setTimeout(() => {
                                 Alert.alert(
                                     'Alert',
-                                    'Stake success',
+                                    'Nominate success',
                                     [
                                       {text: 'OK', onPress: () => {
-                                            this.props.rootStore.stateStore.StakingState=2
+                                            this.props.rootStore.stateStore.StakingState=1
                                             this.setState({
                                                 isModal:false
                                             })
@@ -110,64 +127,81 @@ import { set } from 'mobx';
                })()
             }
         )
+        */
       }
-      
+      componentWillMount(){
+        (async()=>{
+            const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
+            const api = await Api.create(provider);
+            intentions = await api.query.staking.intentions()
+            _intentions=[]
+            intentions.map((item,index)=>{
+              _intentions.push(String(item))
+            })
+            stakeIndex = _intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+            queryPref = await api.query.staking.validatorPreferences(stakeIndex)
+            this.setState({
+                stakeIndex:stakeIndex,
+                queryPref:JSON.stringify(queryPref)
+            })
+            alert(stakeIndex)
+        })()
+      }
       render(){
           return(
               <View style={styles.container}>
                 {/* 标题栏 */}
                 <View style={styles.title}>
-                    <Text style={styles.text_title}>Stake</Text>
+                    <Text style={styles.text_title}>Preferences</Text>
                 </View>
-                <View style={styles.submit_view}>
-                  <Text style={styles.title_b}>Submit Transaction</Text>
+                <View style={styles.nominate_view}>
+                  <Text style={styles.title_b}>Validator.Preferences</Text>
                   <Text style={{fontSize:ScreenWidth/25,color:'black',marginTop:ScreenHeight/50}}>
-                    You are about to sugn a message from 
+                    Present state:
                   </Text>
-                  <View style={[styles.grey_text,{marginTop:ScreenHeight/100,width:ScreenWidth*0.8}]}>
-                    {/* address */}
+                  <View style={[styles.grey_text,{marginTop:ScreenHeight/100,width:ScreenWidth*0.9}]}>
+                    {/* queryPref */}
                     <Text 
-                      style={{fontSize:ScreenHeight/55,fontWeight:'500',width:ScreenWidth*0.76}}
-                      ellipsizeMode={"middle"}
-                      numberOfLines={1}
+                      style={{fontSize:ScreenHeight/55,fontWeight:'500',width:ScreenWidth*0.8}}
                     >
-                      {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                      {this.state.queryPref}
                     </Text>
                   </View>
-                  <View style={{height:ScreenHeight/25,flexDirection:'row',alignItems:'center',marginTop:ScreenHeight/100}}>
-                    <Text style={{fontSize:ScreenWidth/25,color:'black'}}>calling </Text>
-                    <View style={styles.grey_text}>
-                        <Text style={styles.grey_t}>staking.stake</Text>
-                    </View>
-                    
-                  </View>
-                  {/* password */}
-                  <View style={[styles.NandP,{marginTop:ScreenHeight/30}]}>
+                  
+                  
+                  {/* unstake threshold */}
+                  <View style={[styles.NandP,{marginTop:ScreenHeight/50}]}>
                     <View style={{flexDirection:'row',width:ScreenWidth*0.65}}>
-                        <Text style={{fontSize:ScreenWidth/26,color:'#696969'}}>unlock account using password</Text>
+                        <Text style={{fontSize:ScreenWidth/26,color:'#696969'}}>unstake threshold</Text>
                         <View style={{flex:1}}/>
                     </View>
                     <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
-                        <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
-                            placeholder = ''
+                        <TextInput style = {[styles.textInputStyle,{marginTop:ScreenHeight/70,fontSize:ScreenHeight/50,width:ScreenWidth*0.9,borderColor:this.props.rootStore.stateStore.tonominate==0?'#97BEC7':'grey'}]}
+                            autoCapitalize = 'none'
+                            placeholder = {this.state.address}
                             placeholderTextColor = "#666666"
                             underlineColorAndroid="#ffffff00"
-                            secureTextEntry={this.state.ispwd}
-                            onChangeText = {this.onChangepasswore}
+                            onChangeText = {this.onChangetext1}
                         />
-                        <TouchableOpacity 
-                          style={styles.eye}
-                          onPress={this.lookpwd}
-                        >
-                          <Image
-                            style={styles.image}
-                            source={require('../../../images/Assetes/transfer/eye.png')}
-                          />
-                        </TouchableOpacity>
+                    </View>
+                  </View>
+                  {/* payment prefere */}
+                  <View style={[styles.NandP,{marginTop:ScreenHeight/50}]}>
+                    <View style={{flexDirection:'row',width:ScreenWidth*0.65}}>
+                        <Text style={{fontSize:ScreenWidth/26,color:'#696969'}}>payment prefere</Text>
+                        <View style={{flex:1}}/>
+                    </View>
+                    <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
+                        <TextInput style = {[styles.textInputStyle,{marginTop:ScreenHeight/70,fontSize:ScreenHeight/50,width:ScreenWidth*0.9,borderColor:this.props.rootStore.stateStore.tonominate==0?'#97BEC7':'grey'}]}
+                            placeholder = {this.state.address}
+                            placeholderTextColor = "#666666"
+                            underlineColorAndroid="#ffffff00"
+                            onChangeText = {this.onChangetext2}
+                        />
                     </View>
                   </View>
 
-                  {/* Reset or Save */}
+                  {/* Cancel or nominate */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
                       <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/>
@@ -175,18 +209,18 @@ import { set } from 'mobx';
                         onPress={this.Cancel}
                         >
                         
-                          <Text style={styles.choessText}>
+                          <Text style={{fontWeight:'500',fontSize:ScreenWidth/28,color:'white'}}>
                             Cancel
                           </Text>
                       </TouchableOpacity>
                       {this.state.onlyone==0?
                         <TouchableOpacity 
                             style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
-                            onPress={this.Sign_and_Submit}
+                            onPress={this.Set_Prefs}
                         >
                         
-                            <Text style={styles.choessText}>
-                              Stake
+                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/28,color:'white'}}>
+                              Set Prefs
                             </Text>
                         </TouchableOpacity>
                         :
@@ -194,8 +228,8 @@ import { set } from 'mobx';
                             style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
                         >
                         
-                            <Text style={styles.choessText}>
-                              Stake
+                            <Text style={{fontWeight:'500',fontSize:ScreenWidth/28,color:'white'}}>
+                              Set Prefs
                             </Text>
                         </View>
                       }
@@ -240,7 +274,7 @@ import { set } from 'mobx';
         fontWeight:'bold',
         color:'#e6e6e6'
     },
-    submit_view:{
+    nominate_view:{
         marginTop:ScreenHeight/15,
         alignSelf:'center',
         height:ScreenHeight/2,
@@ -257,8 +291,9 @@ import { set } from 'mobx';
         fontWeight:'500'
     },
     grey_text:{
+        padding:ScreenHeight/100,
         backgroundColor:'#F0EFEF',
-        height:ScreenHeight/25,
+        // height:ScreenHeight/25,
         justifyContent:'center',
         alignItems:'center'
     },
@@ -288,10 +323,6 @@ import { set } from 'mobx';
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'#97BEC7'
-    },
-    choessText:{
-        fontWeight:'500',fontSize:ScreenWidth/28,color:'white'
     }
-    
     
 })
