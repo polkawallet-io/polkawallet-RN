@@ -61,10 +61,8 @@ export default class IntegralMall extends Component {
     this.props.navigation.navigate('Tabbed_Navigation')
   }  
   nominate(){
-    alert(this.state.StakingOption.series[0].data)
-    // alert(typeof(this.state.StakingOption.xAxis.data[0]))
-    // this.props.rootStore.stateStore.tonominate=1
-    // this.props.navigation.navigate('Nominate',{address:this.state.address})
+    this.props.rootStore.stateStore.tonominate=1
+    this.props.navigation.navigate('Nominate',{address:this.state.address})
   }
   async copy(){
     Clipboard.setString(this.state.address);
@@ -81,8 +79,8 @@ export default class IntegralMall extends Component {
     map.headers = privateHeaders;
     map.follow = 20;
     map.timeout = 0;
-    // map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
-    map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
+    map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+    // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
     fetch(REQUEST_URL,map).then(
       (result)=>{
           this.state.StakingNextPage=JSON.parse(result._bodyInit).staking_list_alexander.hasNextPage
@@ -117,33 +115,7 @@ export default class IntegralMall extends Component {
               }
         ).catch()
 
-        // //获取选中账户staking折线图数据
-        // REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
-        // map = {
-        //       method:'POST'
-        //     }
-        // privateHeaders = {
-        //   'Content-Type':'application/json'
-        // }
-        // map.headers = privateHeaders;
-        // map.follow = 20;
-        // map.timeout = 0;
-        // // map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
-        // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
-        // fetch(REQUEST_URL,map).then(
-        //   (result)=>{
-        //     _StakingOption=this.state.StakingOption
-        //     JSON.parse(result._bodyInit).map((item,index)=>{
-        //       _StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
-        //       _StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
-        //     })
-        //     this.setState({
-        //       StakingOption:_StakingOption
-        //     })
-        //     alert(this.state.StakingOption.series[0].data)
-        //   }
-        // ).catch()
-
+       
 
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
         nominators = await api.query.staking.nominatorsFor(this.state.address)
@@ -301,7 +273,7 @@ export default class IntegralMall extends Component {
                                         </View>
                                         {/* 余额 */}
                                         <Text
-                                          style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                          style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                                         >
                                           {formatBalance(String(this.state.nominatorsBalance[index]))}
                                         </Text>

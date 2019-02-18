@@ -8,7 +8,8 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    
+    Modal,
+    Picker,
   } from 'react-native';
   import Api from '@polkadot/api/promise';
   import WsProvider from '@polkadot/rpc-provider/ws';
@@ -33,6 +34,10 @@ import {
               balance:0,
               address:'',
               value:0,
+              isModel:false,
+              way:'DOT',
+              way_change:'DOT',
+              multiple:1000000000000000,
           }
           this.Make_transfer=this.Make_transfer.bind(this)
           this.back=this.back.bind(this)
@@ -40,6 +45,7 @@ import {
           this.ChangeValue=this.ChangeValue.bind(this)
           this.addresses=this.addresses.bind(this)
           this.camera=this.camera.bind(this)
+          this.Modify_way = this.Modify_way.bind(this)
       }  
       back(){
         this.props.rootStore.stateStore.t_address=''
@@ -52,6 +58,27 @@ import {
             this.props.navigation.navigate('Coin_details')
         }
       } 
+      Modify_way(){
+        this.setState({
+            isModel:false,
+            way:this.state.way_change,
+        })
+        if(this.state.way_change == 'femto'){this.setState({multiple:1})}
+        if(this.state.way_change == 'pico'){this.setState({multiple:1000})}
+        if(this.state.way_change == 'nano'){this.setState({multiple:1000000})}
+        if(this.state.way_change == 'micro'){this.setState({multiple:1000000000})}
+        if(this.state.way_change == 'milli'){this.setState({multiple:1000000000000})}
+        if(this.state.way_change == 'DOT'){this.setState({multiple:1000000000000000})}
+        if(this.state.way_change == 'Kilo'){this.setState({multiple:1000000000000000000})}
+        if(this.state.way_change == 'Mega'){this.setState({multiple:1000000000000000000000})}
+        if(this.state.way_change == 'Giga'){this.setState({multiple:1000000000000000000000000})}
+        if(this.state.way_change == 'Tera'){this.setState({multiple:1000000000000000000000000000})}
+        if(this.state.way_change == 'Peta'){this.setState({multiple:1000000000000000000000000000000})}
+        if(this.state.way_change == 'Exa'){this.setState({multiple:1000000000000000000000000000000000})}
+        if(this.state.way_change == 'Zeta'){this.setState({multiple:1000000000000000000000000000000000000})}
+        if(this.state.way_change == 'Yotta'){this.setState({multiple:1000000000000000000000000000000000000000})}
+      }
+      
       camera(){
         this.props.rootStore.stateStore.tocamera=1
         this.props.navigation.navigate('Camera')
@@ -64,12 +91,12 @@ import {
       {
         if(this.state.address==''&&this.props.rootStore.stateStore.transfer_address==0&&this.props.rootStore.stateStore.iscamera==0){alert('Please enter address')}
         else{
-            this.props.rootStore.stateStore.value=this.state.value
+            this.props.rootStore.stateStore.value=this.state.value*this.state.multiple
             this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0)?this.state.address:this.props.rootStore.stateStore.t_address
             this.props.rootStore.stateStore.isaddresses=0
             this.props.rootStore.stateStore.transfer_address=0
             this.props.rootStore.stateStore.iscamera=0
-            // alert(this.props.rootStore.stateStore.inaddress)
+            // alert(this.props.rootStore.stateStore.value)
             this.props.navigation.navigate('Make_transfer')
         }
       }
@@ -152,17 +179,36 @@ import {
                                     }}
                                 />
                                 {
-                                    (index==0)?
-                                    <TouchableOpacity
-                                      onPress={this.addresses}
-                                    >
-                                         <Image
-                                            style={styles.image}
-                                            // Need Open
-                                            source={require('../../../../images/Assetes/transfer/address.png')}
-                                          />
-                                    </TouchableOpacity>
+                                    (index==0)
+                                    ?
+                                        <TouchableOpacity
+                                        onPress={this.addresses}
+                                        >
+                                            <Image
+                                                style={styles.image}
+                                                source={require('../../../../images/Assetes/transfer/address.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    :
+                                        (index==1)?
+                                        //  选择方式 
+                                        <TouchableOpacity style={styles.Choose_way}
+                                            onPress={()=>{
+                                                this.setState({
+                                                isModel:true
+                                                })
+                                            }}
+                                        >
+                                            <View style={[styles.middle,{flex:1}]}>
+                                                <Text style={{fontSize:ScreenWidth/25,color:'white'}}>{this.state.way}</Text>
+                                            </View>
+                                            <Image
+                                                style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
+                                                source={require('../../../../images/Assetes/Create_Account/next.png')}
+                                            />
+                                        </TouchableOpacity>
                                     :<View/>
+
                                 }
                             </View>
                           </View>
@@ -175,6 +221,49 @@ import {
                   <Text style={{color:'white',fontSize:ScreenWidth/26,fontWeight:'400'}}>Make Transfer</Text>
                 </TouchableOpacity>
                
+                <Modal
+                    animationType={'slide'}
+                    transparent={true}
+                    visible={this.state.isModel}
+                >
+                    <View style={{flex:1}}/>
+                    <View style={styles.chooses}>
+                        <TouchableOpacity
+                          onPress={()=>{
+                            this.setState({
+                            isModel:false,
+                          })
+                        }}
+                        > 
+                          <Text style={styles.choose_Text}>cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={this.Modify_way}
+                        > 
+                          <Text style={styles.choose_Text}>confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Picker
+                        style={{width:ScreenWidth,backgroundColor:'#C0C0C0'}}
+                        selectedValue={this.state.way_change}
+                        onValueChange={(value) => this.setState({way_change: value})}
+                    >
+                        <Picker.Item label="femto" value="femto" />
+                        <Picker.Item label="pico" value="pico" />
+                        <Picker.Item label="nano" value="nano" />
+                        <Picker.Item label="micro" value="micro" />
+                        <Picker.Item label="milli" value="milli" />
+                        <Picker.Item label="DOT" value="DOT" />
+                        <Picker.Item label="Kilo" value="Kilo" />
+                        <Picker.Item label="Mega" value="Mega" />
+                        <Picker.Item label="Giga" value="Giga" />
+                        <Picker.Item label="Tera" value="Tera" />
+                        <Picker.Item label="Peta" value="Peta" />
+                        <Picker.Item label="Exa" value="Exa" />
+                        <Picker.Item label="Zeta" value="Zeta" />
+                        <Picker.Item label="Yotta" value="Yotta" />
+                    </Picker>
+                </Modal>
               </View>
           )
       }
@@ -232,5 +321,34 @@ import {
         backgroundColor:'#4dabd0',
         justifyContent:'center',
         alignItems:'center'
+    },
+    Choose_way:{
+        alignItems:'center',
+        marginLeft:ScreenWidth/70,
+        width:ScreenWidth*0.25,
+        height:ScreenHeight/23,
+        borderWidth:1,
+        borderRadius:ScreenHeight/200,
+        borderColor:'#4dabd0',
+        flexDirection:'row',
+        backgroundColor:'#4dabd0'
+    },
+    middle:{
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    chooses:{
+        paddingLeft:ScreenWidth/20,
+        paddingRight:ScreenWidth/20,
+        alignItems:'center',
+        justifyContent:'space-between',
+        flexDirection:'row',
+        height:ScreenHeight/18,
+        backgroundColor:'#DCDCDC'
+    },
+    choose_Text:{
+        fontWeight:'500',
+        fontSize:ScreenHeight/50,
+        color:'#4169E1'
     }
 })

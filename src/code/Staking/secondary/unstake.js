@@ -63,7 +63,6 @@ import { set } from 'mobx';
       componentWillMount(){
       }
       Nominate(){
-        //   alert(this.state.address+','+this.state.password)
         this.setState({
             onlyone:1,
             isModal:true
@@ -93,12 +92,7 @@ import { set } from 'mobx';
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
                   intentions = await api.query.staking.intentions()
-                  _intentions=[]
-                  intentions.map((item,index)=>{
-                  _intentions.push(String(item))
-                  })
-                  stakeIndex = _intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-                  console.warn(stakeIndex)
+                  stakeIndex = intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                   await api.tx.staking.unstake(stakeIndex).signAndSend(loadPair,({ status, type }) => {
                       this.setState({
                           type:type

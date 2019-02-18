@@ -86,7 +86,9 @@ export default class Manage_Account extends Component {
   }
   async Copy(){
     Clipboard.setString(this.state.msg);
+    console.log('***********************************************'+this.state.msg)
     alert('Copy success')
+    
   }
   delete_account(){
     Alert.alert(

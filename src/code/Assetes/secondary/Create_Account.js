@@ -24,7 +24,7 @@ import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a,rand
 
 import { hexToU8a, isHex, stringToU8a, u8aToHex }  from '@polkadot/util'
 import { type } from 'os';
-// import Keyring from '@polkadot/keyring'
+
 const keyring = new Keyring();
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -46,7 +46,7 @@ export default class Polkawallet extends Component {
       key:'',
       name:'',
       password:'',
-      address:'xxxxxxxxxxxxxxxxxxxxxxxx'
+      address:'xxxxxxxxxxxxxxxxxxxxxxxx',
     }
     this.Save_Account=this.Save_Account.bind(this)
     this.onChangekey=this.onChangekey.bind(this)
@@ -60,7 +60,7 @@ export default class Polkawallet extends Component {
     let key = mnemonicGenerate()
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
-      keyrandom:key,
+      key:key,
       address:this.pair.address()
     })
     this.props.rootStore.stateStore.balance='0'
@@ -74,14 +74,12 @@ export default class Polkawallet extends Component {
     let key = this.state.way_change=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
-      keyrandom:key,
+      key:key,
       address:this.pair.address()
     })
   }
+  
   onChangekey(Changekey){
-    this.setState({
-      israndom:0
-    })
     if(this.state.way=='Mnemonic')
     {
       // alert('1')
@@ -141,8 +139,7 @@ export default class Polkawallet extends Component {
     let key = this.state.way=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
-      israndom:1,
-      keyrandom:key,
+      key:key,
       address:this.pair.address()
     })
   }
@@ -162,7 +159,7 @@ export default class Polkawallet extends Component {
             this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
             this.props.rootStore.stateStore.Accountnum++
             this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
-            this.props.navigation.navigate('Backup_Account',{key:this.state.israndom==0?this.state.key:this.state.keyrandom})
+            this.props.navigation.navigate('Backup_Account',{key:this.state.key})
           }
           else{
             alert('The address already exists!')
@@ -241,7 +238,9 @@ export default class Polkawallet extends Component {
               </TouchableOpacity>
             </View>
             <TextInput style = {[styles.textInputStyle,{height:ScreenHeight/10,fontSize:ScreenHeight/40}]}
-                placeholder = {this.state.keyrandom}
+                // placeholder = {this.state.keyrandom}
+                autoCorrect = {false}
+                value = {this.state.key}
                 placeholderTextColor = "black"
                 underlineColorAndroid="#ffffff00"
                 multiline={true}
@@ -255,6 +254,7 @@ export default class Polkawallet extends Component {
             <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
                 placeholder = "New Keypair"
                 placeholderTextColor = "#666666"
+                autoCorrect = {false}
                 underlineColorAndroid="#ffffff00"
                 onChangeText = {this.onChangename}
             />
@@ -266,6 +266,7 @@ export default class Polkawallet extends Component {
                 placeholder = "Please enter your password"
                 placeholderTextColor = "#666666"
                 underlineColorAndroid="#ffffff00"
+                autoCorrect = {false}
                 secureTextEntry={true}
                 onChangeText = {this.onChangepassword}
             />

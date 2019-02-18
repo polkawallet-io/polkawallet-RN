@@ -283,6 +283,7 @@ import { set } from 'mobx';
         resizeMode:'contain',
     },
     eye:{
+        borderRadius:ScreenHeight/200,
         height:ScreenHeight/23,
         width:ScreenHeight/23,
         justifyContent:'center',
