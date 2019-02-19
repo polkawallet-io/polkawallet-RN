@@ -2,9 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-// import BN from 'bn.js';
+import BN from 'bn.js';
 
-import decimalFormat from './formatDecimal';
+import formatDecimal from './formatDecimal';
 
 type SiDef = {
   power: number,
@@ -13,11 +13,12 @@ type SiDef = {
 };
 
 interface BalanceFormatter {
-  (input: string, withSi?: boolean, decimals?: number): string;
+  (input?: number | string | BN, withSi?: boolean, decimals?: number): string;
   findSi (type: string): SiDef;
   getDefaultDecimals (): number;
   getOptions (decimals?: number): Array<SiDef>;
   setDefaultDecimals (decimals: number): void;
+  setDefaultUnits (unit: string): void;
 }
 
 const SI: Array<SiDef> = [
@@ -29,7 +30,7 @@ const SI: Array<SiDef> = [
   { power: -9, value: 'n', text: 'nano' },
   { power: -6, value: 'µ', text: 'micro' },
   { power: -3, value: 'm', text: 'milli' },
-  { power: 0, value: '-', text: '----' }, // position 8
+  { power: 0, value: '-', text: 'Unit' }, // position 8
   { power: 3, value: 'k', text: 'Kilo' },
   { power: 6, value: 'M', text: 'Mega' },
   { power: 9, value: 'G', text: 'Giga' },
@@ -45,11 +46,11 @@ const SI_MID = 8;
 let defaultDecimals = 0;
 
 export function calcSi (text: string, decimals: number = defaultDecimals): SiDef {
-  return SI[(SI_MID - 1) + Math.ceil((text.length - decimals) / 3)];
+  return SI[(SI_MID - 1) + Math.ceil((text.length - decimals) / 3)] || SI[SI.length - 1];
 }
 
 // Formats a string/number with <prefix>.<postfix><type> notation
-function _balanceFormat (input: string , withSi: boolean = true, decimals: number = defaultDecimals): string {
+function _formatBalance (input?: number | string | BN, withSi: boolean = true, decimals: number = defaultDecimals): string {
   const text = (input || '').toString();
 
   if (text.length === 0 || text === '0') {
@@ -63,23 +64,30 @@ function _balanceFormat (input: string , withSi: boolean = true, decimals: numbe
   const mid = text.length - (decimals + si.power);
   const prefix = text.substr(0, mid);
   const postfix = `${text.substr(mid)}000`.substr(0, 3);
+  const units = withSi
+    ? (
+      si.value === '-'
+        ? si.text
+        : `${si.value}${SI[SI_MID].text}`
+    )
+    : '';
 
-  return `${decimalFormat(prefix || '0')}.${postfix}${withSi ? (si.value === '-' ? '' : si.value) : ''}`;
+  return `${formatDecimal(prefix || '0')}.${postfix} ${units}`;
 }
 
-const balanceFormat = _balanceFormat as BalanceFormatter;
+const formatBalance = _formatBalance as BalanceFormatter;
 
 // Given a SI type (e.g. k, m, Y) find the SI definition
-balanceFormat.findSi = (type: string): SiDef => {
+formatBalance.findSi = (type: string): SiDef => {
   return SI.find(({ value }) => value === type) || SI[SI_MID];
 };
 
-balanceFormat.getDefaultDecimals = (): number => {
+formatBalance.getDefaultDecimals = (): number => {
   return defaultDecimals;
 };
 
 // get allowable options to display in a dropdown
-balanceFormat.getOptions = (decimals: number = defaultDecimals): Array<SiDef> => {
+formatBalance.getOptions = (decimals: number = defaultDecimals): Array<SiDef> => {
   return SI.filter(({ power }) =>
     power < 0
       ? (decimals + power) >= 0
@@ -88,8 +96,13 @@ balanceFormat.getOptions = (decimals: number = defaultDecimals): Array<SiDef> =>
 };
 
 // Sets the default decimals to use for formatting (chain-wide)
-balanceFormat.setDefaultDecimals = (decimals: number = 0): void => {
+formatBalance.setDefaultDecimals = (decimals: number = 0): void => {
   defaultDecimals = decimals;
 };
 
-export default balanceFormat;
+// Sets the default decimals to use for formatting (chain-wide)
+formatBalance.setDefaultUnits = (unit: string = 'Unit'): void => {
+  SI[SI_MID].text = unit;
+};
+
+export default formatBalance;

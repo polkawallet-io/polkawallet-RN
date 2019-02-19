@@ -22,8 +22,9 @@ class stateStore{
     
     //wss
     @observable
-    ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
+    // ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
     // ENDPOINT = 'ws://107.173.250.124:9944/';
+    ENDPOINT = 'ws://127.0.0.1:9944/';
 
     // 是否是第一次登陆
     @observable

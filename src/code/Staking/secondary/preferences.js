@@ -34,16 +34,16 @@ import { set } from 'mobx';
             isModal:false,
             onlyone:0,
             type:'pending...',
-            stakeIndex:0,
             queryPref:'',
-            onChangetext1:'',
-            onChangetext2:'',
+            unstakeThreshold:0,
+            validatorPayment:0,
           }
           this.lookpwd=this.lookpwd.bind(this)
           this.Cancel=this.Cancel.bind(this)
           this.Set_Prefs=this.Set_Prefs.bind(this)
           this.onChangetext1=this.onChangetext1.bind(this)
           this.onChangetext2=this.onChangetext2.bind(this)
+          this.onChangepassword=this.onChangepassword.bind(this)
       }   
       lookpwd()
       {
@@ -51,14 +51,19 @@ import { set } from 'mobx';
               ispwd:!this.state.ispwd
           })
       }
-      onChangetext1(onChangetext1){
+      onChangepassword(Changepassword){
+        this.setState({
+            password:Changepassword
+        })
+      }
+      onChangetext1(onChangetext){
           this.setState({
-            onChangetext1:onChangetext1
+            unstakeThreshold:Number(onChangetext)
           })
       }
-      onChangetext2(onChangetext2){
+      onChangetext2(onChangetext){
         this.setState({
-            onChangetext2:onChangetext2
+            validatorPayment:Number(onChangetext)
         })
       }
       
@@ -68,8 +73,8 @@ import { set } from 'mobx';
       
      
       Set_Prefs(){
-          alert(this.state.onChangetext1+','+this.state.onChangetext2)
-        /*
+          registerPreferences = {"unstakeThreshold":this.state.unstakeThreshold,"validatorPayment":this.state.validatorPayment};
+        //   alert(typeof(this.state.unstakeThreshold)+','+this.state.validatorPayment)
         this.setState({
             onlyone:1,
             isModal:true
@@ -98,24 +103,25 @@ import { set } from 'mobx';
                (async()=>{
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
-                  nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-                  stakeIndex = intentions.indexOf((account)=>account.eq(String(nominating)))
-                  await api.tx.staking.unnominate(stakeIndex).signAndSend(loadPair,({ status, type }) => {
+                  intentions = await api.query.staking.intentions()
+                  stakeIndex = intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+                  await api.tx.staking.registerPreferences(stakeIndex,registerPreferences).signAndSend(loadPair,({ status, type }) => {
                       console.warn(type)
                         this.setState({
                             type:type
                         })
                         if(type === 'Finalised'){
+                            this.setState({
+                                isModal:false
+                            })
                             setTimeout(() => {
                                 Alert.alert(
                                     'Alert',
-                                    'Nominate success',
+                                    'Set Prefs success',
                                     [
                                       {text: 'OK', onPress: () => {
-                                            this.props.rootStore.stateStore.StakingState=1
-                                            this.setState({
-                                                isModal:false
-                                            })
+                                            this.props.rootStore.stateStore.StakingState=0
+                                            
                                             this.props.navigation.navigate('Tabbed_Navigation')
                                       }},
                                     ],
@@ -127,24 +133,15 @@ import { set } from 'mobx';
                })()
             }
         )
-        */
       }
       componentWillMount(){
         (async()=>{
             const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
             const api = await Api.create(provider);
-            intentions = await api.query.staking.intentions()
-            _intentions=[]
-            intentions.map((item,index)=>{
-              _intentions.push(String(item))
-            })
-            stakeIndex = _intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-            queryPref = await api.query.staking.validatorPreferences(stakeIndex)
+            queryPref = await api.query.staking.validatorPreferences(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
             this.setState({
-                stakeIndex:stakeIndex,
                 queryPref:JSON.stringify(queryPref)
             })
-            alert(stakeIndex)
         })()
       }
       render(){
@@ -198,6 +195,31 @@ import { set } from 'mobx';
                             underlineColorAndroid="#ffffff00"
                             onChangeText = {this.onChangetext2}
                         />
+                    </View>
+                  </View>
+                  {/* password */}
+                  <View style={[styles.NandP,{marginTop:ScreenHeight/30}]}>
+                    <View style={{flexDirection:'row',width:ScreenWidth*0.65}}>
+                        <Text style={{fontSize:ScreenWidth/26,color:'#696969'}}>unlock account using password</Text>
+                        <View style={{flex:1}}/>
+                    </View>
+                    <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
+                        <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
+                            placeholder = ''
+                            placeholderTextColor = "#666666"
+                            underlineColorAndroid="#ffffff00"
+                            secureTextEntry={this.state.ispwd}
+                            onChangeText = {this.onChangepassword}
+                        />
+                        <TouchableOpacity 
+                          style={styles.eye}
+                          onPress={this.lookpwd}
+                        >
+                          <Image
+                            style={styles.image}
+                            source={require('../../../images/Assetes/transfer/eye.png')}
+                          />
+                        </TouchableOpacity>
                     </View>
                   </View>
 
@@ -277,7 +299,7 @@ import { set } from 'mobx';
     nominate_view:{
         marginTop:ScreenHeight/15,
         alignSelf:'center',
-        height:ScreenHeight/2,
+        height:ScreenHeight/1.5,
         borderWidth:1,
         width:ScreenWidth*0.98,
         borderRadius:ScreenHeight/100,

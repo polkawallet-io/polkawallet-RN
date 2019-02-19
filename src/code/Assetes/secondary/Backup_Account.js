@@ -76,11 +76,11 @@ export default class Polkawallet extends Component{
                     <TouchableOpacity style={[styles.chooseView,{backgroundColor:'#696969'}]}
                        onPress={this.Cancel}
                     >
-                      <Text style={styles.chooseText}>
+                      <Text style={[styles.chooseText,{marginLeft:0}]}>
                         Cancel
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.chooseView,{backgroundColor:'#FF4081',marginLeft:ScreenWidth/100}]}
+                    <TouchableOpacity style={[styles.chooseView,{backgroundColor:'#FF4081',marginLeft:ScreenWidth/80}]}
                       onPress={this.Continue}
                     >
                       <Text style={styles.chooseText}>
@@ -158,8 +158,9 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     },
     chooseText:{
-        fontWeight:'400',
-        fontSize:ScreenHeight/50,
+        marginLeft:ScreenWidth/80,
+        fontWeight:'600',
+        fontSize:ScreenWidth/30,
         color:'white'
     },
     chooseView:{

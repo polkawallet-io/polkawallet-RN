@@ -9,7 +9,7 @@ import {
   ScrollView,
   Image,
   RefreshControl,
-  
+  SafeAreaView,
 } from 'react-native';
 import moment from "moment/moment";
 import Identicon from 'polkadot-identicon-react-native';
@@ -49,6 +49,7 @@ export default class IntegralMall extends Component {
         next_up:[],
         validatorBalances:[],
         next_upBalances:[],
+        sumnominatingBalance:0,
         sumnominatorsBalance:[],
         sumnominatorsBalance2:[],
         title:1,
@@ -88,29 +89,36 @@ export default class IntegralMall extends Component {
   //加载信息
   loding(){
     (async()=>{
-
-      
-        
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
 
       //查询all
-      [validators,intentions,validatorCount,sessionLength,eraLength] = await Promise.all([
-        api.query.session.validators(),
-        api.query.staking.intentions(),
+      [validatorCount,sessionLength,eraLength] = await Promise.all([
         api.query.staking.validatorCount(),
         api.query.session.sessionLength(),
         api.derive.session.eraLength(),
       ]);
+      await api.query.session.validators((validators)=>{
+        this.setState({
+          validators: validators,
+          validatorNum: validators.length
+        })
+      })
+      await api.query.staking.intentions((intentions)=>{
+        this.setState({
+          intentions: intentions,
+          intentionNum: intentions.length
+        })
+      })
+      
 
       //查询Staking状态
-      intentions.filter((address) =>{
+      this.state.intentions.filter((address) =>{
         if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
           this.props.rootStore.stateStore.StakingState=2
         }
       })
-      validators.filter((address) =>{
-        // if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
-        if('5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'.includes(address)){
+      this.state.validators.filter((address) =>{
+        if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
           this.props.rootStore.stateStore.isvalidators=1
         }
       })
@@ -127,9 +135,6 @@ export default class IntegralMall extends Component {
         })
       })
       this.setState({
-        validators: validators,
-        validatorNum: validators.length,
-        intentionNum: intentions.length,
         validatorCount: validatorCount,
         sessionLength: sessionLength,
         eraLength: eraLength,
@@ -160,17 +165,28 @@ export default class IntegralMall extends Component {
       })
       if(this.props.rootStore.stateStore.StakingState==0){
         this.props.rootStore.stateStore.StakingState=1
+      }      
+      //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
+      nominatingNominators = await api.query.staking.nominatorsFor(nominating)
+      nominatingBalances = await Promise.all(
+        nominatingNominators.map(authorityId =>
+          api.query.balances.freeBalance(authorityId)
+        )
+      );
+      sumnominatingBalance = 0
+      for(i=0;i<nominatingBalances.length;i++){
+        sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
       }
       
+      
+
+      //求出给validators的提名者们
       nominators = await Promise.all(
-        validators.map(authorityId =>
+        this.state.validators.map(authorityId =>
           api.query.staking.nominatorsFor(authorityId)
         )
       );
-      
-      
       //求出给validators的提名者们nominators的额度总和
-      
       sumnominatorsBalance=[]
       for(i=0;i<nominators.length;i++){
         nominatorsBalance = await Promise.all(
@@ -185,14 +201,14 @@ export default class IntegralMall extends Component {
         sumnominatorsBalance.push(sum)
       }
 
-    // 找出等候提名者
+    // 找出Next up
     _intentions=[]
     _validators=[]
     _next_up=[]
-    intentions.map((item,index)=>{
+    this.state.intentions.map((item,index)=>{
       _intentions.push(String(item))
     })
-    validators.map((item,index)=>{
+    this.state.validators.map((item,index)=>{
       _validators.push(String(item))
     })
     _intentions.filter((address) =>{
@@ -227,10 +243,10 @@ export default class IntegralMall extends Component {
       
         
       
-      if (validators && validators.length > 0) {
+      if (this.state.validators && this.state.validators.length > 0) {
         //查询validators额度
         validatorBalances = await Promise.all(
-          validators.map(authorityId =>
+          this.state.validators.map(authorityId =>
             api.query.balances.freeBalance(authorityId)
           )
         );
@@ -248,9 +264,9 @@ export default class IntegralMall extends Component {
           // eraLength: eraLength,
           // validators: validators,
           validatorBalances: validatorBalances,
-          intentions: intentions,
           next_up: _next_up,
           next_upBalances: next_upBalances,
+          sumnominatingBalance:sumnominatingBalance,
           sumnominatorsBalance: sumnominatorsBalance,
           sumnominatorsBalance2: sumnominatorsBalance2
         })
@@ -318,8 +334,9 @@ export default class IntegralMall extends Component {
   }
   render() {
     return (
+      <SafeAreaView style={{flex:1,backgroundColor:'white'}}>
         <View style={{flex:1,backgroundColor:'white'}}>
-          <View style={{marginTop:ScreenHeight/30,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
+          <View style={{height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
             <TouchableOpacity 
               style={{justifyContent:'center',alignItems:'center',height:ScreenHeight/20,width:ScreenWidth*0.49,borderWidth:1,borderColor:'#0076ff',borderTopLeftRadius:8,borderBottomLeftRadius:8,backgroundColor:this.state.title==1?'#0076ff':'white'}}
               onPress={()=>{
@@ -412,6 +429,7 @@ export default class IntegralMall extends Component {
                       </View>
                     :
                       <View style={{flexDirection:'row',flex:1,alignItems:'center',justifyContent:'center',width:ScreenWidth}}>
+                      
                         <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==2?'#FF4081C7':(this.props.rootStore.stateStore.StakingState==1)?'#4eacd1':'#D3D3D3',height:ScreenHeight/16,width:ScreenWidth*0.4}}
                           onPress={(this.props.rootStore.stateStore.StakingState==2)?this.Unstake:(this.props.rootStore.stateStore.StakingState==1)?this.stake:this.OffClick}
                         >
@@ -419,22 +437,23 @@ export default class IntegralMall extends Component {
                             style={{height:ScreenHeight/30,width:ScreenHeight/30,resizeMode:'cover'}}
                             source={require('../../images/Staking/whitesharp.png')}
                           />
-                          <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
+                          <Text style={{marginLeft:ScreenWidth/40,fontWeight:'bold',fontSize:ScreenWidth/20,color:'white'}}>
                             {this.props.rootStore.stateStore.StakingState==2?'Unstake':'Stake'}
                             
                           </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==0?'#D3D3D3':'#4eacd1',marginLeft:ScreenWidth/100,height:ScreenHeight/16,width:ScreenWidth*0.4}}
+                        <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.props.rootStore.stateStore.StakingState==0?'#D3D3D3':'#4eacd1',marginLeft:ScreenWidth/80,height:ScreenHeight/16,width:ScreenWidth*0.4}}
                           onPress={(this.props.rootStore.stateStore.StakingState==2)?this.Set_Prefs:(this.props.rootStore.stateStore.StakingState==1)?this.nominate:this.OffClick}
                         >
                           <Image
-                            style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
+                            style={{marginLeft:ScreenWidth/60,height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
                             source={require('../../images/Staking/branch.png')}
                           />
-                          <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
+                          <Text style={{marginLeft:ScreenWidth/40,fontWeight:'bold',fontSize:ScreenWidth/20,color:'white'}}>
                             {(this.props.rootStore.stateStore.StakingState==2)?'Set Prefs':'nominate'}
                           </Text>
                         </TouchableOpacity>
+                        {/* <View style={{height:ScreenHeight/16,width:ScreenWidth*0.05,}}/> */}
                         <View style={{borderRadius:ScreenHeight/16/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/16/7*4,width:ScreenHeight/16/7*4,alignItems:'center',justifyContent:'center'}}>
                           <Text style={{fontSize:ScreenHeight/48}}>
                             or
@@ -555,9 +574,9 @@ export default class IntegralMall extends Component {
                                 </Text>
                               </View>
                               <Text
-                                style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                               >
-                                {formatBalance(this.state.nominatingBalance)} 
+                                {formatBalance(this.state.nominatingBalance)+'('+formatBalance(this.state.sumnominatingBalance)+')'} 
                               </Text>
                             </View>
                       :
@@ -589,7 +608,7 @@ export default class IntegralMall extends Component {
                                   </Text>
                                 </View>
                                 <Text
-                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                                 >
                                   {formatBalance(this.state.mynominatorsBalance[index])} 
                                 </Text>
@@ -729,9 +748,9 @@ export default class IntegralMall extends Component {
                                 </View>
                                 {/* 余额 */}
                                 <Text
-                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                  style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                                 >
-                                  {this.state.validatorBalances[0]==null?0:formatBalance(String(Number(this.state.validatorBalances[index])+this.state.sumnominatorsBalance[index]))+'(+'+formatBalance(this.state.sumnominatorsBalance[index])+')'}
+                                  {this.state.validatorBalances[0]==null?0:formatBalance(String(Number(this.state.validatorBalances[index])+this.state.sumnominatorsBalance[index]))+'(+'+formatBalance(String(this.state.sumnominatorsBalance[index]))+')'}
                                 </Text>
                           </TouchableOpacity>
                       )
@@ -809,6 +828,7 @@ export default class IntegralMall extends Component {
 
           }
         </View>
+      </SafeAreaView>
     );
   }
 }

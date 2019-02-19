@@ -95,11 +95,7 @@ import { set } from 'mobx';
                   const api = await Api.create(provider);
                   nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                   intentions = await api.query.staking.intentions()
-                  _intentions=[]
-                  intentions.map((item,index)=>{
-                  _intentions.push(String(item))
-                  })
-                  stakeIndex = _intentions.indexOf(String(nominating))
+                  stakeIndex = intentions.indexOf(String(nominating))
                   console.warn(stakeIndex)
                   await api.tx.staking.unnominate(stakeIndex).signAndSend(loadPair,({ status, type }) => {
                       console.warn(type)
