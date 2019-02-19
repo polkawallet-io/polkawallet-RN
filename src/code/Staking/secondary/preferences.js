@@ -10,6 +10,7 @@ import {
     Image,
     Modal,
     Alert,
+    Picker,
   } from 'react-native';
   import WsProvider from '@polkadot/rpc-provider/ws';
   import Api from '@polkadot/api/promise';
@@ -32,11 +33,15 @@ import { set } from 'mobx';
             address:'',
             password:'',
             isModal:false,
+            isModalunit:false,
             onlyone:0,
             type:'pending...',
             queryPref:'',
             unstakeThreshold:0,
             validatorPayment:0,
+            unit:'DOT',
+            unit_change:'DOT',
+            multiple:1000000000000000,
           }
           this.lookpwd=this.lookpwd.bind(this)
           this.Cancel=this.Cancel.bind(this)
@@ -44,7 +49,28 @@ import { set } from 'mobx';
           this.onChangetext1=this.onChangetext1.bind(this)
           this.onChangetext2=this.onChangetext2.bind(this)
           this.onChangepassword=this.onChangepassword.bind(this)
-      }   
+          this.Modify_unit = this.Modify_unit.bind(this)
+      }  
+      Modify_unit(){
+        this.setState({
+            unit:this.state.unit_change,
+            isModalunit:false,
+        })
+        if(this.state.unit_change == 'femto'){this.setState({multiple:1})}
+        if(this.state.unit_change == 'pico'){this.setState({multiple:1000})}
+        if(this.state.unit_change == 'nano'){this.setState({multiple:1000000})}
+        if(this.state.unit_change == 'micro'){this.setState({multiple:1000000000})}
+        if(this.state.unit_change == 'milli'){this.setState({multiple:1000000000000})}
+        if(this.state.unit_change == 'DOT'){this.setState({multiple:1000000000000000})}
+        if(this.state.unit_change == 'Kilo'){this.setState({multiple:1000000000000000000})}
+        if(this.state.unit_change == 'Mega'){this.setState({multiple:1000000000000000000000})}
+        if(this.state.unit_change == 'Giga'){this.setState({multiple:1000000000000000000000000})}
+        if(this.state.unit_change == 'Tera'){this.setState({multiple:1000000000000000000000000000})}
+        if(this.state.unit_change == 'Peta'){this.setState({multiple:1000000000000000000000000000000})}
+        if(this.state.unit_change == 'Exa'){this.setState({multiple:1000000000000000000000000000000000})}
+        if(this.state.unit_change == 'Zeta'){this.setState({multiple:1000000000000000000000000000000000000})}
+        if(this.state.unit_change == 'Yotta'){this.setState({multiple:1000000000000000000000000000000000000000})}
+      } 
       lookpwd()
       {
           this.setState({
@@ -73,8 +99,8 @@ import { set } from 'mobx';
       
      
       Set_Prefs(){
-          registerPreferences = {"unstakeThreshold":this.state.unstakeThreshold,"validatorPayment":this.state.validatorPayment};
-        //   alert(typeof(this.state.unstakeThreshold)+','+this.state.validatorPayment)
+        registerPreferences = {"unstakeThreshold":this.state.unstakeThreshold,"validatorPayment":this.state.validatorPayment * this.state.multiple};
+        // alert(typeof(this.state.unstakeThreshold)+','+this.state.validatorPayment*this.state.multiple)
         this.setState({
             onlyone:1,
             isModal:true
@@ -189,12 +215,28 @@ import { set } from 'mobx';
                         <View style={{flex:1}}/>
                     </View>
                     <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
-                        <TextInput style = {[styles.textInputStyle,{marginTop:ScreenHeight/70,fontSize:ScreenHeight/50,width:ScreenWidth*0.9,borderColor:this.props.rootStore.stateStore.tonominate==0?'#97BEC7':'grey'}]}
+                        <TextInput style = {[styles.textInputStyle,{marginTop:ScreenHeight/70,fontSize:ScreenHeight/50,width:ScreenWidth*0.6,borderColor:this.props.rootStore.stateStore.tonominate==0?'#97BEC7':'grey'}]}
                             placeholder = {this.state.address}
                             placeholderTextColor = "#666666"
                             underlineColorAndroid="#ffffff00"
                             onChangeText = {this.onChangetext2}
                         />
+                        {/* 选择单位  */}
+                        <TouchableOpacity style={styles.Choose_unit}
+                            onPress={()=>{
+                                this.setState({
+                                isModalunit:true
+                                })
+                            }}
+                        >
+                            <View style={[styles.middle,{flex:1}]}>
+                                <Text style={{fontSize:ScreenWidth/25,color:'white'}}>{this.state.unit}</Text>
+                            </View>
+                            <Image
+                                style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
+                                source={require('../../../images/Assetes/Create_Account/next.png')}
+                            />
+                        </TouchableOpacity>
                     </View>
                   </View>
                   {/* password */}
@@ -223,7 +265,7 @@ import { set } from 'mobx';
                     </View>
                   </View>
 
-                  {/* Cancel or nominate */}
+                  {/* Cancel or Set */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
                       <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/>
@@ -273,7 +315,51 @@ import { set } from 'mobx';
                       </View>
                     </View>
                   </Modal>
+                  <Modal
+                    animationType={'slide'}
+                    transparent={true}
+                    visible={this.state.isModalunit}
+                  >
+                    <View style={{flex:1}}/>
+                    <View style={styles.chooses}>
+                        <TouchableOpacity
+                          onPress={()=>{
+                            this.setState({
+                              isModalunit:false,
+                            })
+                          }}
+                        > 
+                          <Text style={styles.choose_Text}>cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={this.Modify_unit}
+                        > 
+                          <Text style={styles.choose_Text}>confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Picker
+                        style={{width:ScreenWidth,backgroundColor:'#C0C0C0'}}
+                        selectedValue={this.state.unit_change}
+                        onValueChange={(value) => this.setState({unit_change: value})}
+                    >
+                        <Picker.Item label="femto" value="femto" />
+                        <Picker.Item label="pico" value="pico" />
+                        <Picker.Item label="nano" value="nano" />
+                        <Picker.Item label="micro" value="micro" />
+                        <Picker.Item label="milli" value="milli" />
+                        <Picker.Item label="DOT" value="DOT" />
+                        <Picker.Item label="Kilo" value="Kilo" />
+                        <Picker.Item label="Mega" value="Mega" />
+                        <Picker.Item label="Giga" value="Giga" />
+                        <Picker.Item label="Tera" value="Tera" />
+                        <Picker.Item label="Peta" value="Peta" />
+                        <Picker.Item label="Exa" value="Exa" />
+                        <Picker.Item label="Zeta" value="Zeta" />
+                        <Picker.Item label="Yotta" value="Yotta" />
+                    </Picker>
+                  </Modal>
                 </View>
+                
               </View>
           )
       }
@@ -345,6 +431,35 @@ import { set } from 'mobx';
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'#97BEC7'
+    },
+    Choose_unit:{
+        alignItems:'center',
+        marginLeft:ScreenWidth/70,
+        width:ScreenWidth*0.25,
+        height:ScreenHeight/23,
+        borderWidth:1,
+        borderRadius:ScreenHeight/200,
+        borderColor:'#4dabd0',
+        flexDirection:'row',
+        backgroundColor:'#4dabd0'
+    },
+    middle:{
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    chooses:{
+        paddingLeft:ScreenWidth/20,
+        paddingRight:ScreenWidth/20,
+        alignItems:'center',
+        justifyContent:'space-between',
+        flexDirection:'row',
+        height:ScreenHeight/18,
+        backgroundColor:'#DCDCDC'
+    },
+    choose_Text:{
+        fontWeight:'500',
+        fontSize:ScreenHeight/50,
+        color:'#4169E1'
     }
     
 })

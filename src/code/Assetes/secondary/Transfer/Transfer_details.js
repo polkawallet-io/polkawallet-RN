@@ -15,6 +15,7 @@ import {
     Clipboard,
 } from 'react-native';
 import moment from "moment/moment";
+import formatBalance from '../../../../util/formatBalance'
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -75,12 +76,12 @@ export default class Transfer_details extends PureComponent {
                   {/* Balance */}
                   <View style={styles.list_View}>
                     <Text style={styles.list_text1}>Balance:</Text>
-                    <Text style={[styles.list_text2,{fontSize:ScreenWidth/20}]}>{this.state.data.tx_value} femto</Text>
+                    <Text style={[styles.list_text2,{fontSize:ScreenWidth/20}]}>{formatBalance(String(this.state.data.tx_value))}</Text>
                   </View>
                   {/* Fees */}
                   <View style={styles.list_View}>
                     <Text style={styles.list_text1}>Fees:</Text>
-                    <Text style={styles.list_text2}>{this.state.data.tx_fees} M</Text>
+                    <Text style={styles.list_text2}>{formatBalance(String(this.state.data.tx_fees))} </Text>
                   </View>
                   {/* To */}
                   <View style={[styles.list_View,{height:ScreenHeight/12}]}>

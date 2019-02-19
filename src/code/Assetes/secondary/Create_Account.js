@@ -71,12 +71,19 @@ export default class Polkawallet extends Component {
       isModel:false,
       way:this.state.way_change,
     })
-    let key = this.state.way_change=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
-    this.pair = keyring.addFromMnemonic(key)
-    this.setState({
-      key:key,
-      address:this.pair.address()
-    })
+    if(this.state.way_change == 'Keystore'){
+      this.setState({
+        key:'',
+        address:''
+      })
+    }else{
+      let key = this.state.way_change=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
+      this.pair = keyring.addFromMnemonic(key)
+      this.setState({
+        key:key,
+        address:this.pair.address()
+      })
+    }
   }
   
   onChangekey(Changekey){
@@ -90,7 +97,6 @@ export default class Polkawallet extends Component {
       })
     }else if(this.state.way=='Raw Seed')
     {
-      // alert('2')
       if(isHex(Changekey) && Changekey.length === 66){
         SEEDu8a=hexToU8a(Changekey)
         this.pair = keyring.addFromSeed(SEEDu8a)
@@ -115,6 +121,11 @@ export default class Polkawallet extends Component {
           address:'xxxxxxxxxxxxxxxxxxxxxxxx'
         }) 
       }
+    }else{
+      this.setState({
+        key:Changekey,
+        address:JSON.parse(Changekey).address
+      }) 
     }
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
@@ -136,12 +147,20 @@ export default class Polkawallet extends Component {
     }) 
   }
   Reset(){
-    let key = this.state.way=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
-    this.pair = keyring.addFromMnemonic(key)
-    this.setState({
-      key:key,
-      address:this.pair.address()
-    })
+    if(this.state.way=='Keystore'){
+      this.setState({
+        key:'',
+        address:''
+      })
+      this.props.rootStore.stateStore.balance=0
+    }else{
+      let key = this.state.way=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
+      this.pair = keyring.addFromMnemonic(key)
+      this.setState({
+        key:key,
+        address:this.pair.address()
+      })
+    }
   }
   Save_Account(){
     if(this.state.password=='')
@@ -151,15 +170,42 @@ export default class Polkawallet extends Component {
       SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
         (result)=>{
           if(result==null){
-            this.pair.setMeta({'name':this.state.name})
-            this.json = this.pair.toJson(this.state.password)
-            this.json.meta = this.pair.getMeta()
-            SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
-            this.props.rootStore.stateStore.isfirst=1
-            this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
-            this.props.rootStore.stateStore.Accountnum++
-            this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
-            this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+            if(this.state.way == 'Keystore'){
+              loadPair = keyring.addFromJson(JSON.parse(this.state.key))
+              try{
+                loadPair.decodePkcs8(this.state.password)
+              }catch(error){
+                Alert.alert(
+                    'Alert',
+                    'Password mistake.',
+                    [
+                      {text: 'OK', onPress: () => {
+                      }},
+                    ],
+                    { cancelable: false }
+                )
+              }
+              loadPair.isLocked()?'':
+                SInfo.setItem(this.state.address,this.state.key,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}) 
+                this.props.rootStore.stateStore.isfirst=1
+                this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(this.state.key).meta.name,address:this.state.address})
+                this.props.rootStore.stateStore.Accountnum++
+                this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+                this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+                
+            }else{
+              // /*
+              this.pair.setMeta({'name':this.state.name})
+              this.json = this.pair.toJson(this.state.password)
+              this.json.meta = this.pair.getMeta()
+              SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
+              this.props.rootStore.stateStore.isfirst=1
+              this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
+              this.props.rootStore.stateStore.Accountnum++
+              this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+              this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+              // */
+            }
           }
           else{
             alert('The address already exists!')
@@ -219,7 +265,7 @@ export default class Polkawallet extends Component {
           {/* 密钥 */}
           <View style={[styles.NandP,{height:ScreenHeight/5}]}>
             <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/23}}>
-              <Text style={{fontSize:ScreenWidth/33}}>create from the following mnemonic or seed</Text>
+              <Text style={{fontSize:ScreenWidth/33}}>create from mnemonic,seed or import keystore</Text>
               {/* 选择方式 */}
               <TouchableOpacity style={styles.Choose_way}
                 onPress={()=>{
@@ -244,21 +290,27 @@ export default class Polkawallet extends Component {
                 placeholderTextColor = "black"
                 underlineColorAndroid="#ffffff00"
                 multiline={true}
-                maxLength={100}
+                maxLength={1000}
                 onChangeText = {this.onChangekey}
             />
           </View>
-          {/* name */}
-          <View style={styles.NandP}>
-            <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
-            <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
-                placeholder = "New Keypair"
-                placeholderTextColor = "#666666"
-                autoCorrect = {false}
-                underlineColorAndroid="#ffffff00"
-                onChangeText = {this.onChangename}
-            />
-          </View>
+          {
+            (this.state.way == 'Keystore')
+            ?
+              <View/>
+            :
+              // name 
+              <View style={styles.NandP}>
+                <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
+                <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
+                    placeholder = "New Keypair"
+                    placeholderTextColor = "#666666"
+                    autoCorrect = {false}
+                    underlineColorAndroid="#ffffff00"
+                    onChangeText = {this.onChangename}
+                />
+              </View>
+          }
           {/* pass */}
           <View style={styles.NandP}>
             <Text style={{fontSize:ScreenWidth/30}}>enxrypt it using a password</Text>
@@ -328,6 +380,7 @@ export default class Polkawallet extends Component {
           >
             <Picker.Item label="Mnemonic" value="Mnemonic" />
             <Picker.Item label="Raw Seed" value="Raw Seed" />
+            <Picker.Item label="import keystore" value="Keystore" />
           </Picker>
         </Modal>
       </View>    

@@ -96,7 +96,6 @@ import {
             this.props.rootStore.stateStore.isaddresses=0
             this.props.rootStore.stateStore.transfer_address=0
             this.props.rootStore.stateStore.iscamera=0
-            // alert(this.props.rootStore.stateStore.value)
             this.props.navigation.navigate('Make_transfer')
         }
       }

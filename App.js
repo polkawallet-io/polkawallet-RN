@@ -24,6 +24,8 @@ import Nominate from './src/code/Staking/secondary/nominate'
 import Unstake from './src/code/Staking/secondary/unstake'
 import Unnominate from './src/code/Staking/secondary/unnominate'
 import Preferences from './src/code/Staking/secondary/preferences'
+import Change_Password from './src/code/Profile/secondary/Change/Change_Password'
+import Change_Name from './src/code/Profile/secondary/Change/Change_Name'
 
 
 
@@ -52,6 +54,8 @@ const Polkawallet_App =  StackNavigator({
   Unstake:{screen:Unstake,navigationOptions:{header:null}},
   Unnominate:{screen:Unnominate,navigationOptions:{header:null}},
   Preferences:{screen:Preferences,navigationOptions:{header:null}},
+  Change_Password:{screen:Change_Password,navigationOptions:{header:null}},
+  Change_Name:{screen:Change_Name,navigationOptions:{header:null}},
 
  })
  

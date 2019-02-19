@@ -28,8 +28,10 @@ const { stringToU8a } = require('@polkadot/util');
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+let Platform = require('Platform');
 
 import { observer, inject } from "mobx-react";
+import { async } from 'rxjs/internal/scheduler/async';
 @inject('rootStore')
 @observer
 export default class Assetes extends Component {
@@ -41,11 +43,13 @@ export default class Assetes extends Component {
             name:'0',
             address:'0',
             isfirst:0,
-            isrefresh:false
+            isrefresh:false,
+            lastBlockTime:0,
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
         this.refresh=this.refresh.bind(this)
+        this.Loading=this.Loading.bind(this)
     }
 
 
@@ -70,31 +74,30 @@ export default class Assetes extends Component {
             this.props.rootStore.stateStore.option.series[0].data=[]
             JSON.parse(result._bodyInit).map((item,index)=>{
               this.props.rootStore.stateStore.option.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
-              this.props.rootStore.stateStore.option.series[0].data.push((item.money/1000000).toFixed(1))
+              this.props.rootStore.stateStore.option.series[0].data.push(item.money)
             })
+            max=0
+            for(i=0;i<this.props.rootStore.stateStore.option.series[0].data.length;i++)
+            {
+              if(this.props.rootStore.stateStore.option.series[0].data[i]>max){
+                max=this.props.rootStore.stateStore.option.series[0].data[i]
+              }
+            }
+            power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
+            unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
+            for(i=0;i<this.props.rootStore.stateStore.option.series[0].data.length;i++)
+            {
+              this.props.rootStore.stateStore.option.series[0].data[i]=(this.props.rootStore.stateStore.option.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
+               
+            }
+            this.props.rootStore.stateStore.option.title.text = 'Assets change record, Unit ( '+unit+' )'
             this.props.navigation.navigate('Coin_details')
           }
         ).catch()
     
   }
-  // 刷新
-  refresh(){
-    this.setState({
-      isrefresh:true
-    })
-    setTimeout(()=>{
-      (async()=>{
-        const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-        balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-        this.props.rootStore.stateStore.balance=String(Balance)
-      })()
-      this.setState({
-        isrefresh:false
-      })
-    },2000)
-  }
-  componentWillMount(){
-    var Platform = require('Platform');
+  Loading(){
+      
     SInfo.getAllItems({sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
         if(JSON.stringify(result).length<10 )
@@ -104,7 +107,11 @@ export default class Assetes extends Component {
           this.setState({
             isfirst:1
           })
+          this.props.rootStore.stateStore.Account=0
+          this.props.rootStore.stateStore.Accountnum=0
           this.props.rootStore.stateStore.isfirst=1
+          this.props.rootStore.stateStore.Accounts=[{account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}]
+          
           if (Platform.OS === 'android') {
             //android
             for(var o in result){
@@ -114,7 +121,6 @@ export default class Assetes extends Component {
             }
           }else{
             //ios
-            // alert(JSON.stringify(result))
             result.map((item,index)=>{
               item.map((item,index)=>{
                 // alert(item.key)//地址
@@ -140,9 +146,22 @@ export default class Assetes extends Component {
           const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
           balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
           fees = await api.derive.balances.fees()
-          // console.log('***************************************\n'+JSON.stringify(fees))
-          // alert(fees)
           this.props.rootStore.stateStore.balance=String(balance)
+
+          const props = await api.rpc.system.properties();
+          formatBalance.setDefaults({
+            decimals: props.get('tokenDecimals'),
+            unit: props.get('tokenSymbol')
+          });      
+          setInterval(async function(){
+            myDate=new Date()
+            console.warn("mydate:",Number(myDate))
+            blockdate = await api.query.timestamp.now()
+            // console.warn(Number(myDate)-Number(blockdate))
+            this.setState({
+              lastBlockTime:Number(myDate)-Number(blockdate)
+            })
+          },1000);
         })()
       }
    
@@ -219,10 +238,40 @@ export default class Assetes extends Component {
             this.props.rootStore.stateStore.StakingOption.series[0].data=[]
             JSON.parse(result._bodyInit).map((item,index)=>{
               this.props.rootStore.stateStore.StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
-              this.props.rootStore.stateStore.StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
+              this.props.rootStore.stateStore.StakingOption.series[0].data.push(item.slash_balance)
             })
+            max=0
+            for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+            {
+              if(this.props.rootStore.stateStore.StakingOption.series[0].data[i]>max){
+                max=this.props.rootStore.stateStore.StakingOption.series[0].data[i]
+              }
+            }
+            power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
+            unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
+            for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+            {
+              this.props.rootStore.stateStore.StakingOption.series[0].data[i]=(this.props.rootStore.stateStore.StakingOption.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
+               
+            }
+            this.props.rootStore.stateStore.StakingOption.title.text = 'Staking slash record, Unit ( '+unit+' )'
           }
         ).catch()
+  }
+  // 刷新
+  refresh(){
+    this.setState({
+      isrefresh:true
+    })
+    setTimeout(()=>{
+      this.Loading()
+      this.setState({
+        isrefresh:false
+      })
+    },2000)
+  }
+  componentWillMount(){
+    this.Loading()
   }
   
   render() {
