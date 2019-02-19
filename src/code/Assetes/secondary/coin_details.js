@@ -202,12 +202,12 @@ import { observer, inject } from "mobx-react";
                                 <Text
                                   ellipsizeMode={"middle"}
                                   numberOfLines={1}
-                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                  style={{fontSize:ScreenWidth/25,color:'black',width:ScreenWidth*0.4}}
                                 >
                                   {item.tx_address}
                                 </Text>
                                 <Text
-                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenWidth/30,color:'#666666'}}
                                 >
                                   {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                   {/* {item.tx_timestamp} */}
@@ -236,12 +236,12 @@ import { observer, inject } from "mobx-react";
                                 <Text
                                   ellipsizeMode={"middle"}
                                   numberOfLines={1}
-                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                  style={{fontSize:ScreenWidth/25,color:'black',width:ScreenWidth*0.4}}
                                 >
                                   {item.tx_address}
                                 </Text>
                                 <Text
-                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenWidth/30,color:'#666666'}}
                                 >
                                   {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                 </Text>
@@ -267,12 +267,12 @@ import { observer, inject } from "mobx-react";
                                 <Text
                                   ellipsizeMode={"middle"}
                                   numberOfLines={1}
-                                  style={{fontSize:ScreenHeight/47.64,color:'black',width:ScreenWidth*0.5}}
+                                  style={{fontSize:ScreenWidth/25,color:'black',width:ScreenWidth*0.4}}
                                 >
                                   {item.tx_address}
                                 </Text>
                                 <Text
-                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenHeight/51.31,color:'#666666'}}
+                                  style={{marginTop:ScreenHeight/120,fontSize:ScreenWidth/30,color:'#666666'}}
                                 >
                                   {moment(item.tx_timestamp).format('DD/MM/YYYY HH:mm:ss')}
                                 </Text>
@@ -373,6 +373,6 @@ const styles = StyleSheet.create({
         marginLeft:ScreenWidth/30
     },
     value:{
-        marginRight:ScreenWidth/20,fontSize:ScreenHeight/50,color:'black'
+        marginRight:ScreenWidth/20,fontSize:ScreenWidth/28,color:'black'
     }
 })

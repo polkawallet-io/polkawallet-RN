@@ -59,7 +59,11 @@ export default class IntegralMall extends Component {
         pageNum:1,
         StakingOption: {
           title: {
-            show:false
+            text: 'Staking slash record, Unit(xxx)',
+            textStyle:{
+              color:'grey',
+              fontSize:16,
+            },
           },
           tooltip: {},
           legend: {
@@ -299,8 +303,8 @@ export default class IntegralMall extends Component {
       map.headers = privateHeaders;
       map.follow = 20;
       map.timeout = 0;
-      map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
-      // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
+      // map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"'+this.state.pageNum+'","pageSize":"10"}';
+      map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","pageNum":"'+(++this.state.pageNum)+'","pageSize":"10"}';
       fetch(REQUEST_URL,map).then(
         (result)=>{
             this.props.rootStore.stateStore.StakingNextPage=JSON.parse(result._bodyInit).staking_list_alexander.hasNextPage
@@ -715,6 +719,21 @@ export default class IntegralMall extends Component {
                                     _StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
                                     _StakingOption.series[0].data.push((item.slash_balance/1000000).toFixed(1))
                                   })
+                                  max=0
+                                  for(i=0;i<_StakingOption.series[0].data.length;i++)
+                                  {
+                                    if(_StakingOption.series[0].data[i]>max){
+                                      max=_StakingOption.series[0].data[i]
+                                    }
+                                  }
+                                  power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
+                                  unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
+                                  for(i=0;i<_StakingOption.series[0].data.length;i++)
+                                  {
+                                    _StakingOption.series[0].data[i]=(_StakingOption.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
+                                    
+                                  }
+                                  _StakingOption.title.text = 'Staking slash record, Unit ( '+unit+' )'
                                   this.setState({
                                     StakingOption:_StakingOption
                                   })

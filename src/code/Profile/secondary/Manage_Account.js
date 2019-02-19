@@ -41,6 +41,14 @@ export default class Manage_Account extends Component {
     this.delete_account=this.delete_account.bind(this)
     this.Continue=this.Continue.bind(this)
     this.Copy=this.Copy.bind(this)
+    this.Change_Password=this.Change_Password.bind(this)
+    this.Change_Name = this.Change_Name.bind(this)
+  }
+  Change_Name(){
+    this.props.navigation.navigate('Change_Name')
+  }
+  Change_Password(){
+    this.props.navigation.navigate('Change_Password')
   }
   ExportKey(){
     this.setState({
@@ -110,6 +118,7 @@ export default class Manage_Account extends Component {
                       {
                         this.props.rootStore.stateStore.Account=0
                         this.props.rootStore.stateStore.Accountnum=0
+                        this.props.rootStore.stateStore.Accounts=[{account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}]
                         this.props.navigation.navigate('Create_Account')
                       }else{                        
                         this.props.rootStore.stateStore.Account=0
@@ -202,6 +211,34 @@ export default class Manage_Account extends Component {
                 </Text>
               </View>
           </View>
+          {/* Change Name */}
+          {/* <View style={{alignItems:'center'}}>
+            <TouchableOpacity
+                  style={styles.export}
+                  onPress={this.Change_Name}
+                >
+                  <Text style={{marginLeft:ScreenWidth/50,fontSize:ScreenHeight/40}}>Change name</Text>
+                  <View style={{flex:1}}/>
+                  <Image
+                    style={styles.next}
+                    source={require('../../../images/Profile/next.png')}
+                  />
+            </TouchableOpacity>
+          </View> */}
+          {/* Change password */}
+          <View style={{alignItems:'center'}}>
+            <TouchableOpacity
+                  style={styles.export}
+                  onPress={this.Change_Password}
+                >
+                  <Text style={{marginLeft:ScreenWidth/50,fontSize:ScreenHeight/40}}>Change password</Text>
+                  <View style={{flex:1}}/>
+                  <Image
+                    style={styles.next}
+                    source={require('../../../images/Profile/next.png')}
+                  />
+            </TouchableOpacity>
+          </View>
           {/* Export Keystore */}
           <View style={{alignItems:'center'}}>
             <TouchableOpacity
@@ -274,7 +311,7 @@ export default class Manage_Account extends Component {
               <View style={[styles.chooseview,{height:ScreenHeight/2}]}>
                 <Text style={styles.prompt}>Please save your information</Text>
                 <Text 
-                  style={{marginTop:ScreenHeight/30,width:ScreenWidth*0.7,fontSize:ScreenHeight/50}}
+                  style={{marginTop:ScreenHeight/30,width:ScreenWidth*0.7,fontSize:ScreenHeight/60}}
                   selectable={true}
                 >
                   {this.state.msg}

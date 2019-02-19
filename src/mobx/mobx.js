@@ -77,7 +77,13 @@ class stateStore{
     @observable
     option={
         title: {
-          show:false
+            text: 'Assets change record, Unit(xxx)',
+            textStyle:{
+                color:'grey',
+                fontSize:16,
+        
+            },
+           
         },
         tooltip: {},
         legend: {
@@ -96,7 +102,11 @@ class stateStore{
     @observable
     StakingOption={
         title: {
-          show:false
+            text: 'Staking slash record, Unit(xxx)',
+            textStyle:{
+                color:'grey',
+                fontSize:16,
+            },
         },
         tooltip: {},
         legend: {
