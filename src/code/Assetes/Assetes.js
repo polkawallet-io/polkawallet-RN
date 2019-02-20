@@ -21,17 +21,12 @@ import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import formatBalance from '../../util/formatBalance'
 
-const { Keyring } = require('@polkadot/keyring');
-const { stringToU8a } = require('@polkadot/util');
-
-
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 let Platform = require('Platform');
 
 import { observer, inject } from "mobx-react";
-import { async } from 'rxjs/internal/scheduler/async';
 @inject('rootStore')
 @observer
 export default class Assetes extends Component {
@@ -44,7 +39,7 @@ export default class Assetes extends Component {
             address:'0',
             isfirst:0,
             isrefresh:false,
-            lastBlockTime:0,
+            color:'rgb(0,255,0)'
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
@@ -153,14 +148,36 @@ export default class Assetes extends Component {
             decimals: props.get('tokenDecimals'),
             unit: props.get('tokenSymbol')
           });      
-          setInterval(async function(){
+          setInterval(async()=>{
             myDate=new Date()
-            console.warn("mydate:",Number(myDate))
             blockdate = await api.query.timestamp.now()
-            // console.warn(Number(myDate)-Number(blockdate))
+            lastBlockTime=Number(myDate)-Number(blockdate)
+            // console.warn(lastBlockTime)
+            if(lastBlockTime>120000){
+              a=192,b=192,c=192
+            }else if(lastBlockTime<6000){
+              a=0;b=255;c=0;
+            }else{
+              colorPara = (lastBlockTime / 1000 - 6) * (255 / 60)
+              a=0;
+              b=255;
+              c=0;
+              for(i=0;i<colorPara;i++){
+                if(b>=255&&a<255)
+                {
+                    a++;
+                }
+                if(a>=255)b--;
+                if(a>=255&&b<=0){
+                    a=255;b=0;
+                }
+              }
+            }
+            
             this.setState({
-              lastBlockTime:Number(myDate)-Number(blockdate)
+              color:'rgb('+a+','+b+','+c+')'
             })
+           
           },1000);
         })()
       }
@@ -380,7 +397,10 @@ export default class Assetes extends Component {
                     />
                 </View>
                 <View style={{justifyContent:'center',flex:1,}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
+                  <View style={{flexDirection:'row'}}>
+                    <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
+                    <View style={{marginLeft:ScreenWidth/60,height:ScreenHeight/98,width:ScreenHeight/98,borderRadius:ScreenHeight/196,backgroundColor:this.state.color}}/>
+                  </View>
                   <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
                 </View>
                 <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>

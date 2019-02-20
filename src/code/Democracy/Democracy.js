@@ -7,24 +7,59 @@ import {
   Dimensions,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  
 } from 'react-native';
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 import Referendums from './referendums'
 import Proposals from './proposals'
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
+import { Method } from '@polkadot/types';
 
+
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class IntegralMall extends Component {
   constructor(props)
   {
       super(props)
       this.state={
-        Toptitle:1
+        Toptitle:1,
+        publicPropCount:'0',
+        referendumCount:'0',
+        referendumActive:0,
+        referendums:[],
       }
+  }
+  componentWillMount(){
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      //查询publicPropCount
+      await api.query.democracy.publicPropCount((result)=>{
+        this.setState({
+          publicPropCount:JSON.stringify(result)
+        })
+      })
+      //查询referendumCount
+      await api.query.democracy.referendumCount((result)=>{
+          this.props.rootStore.stateStore.referendumCount=JSON.stringify(result)
+      })
+      //查询referendums中referendumActive
+      await api.derive.democracy.referendums((result)=>{
+        this.setState({
+          referendumActive:result.length
+        })
+      })
+    })();
   }
   render() {
     return (
+    <SafeAreaView style={{flex:1,backgroundColor:'white'}}>
       <View style={{flex:1,backgroundColor:'white'}}>
-        <View style={{marginTop:ScreenHeight/30,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
+        <View style={{marginTop:ScreenHeight/70,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
             <TouchableOpacity 
               style={{flexDirection:'row',justifyContent:'center',alignItems:'center',height:ScreenHeight/20,width:ScreenWidth*0.49,borderWidth:1,borderColor:'#0076ff',borderTopLeftRadius:8,borderBottomLeftRadius:8,backgroundColor:this.state.Toptitle==1?'#0076ff':'white'}}
               onPress={()=>{
@@ -34,10 +69,10 @@ export default class IntegralMall extends Component {
               }}
               >
               <Text style={{color:this.state.Toptitle==1?'white':'#0076ff',fontSize:ScreenWidth/23.44}}>
-                referendums(49)
+                {'referendums('+this.props.rootStore.stateStore.referendumCount+')'}
               </Text>
               <Text style={{color:'#fd75a3',fontSize:ScreenWidth/23.44}}>
-                +12
+                {"+"+this.state.referendumActive}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity 
@@ -49,7 +84,7 @@ export default class IntegralMall extends Component {
               }}
               >
               <Text style={{color:this.state.Toptitle!=1?'white':'#0076ff',fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85}}>
-                proposals(32)
+                {'proposals('+this.state.publicPropCount+')'}
               </Text>
             </TouchableOpacity>
         </View>
@@ -64,7 +99,8 @@ export default class IntegralMall extends Component {
               <Proposals/>
             </ScrollView>
         }
-      </View>    
+      </View>   
+    </SafeAreaView> 
       );
   }
 }

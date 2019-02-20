@@ -8,6 +8,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
+
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const Proposals=[
@@ -16,8 +19,19 @@ const Proposals=[
     {name:'councilVoting.setCooloffPeriod',time:'30',number:52,depositors:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd',balance:19.999,Actives_Nofixed:[{key:'Compact<BlockNumber>',value:252},{key:'who:Address',value:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},{key:'reserved:Compact<Balance>',value:180000}]},   
     {name:'councilVoting.setCooloffPeriod',time:'30',number:51,depositors:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd',balance:19.999,Actives_Nofixed:[{key:'who:Address',value:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},{key:'free:Compact<Balance>',value:18000},{key:'reserved:Compact<Balance>',value:180000}]},  
 ]
-
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class Polkawallet extends Component {
+  constructor(props){
+    super(props)
+  }
+  componentWillMount(){
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      
+    })();
+  }
   render() {
     return (
       <View style={{flex:1}}>

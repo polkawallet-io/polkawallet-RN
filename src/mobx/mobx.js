@@ -121,6 +121,33 @@ class stateStore{
             data: []
         }]
     };
+
+    //******************* */Democracy界面*******************
+    //referendumCount
+    @observable
+    referendumCount='0';
+
+    
+
+    //referendums
+    @observable
+    referendums=[
+        {"end":3303,"proposal":{"callIndex":"0x0803","args":{"blocks":999}},"threshold":0,"delay":0},
+        {end: 216, proposal: {callIndex: 0x0301, args: {who: '5GfWeNe33QeyzVMV2uENuvSXLVfVXCiuLvfEP6WCDHADZhen', free: 1000000000, reserved: 10000000000}}, threshold: 'Super majority approval', delay: 600},
+    ];
+
+    //Actives_Nofixed不确定的数据
+    @observable
+    Actives_Nofixed=[];
+
+
+    
+
+
+
+
+
+
     //转到通讯录
     @observable
     transfer_address=0;
