@@ -12,7 +12,9 @@ import History from './referendums/History'
 import MyRecord from './referendums/MyRecord'
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class Polkawallet extends Component {
     constructor(props)
   {
@@ -37,13 +39,13 @@ export default class Polkawallet extends Component {
                 Active
             </Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-            style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.title==2?'#005baf':'#ffffff00'}}
-            onPress={()=>{
-                this.setState({
-                    title:2
-                })
-            }}
+            {/* <TouchableOpacity 
+                style={{justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:this.state.title==2?'#005baf':'#ffffff00'}}
+                onPress={()=>{
+                    this.setState({
+                        title:2
+                    })
+                }}
             >
             <Text style={{color:this.state.title==2?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
                 History
@@ -60,7 +62,7 @@ export default class Polkawallet extends Component {
             <Text style={{color:this.state.title==3?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
                 MyNominstors
             </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         {
             (this.state.title==1)
