@@ -26,6 +26,7 @@ import Unnominate from './src/code/Staking/secondary/unnominate'
 import Preferences from './src/code/Staking/secondary/preferences'
 import Change_Password from './src/code/Profile/secondary/Change/Change_Password'
 import Change_Name from './src/code/Profile/secondary/Change/Change_Name'
+import NayorAye from './src/code/Democracy/secondary/NayorAye'
 
 
 
@@ -56,6 +57,7 @@ const Polkawallet_App =  StackNavigator({
   Preferences:{screen:Preferences,navigationOptions:{header:null}},
   Change_Password:{screen:Change_Password,navigationOptions:{header:null}},
   Change_Name:{screen:Change_Name,navigationOptions:{header:null}},
+  NayorAye:{screen:NayorAye,navigationOptions:{header:null}},
 
  })
  

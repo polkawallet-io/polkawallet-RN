@@ -17,13 +17,8 @@ import { VictoryPie} from "victory-native";
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-const Actives_fixed=[
-    {name:'councilVoting.setCooloffPeriod',time:'310',number:49,Aye:5042964,aye:368,Nay:2512889,nay:58,Actives_Nofixed:[{name:'blocks:Compact<BlockNumber>',num:256}]},
-    {name:'councilVoting.setCooloffPeriod',time:'310',number:48,Aye:5042964,aye:368,Nay:2512889,nay:58,Actives_Nofixed:[{name:'Compact<BlockNumber>',num:252}]},   
-    {name:'councilVoting.setCooloffPeriod',time:'310',number:47,Aye:5042964,aye:368,Nay:2512889,nay:58,Actives_Nofixed:[{name:'who:Address',num:'5rgjhfdkjgbfdkjvbcvbkdjvbdfghjsdffd'},{name:'free:Compact<Balance>',num:18000},{name:'reserved:Compact<Balance>',num:180000}]},  
-]
+
 import { observer, inject } from "mobx-react";
-import { async } from 'rxjs/internal/scheduler/async';
 @inject('rootStore')
 @observer
 export default class Polkawallet extends Component {
@@ -33,44 +28,118 @@ export default class Polkawallet extends Component {
       this.state={
         referendums:[],
         Actives_Nofixed:[],
-        Actives_Nofixedvalue:[]
+        Actives_Nofixedvalue:[],
+        Actives_Title:[],
+        votingCountdown:0,
+        votingIndex:[],
+        votingState:[],
+        votingStateIndex:[],
       }
+      this.votingState=this.votingState.bind(this)
   }
+  // votingState(){
+  //   (async()=>{
+  //     this.state.votingState = []
+  //     ifNewIndex = false
+  //     test=0
+  //     l=0
+  //     const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+  //     for(i=0;i<this.state.votingIndex.length;i++){
+  //       await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
+  //         if(result[0]!=null){
+  //           if(this.state.votingState[0]!=null){
+  //             this.state.votingState.forEach(value => {
+  //               this.state.votingStateIndex.push(value[0].referendumId)
+  //             })
+  //             console.warn('votingStateIndex: '+ this.state.votingStateIndex)
+  //             for(k=0;k<this.state.votingState.length;k++){
+  //               console.warn("L: "+l+"length: "+this.state.votingState.length+' I: '+i+" k: "+k)
+  //               if(this.state.votingState[k][0].referendumId==result[0].referendumId){
+  //                 this.state.votingState[k] = result
+  //                 l--
+  //                 // console.warn('change__votingState'+JSON.stringify(this.state.votingState))
+  //                 break
+  //               }else if(l==this.state.votingState.length){
+  //                 ifNewIndex = true
+  //                 console.warn('isTrue')
+  //                 console.warn("*****L"+l+"length:"+this.state.votingState.length+' I: '+i+" k: "+k+' Index:'+this.state.votingIndex)
+  //                 l=0
+  //                 break
+  //               }
+  //               l++
+  //             }
+  //             if(ifNewIndex==true){
+  //               this.state.votingState.push(result)
+  //               ifNewIndex = false
+  //               // alert('new')
+  //               test++
+  //               // console.warn('test:'+test)
+  //               // console.warn('PushVotingState'+JSON.stringify(this.state.votingState))
+  //             }
+  //               // console.warn("ID:",result[0].referendumId)
+  //             console.warn("***"+JSON.stringify(this.state.votingState))  
+  //             this.setState({}) 
+  //           }else {
+  //             this.state.votingState.push(result)
+  //             console.warn('newArray')
+  //           }
+  //         }
+          
+  //       })
+  //       console.warn('votingState'+JSON.stringify(this.state.votingState))
+  //     }
+  //   })()
+  // }
   componentWillMount(){
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      await api.derive.chain.bestNumber((bestNumber)=>{
+        this.setState({votingCountdown:bestNumber})
+      })
       await api.derive.democracy.referendums((result)=>{
+        this.setState({referendums:[],Actives_Nofixed:[],Actives_Nofixedvalue:[],Actives_Title:[],votingIndex:[],votingState:[]})
         result.map((item,index)=>{
           info = item.unwrapOr(null)
           if (info) {
             let {meta, method, section } = Method.findFunction(info.proposal.callIndex)
+            this.state.Actives_Title.push({section:section,method:method})
             this.state.Actives_Nofixedvalue.push(info.proposal.args)
             this.state.Actives_Nofixed.push(meta.arguments)
             this.state.referendums.push(info)
+            this.state.votingIndex.push(info.index)
           }
+          this.setState({})
+          // this.votingState()
         })
-        this.setState({})
+        
       })
+      
+      
     })()
     
   }
   render() {
     return (
       <View style={{flex:1}}>
-        {
+        {this.state.referendums[0]==null
+        ?
+          <View style={{marginTop:ScreenHeight/20,flex:1,justifyContent:'center',alignItems:'center'}}>
+            <Text style={{fontSize:ScreenWidth/25,color:'#696969'}}>no available referendums</Text>
+          </View>
+        :  
             this.state.referendums.map((item,index)=>{
                 return(
                   <View style={{borderBottomWidth:1,borderColor:'#C0C0C0',}} key={index}>
                     <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
-                        <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenWidth/30}}>{item.proposal.callIndex}</Text>
+                        <Text style={{marginLeft:ScreenWidth/40,fontSize:ScreenWidth/30}}>{this.state.Actives_Title[index].section+'.'+this.state.Actives_Title[index].method}</Text>
                         <Image
                             style={{marginLeft:ScreenWidth/40,height:ScreenHeight/50,width:ScreenHeight/50,resizeMode:'contain'}}
                             source={require('../../../images/Democracy/time.png')}
                         />
-                        <Text style={{fontWeight:'500',marginLeft:ScreenWidth/80,color:'#90BD5B',fontSize:ScreenWidth/35}}>{310}</Text>
+                        <Text style={{fontWeight:'500',marginLeft:ScreenWidth/80,color:'#90BD5B',fontSize:ScreenWidth/35}}>{Number(item.end)-Number(this.state.votingCountdown)-1}</Text>
                         <Text style={{fontWeight:'500',color:'#90BD5B',fontSize:ScreenWidth/40}}> {' blocks end'}</Text>
                         <View style={{flex:1}}></View>
-                        <Text style={{marginRight:ScreenWidth/70,fontSize:ScreenWidth/26}}>#{49}</Text>
+                        <Text style={{marginRight:ScreenWidth/70,fontSize:ScreenWidth/26}}>{'#'+item.index}</Text>
                     </View>
                     {
                         this.state.Actives_Nofixed[index].map((itemNo,indexNo)=>{
@@ -90,8 +159,9 @@ export default class Polkawallet extends Component {
                           )
                         })
                     }
+                    {/* threshold */}
                     <View style={{alignItems:'center',flexDirection:'row',marginTop:ScreenHeight/70,marginLeft:ScreenWidth/40,height:ScreenHeight/30}}>
-                      <Text style={{fontSize:ScreenHeight/65}}>Threshold: Super majority approval</Text>
+                      <Text style={{fontSize:ScreenHeight/65}}>{'Threshold: '+item.threshold}</Text>
                     </View>
                     <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
                         <Image
@@ -115,8 +185,8 @@ export default class Polkawallet extends Component {
                             colorScale={['#8fec41','#fb3232']}
                             innerRadius={ScreenWidth/30}
                             data={[
-                                { x: 1, y: 5, },
-                                { x: 2, y: 2, },
+                                { x: 1, y: 3, },
+                                { x: 2, y: 1, },
                             ]}
                             height={ScreenWidth/5.86}
                             width={ScreenWidth/5.86}
@@ -124,13 +194,21 @@ export default class Polkawallet extends Component {
                         {/* Nay or Aye */}
                         <View style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}>
                          <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>
-                          <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#fb3232',height:ScreenHeight/24,width:ScreenWidth*0.2}}>
+                          <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#fb3232',height:ScreenHeight/24,width:ScreenWidth*0.2}}
+                            onPress={()=>{
+                              this.props.p.navigation.navigate('NayorAye',{choose:'Nay',index:item.index})
+                            }}
+                          >
                             
                             <Text style={{fontWeight:'bold',fontSize:ScreenHeight/60,color:'white'}}>
                               Nay
                             </Text>
                           </TouchableOpacity>
-                          <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#7ad52a',marginLeft:ScreenWidth/100,height:ScreenHeight/24,width:ScreenWidth*0.2}}>
+                          <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#7ad52a',marginLeft:ScreenWidth/100,height:ScreenHeight/24,width:ScreenWidth*0.2}}
+                            onPress={()=>{
+                              this.props.p.navigation.navigate('NayorAye',{choose:'Aye',index:item.index})
+                            }}
+                          >
                             
                             <Text style={{fontWeight:'bold',fontSize:ScreenHeight/60,color:'white'}}>
                               Aye
@@ -150,6 +228,7 @@ export default class Polkawallet extends Component {
                 )
             })
             
+          
         }
         
       </View>   
