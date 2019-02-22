@@ -158,7 +158,7 @@ export default class IntegralMall extends Component {
       })
       //查询nominating  //查询Staking状态
       nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-      nominatingBalance = await api.query.balances.freeBalance(nominating)
+      nominatingBalance = await api.query.balances.freeBalance(String(nominating))
       if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
       {
         this.props.rootStore.stateStore.StakingState=3
@@ -171,7 +171,7 @@ export default class IntegralMall extends Component {
         this.props.rootStore.stateStore.StakingState=1
       }      
       //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
-      nominatingNominators = await api.query.staking.nominatorsFor(nominating)
+      nominatingNominators = await api.query.staking.nominatorsFor(String(nominating))
       nominatingBalances = await Promise.all(
         nominatingNominators.map(authorityId =>
           api.query.balances.freeBalance(authorityId)
@@ -581,7 +581,7 @@ export default class IntegralMall extends Component {
                               <Text
                                 style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                               >
-                                {formatBalance(this.state.nominatingBalance)+'('+formatBalance(this.state.sumnominatingBalance)+')'} 
+                                {formatBalance(String(this.state.nominatingBalance))+'('+formatBalance(String(this.state.sumnominatingBalance))+')'} 
                               </Text>
                             </View>
                       :
