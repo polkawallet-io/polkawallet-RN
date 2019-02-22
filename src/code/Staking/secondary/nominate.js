@@ -107,7 +107,7 @@ import { set } from 'mobx';
                       this.setState({
                         type:type
                       })
-                      console.warn(type)
+                    //   console.warn(type)
                         if(type === 'Finalised'){
                             setTimeout(() => {
                                 Alert.alert(

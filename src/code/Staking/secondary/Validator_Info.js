@@ -157,7 +157,7 @@ export default class IntegralMall extends Component {
               </View>
               <ScrollView>
                 {/* *********************** 点线图 *********************** */}
-                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}>
+                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'#DCDCDC'}}>
                   <Echarts 
                     option={this.state.StakingOption}
                     height={ScreenHeight/3}/>                

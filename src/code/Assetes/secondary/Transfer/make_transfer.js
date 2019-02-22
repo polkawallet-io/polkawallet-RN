@@ -107,7 +107,6 @@ import { set } from 'mobx';
                       this.setState({
                           type:type
                       })
-                    console.warn(type)
                     if (type === 'Ready'||type==='Broadcast') {
                        
                     }else{

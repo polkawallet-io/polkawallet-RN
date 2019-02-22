@@ -161,7 +161,6 @@ export default class IntegralMall extends Component {
       nominatingBalance = await api.query.balances.freeBalance(nominating)
       if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
       {
-        console.warn(nominating)
         this.props.rootStore.stateStore.StakingState=3
       }
       this.setState({
@@ -373,7 +372,7 @@ export default class IntegralMall extends Component {
                   onRefresh={this.refresh}/>}
               >
                 {/* *********************** 点线图 *********************** */}
-                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}>
+                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'#DCDCDC'}}>
                   <Echarts 
                     option={this.props.rootStore.stateStore.StakingOption}
                     height={ScreenHeight/3}/>                
@@ -550,7 +549,8 @@ export default class IntegralMall extends Component {
                           <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>To load more ~</Text>
                         </TouchableOpacity>
                       :
-                        <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
+                        
+                        <View style={{borderColor:'grey',borderTopWidth:1,height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
                           <Text style={{color:'#A9A9A9',fontSize:ScreenHeight/52}}>~ Bottom</Text>
                         </View>
                       }
@@ -780,7 +780,7 @@ export default class IntegralMall extends Component {
                     (this.state.next_up[0]==null)
                     ?
                       <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
-                        <Text style={{marginTop:20,color:'#696969'}}>- Not have next_up.</Text>
+                        <Text style={{marginTop:20,color:'#696969'}}>Not have Next up.</Text>
                       </View>
                     :
                     this.state.next_up.map((item,index)=>{

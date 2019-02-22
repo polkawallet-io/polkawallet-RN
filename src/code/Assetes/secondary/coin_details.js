@@ -145,7 +145,7 @@ import { observer, inject } from "mobx-react";
                     </TouchableOpacity>
                 </View>
                 {/* The line chart */}
-                <View style={{height:ScreenHeight/3,borderWidth:1}}>
+                <View style={{height:ScreenHeight/3,borderBottomWidth:2,borderColor:'#DCDCDC'}}>
                   <Echarts 
                     option={this.props.rootStore.stateStore.option}
                     height={ScreenHeight/3}/>   
@@ -158,7 +158,7 @@ import { observer, inject } from "mobx-react";
                         titlebottoms.map((item,index)=>{
                             return(
                                 <TouchableOpacity 
-                                    style={{width:ScreenWidth/3,justifyContent:'center',alignItems:'center',borderBottomWidth:2,borderBottomColor:this.state.titlebottom==index+1?'#005baf':'#A9A9A9'}}
+                                    style={{width:ScreenWidth/3,justifyContent:'center',alignItems:'center',borderBottomWidth:2,borderBottomColor:this.state.titlebottom==index+1?'#005baf':'#DCDCDC'}}
                                     onPress={()=>{
                                     this.setState({
                                         titlebottom:index+1

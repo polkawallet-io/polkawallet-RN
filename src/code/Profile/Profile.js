@@ -15,7 +15,7 @@ const Custom_Components=[
   //Need Open
   // {image:require('../../images/Profile/Notifications.png'),text:'Notifications'},
   {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
-  // {image:require('../../images/Profile/Settings.png'),text:'Settings'},
+  {image:require('../../images/Profile/Settings.png'),text:'Settings'},
   // {image:require('../../images/Profile/Support.png'),text:'Support'},
   // {image:require('../../images/Profile/About.png'),text:'About'},
 ]
@@ -40,6 +40,9 @@ export default class New extends Component {
   Addresses(){
     this.props.rootStore.stateStore.transfer_address=0
     this.props.navigation.navigate('Addresses')
+  }
+  Settings(){
+    this.props.navigation.navigate('Settings')
   }
   render() {
     return (
@@ -84,8 +87,9 @@ export default class New extends Component {
                 <TouchableOpacity key={index}
                   onPress={()=>{
                     if(index==0){this.Addresses()}
+                    if(index==1){this.Settings()}
                   }}
-                  style={{backgroundColor:'white',marginTop:(index==3)?ScreenHeight/35:0,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',borderRadius:ScreenHeight/130,marginHorizontal:1,borderBottomWidth:(index==4||index==2)?1:0.5}}
+                  style={{backgroundColor:'white',marginTop:(index==3)?ScreenHeight/35:0,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',marginHorizontal:1,borderBottomWidth:(index==4||index==2)?1:0.5}}
                 >
                   <Image
                     style={{marginLeft:ScreenWidth/25,height:ScreenHeight/30,width:ScreenHeight/30,resizeMode:'cover'}}
