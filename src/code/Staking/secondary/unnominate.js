@@ -96,9 +96,8 @@ import { set } from 'mobx';
                   nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                   intentions = await api.query.staking.intentions()
                   stakeIndex = intentions.indexOf(String(nominating))
-                  console.warn(stakeIndex)
                   await api.tx.staking.unnominate(stakeIndex).signAndSend(loadPair,({ status, type }) => {
-                      console.warn(type)
+                    //   console.warn(type)
                         this.setState({
                             type:type
                         })

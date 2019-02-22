@@ -20,10 +20,9 @@ import {
   const t=[
       {text1:'to the recipient address',text2:''},
       {text1:'send a value of',text2:'0'},
-      {text1:'witn fees totalling',text2:'0'},
-      {text1:'total transaction amount(fees + value)',text2:'4.06m'},
+      
   ]
-
+  const fees=['creationFee','existentialDeposit','transactionBaseFee','transactionByteFee','transferFee']
   import { observer, inject } from "mobx-react";
   @inject('rootStore')
   @observer
@@ -38,6 +37,7 @@ import {
               way:'DOT',
               way_change:'DOT',
               multiple:1000000000000000,
+              fees:{},
           }
           this.Make_transfer=this.Make_transfer.bind(this)
           this.back=this.back.bind(this)
@@ -123,11 +123,11 @@ import {
             const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
             const api = await Api.create(provider);
             api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, (balance) => {
-                // alert(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                 this.setState({
                   balance:balance
                 });
             });
+            this.setState({fees:await api.derive.balances.fees()})
         })()
         
       }
@@ -168,10 +168,10 @@ import {
                             </View>
                             <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
                                 <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
-                                    placeholder = {(index==0)?this.props.rootStore.stateStore.t_address:(index==3)?(this.state.value).toString():item.text2}
+                                    placeholder = {(index==0)?this.props.rootStore.stateStore.t_address:item.text2}
                                     placeholderTextColor = "#666666"
                                     underlineColorAndroid="#ffffff00"
-                                    editable={index==3?false:true}
+                                    // editable={index==3?false:true}
                                     onChangeText = {(changeText)=>{
                                         if(index==0){this.ChangeAddress(changeText)}
                                         if(index==1){this.ChangeValue(changeText)}
@@ -207,13 +207,31 @@ import {
                                             />
                                         </TouchableOpacity>
                                     :<View/>
-
                                 }
                             </View>
                           </View>
                         )
                     })
                 }
+                
+                <View style={styles.feesView}>
+                    <Text style={styles.feesText}>{'creationFee : '+formatBalance(String(this.state.fees.creationFee))}</Text>
+                </View>
+                <View style={styles.feesView}>
+                    <Text style={styles.feesText}>{'existentialDeposit : '+formatBalance(String(this.state.fees.existentialDeposit))}</Text>
+                </View>
+                <View style={styles.feesView}>
+                    <Text style={styles.feesText}>{'transactionBaseFee : '+formatBalance(String(this.state.fees.transactionBaseFee))}</Text>
+                </View>
+                <View style={styles.feesView}>
+                    <Text style={styles.feesText}>{'transactionByteFee : '+formatBalance(String(this.state.fees.transactionByteFee))}</Text>
+                </View>
+                <View style={styles.feesView}>
+                    <Text style={styles.feesText}>{'transferFee : '+formatBalance(String(this.state.fees.transferFee))}</Text>
+                </View>
+                  
+                  
+                
                 <TouchableOpacity style={styles.maket}
                   onPress={this.Make_transfer}
                 >
@@ -349,5 +367,15 @@ import {
         fontWeight:'500',
         fontSize:ScreenHeight/50,
         color:'#4169E1'
+    },
+    feesView:{
+        height:ScreenHeight/35,
+        width:ScreenWidth,
+        justifyContent:'center',
+        marginLeft:ScreenWidth/20
+    },
+    feesText:{
+        color:'#696969',
+        fontSize:ScreenHeight/60
     }
 })

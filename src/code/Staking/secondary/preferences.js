@@ -132,7 +132,7 @@ import { set } from 'mobx';
                   intentions = await api.query.staking.intentions()
                   stakeIndex = intentions.indexOf(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
                   await api.tx.staking.registerPreferences(stakeIndex,registerPreferences).signAndSend(loadPair,({ status, type }) => {
-                      console.warn(type)
+                    //   console.warn(type)
                         this.setState({
                             type:type
                         })
@@ -433,6 +433,8 @@ import { set } from 'mobx';
         backgroundColor:'#97BEC7'
     },
     Choose_unit:{
+        marginTop:ScreenHeight/70,
+        justifyContent:'center',
         alignItems:'center',
         marginLeft:ScreenWidth/70,
         width:ScreenWidth*0.25,

@@ -111,7 +111,7 @@ export default class New extends Component {
                 <View style={{width:ScreenWidth*0.0}}/>
             </TouchableOpacity>
             {/* 标题 */}
-            <Text style={styles.text_title}>Addresses</Text>
+            <Text style={styles.text_title}>Change Password</Text>
             {/* 保存 */}
             <TouchableOpacity
               style={styles.save_touch}
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         height:ScreenHeight/17,
         width:ScreenWidth*0.8,
         marginTop:ScreenHeight/30,
-        backgroundColor:'#40E0D0',
+        backgroundColor:'#4dabd0',
         borderRadius:ScreenHeight/100,
         alignItems:'center',
         justifyContent:'center'

@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         height:ScreenHeight/9,
-        borderRadius:ScreenHeight/150
     },
     image:{
         marginLeft:ScreenWidth*0.04

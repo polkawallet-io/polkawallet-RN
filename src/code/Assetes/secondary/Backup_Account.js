@@ -13,8 +13,14 @@ import {
   Picker,
   Clipboard
 } from 'react-native';
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
+
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+import { observer, inject } from "mobx-react";
+@inject('rootStore')
+@observer
 export default class Polkawallet extends Component{
   constructor(props)
   {
@@ -30,6 +36,8 @@ export default class Polkawallet extends Component{
     this.props.navigation.navigate('Create_Account')
   }
   Continue(){
+    this.props.rootStore.stateStore.isvalidators=0
+    this.props.rootStore.stateStore.StakingState=0
     this.props.navigation.navigate('Tabbed_Navigation')
   }
   async copy(){

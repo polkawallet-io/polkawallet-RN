@@ -103,7 +103,7 @@ export default class New extends Component {
               style={styles.save_touch}
               onPress={this.save}
             >
-                <Text style={styles.save_text}>Edit</Text>
+                {/* <Text style={styles.save_text}>Edit</Text> */}
             </TouchableOpacity>
         </View>
         <KeyboardAvoidingView

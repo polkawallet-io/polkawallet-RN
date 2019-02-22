@@ -158,10 +158,9 @@ export default class IntegralMall extends Component {
       })
       //查询nominating  //查询Staking状态
       nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-      nominatingBalance = await api.query.balances.freeBalance(nominating)
+      nominatingBalance = await api.query.balances.freeBalance(String(nominating))
       if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
       {
-        console.warn(nominating)
         this.props.rootStore.stateStore.StakingState=3
       }
       this.setState({
@@ -172,7 +171,7 @@ export default class IntegralMall extends Component {
         this.props.rootStore.stateStore.StakingState=1
       }      
       //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
-      nominatingNominators = await api.query.staking.nominatorsFor(nominating)
+      nominatingNominators = await api.query.staking.nominatorsFor(String(nominating))
       nominatingBalances = await Promise.all(
         nominatingNominators.map(authorityId =>
           api.query.balances.freeBalance(authorityId)
@@ -373,7 +372,7 @@ export default class IntegralMall extends Component {
                   onRefresh={this.refresh}/>}
               >
                 {/* *********************** 点线图 *********************** */}
-                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'grey'}}>
+                <View style={{height:ScreenHeight/3,width:ScreenWidth,borderBottomWidth:2,borderBottomColor:'#DCDCDC'}}>
                   <Echarts 
                     option={this.props.rootStore.stateStore.StakingOption}
                     height={ScreenHeight/3}/>                
@@ -550,7 +549,8 @@ export default class IntegralMall extends Component {
                           <Text style={{color:'#696969',fontSize:ScreenHeight/45}}>To load more ~</Text>
                         </TouchableOpacity>
                       :
-                        <View style={{height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
+                        
+                        <View style={{borderColor:'grey',borderTopWidth:1,height:ScreenHeight/10,width:ScreenWidth,justifyContent:'center',alignItems:'center'}}>
                           <Text style={{color:'#A9A9A9',fontSize:ScreenHeight/52}}>~ Bottom</Text>
                         </View>
                       }
@@ -581,7 +581,7 @@ export default class IntegralMall extends Component {
                               <Text
                                 style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                               >
-                                {formatBalance(this.state.nominatingBalance)+'('+formatBalance(this.state.sumnominatingBalance)+')'} 
+                                {formatBalance(String(this.state.nominatingBalance))+'('+formatBalance(String(this.state.sumnominatingBalance))+')'} 
                               </Text>
                             </View>
                       :
@@ -780,7 +780,7 @@ export default class IntegralMall extends Component {
                     (this.state.next_up[0]==null)
                     ?
                       <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
-                        <Text style={{marginTop:20,color:'#696969'}}>- Not have next_up.</Text>
+                        <Text style={{marginTop:20,color:'#696969'}}>Not have Next up.</Text>
                       </View>
                     :
                     this.state.next_up.map((item,index)=>{

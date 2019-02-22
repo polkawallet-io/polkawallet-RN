@@ -48,7 +48,6 @@ export default class Scanner extends Component {
   }
   onRead = (res) => {
     if(this.props.rootStore.stateStore.tocamera==0){
-        alert('0')
         //Assets界面进来的
         this.props.rootStore.stateStore.iscamera=1
         this.props.rootStore.stateStore.t_address=res.data
@@ -61,14 +60,12 @@ export default class Scanner extends Component {
         this.props.navigation.dispatch(resetAction)
     }
     if(this.props.rootStore.stateStore.tocamera==1){
-        alert('1')
         //transfer界面进来的
         this.props.rootStore.stateStore.iscamera=1
         this.props.rootStore.stateStore.t_address=res.data
         this.props.navigation.navigate('Transfer')
     }
     if(this.props.rootStore.stateStore.tocamera==2){
-        alert('2')
         //通讯录界面进来的
         this.props.rootStore.stateStore.iscamera=1
         this.props.rootStore.stateStore.QRaddress=res.data

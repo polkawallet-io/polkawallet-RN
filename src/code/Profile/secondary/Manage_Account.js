@@ -411,7 +411,6 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     backgroundColor:'red',
-    borderRadius:ScreenHeight/100,
   },
   next:{
     marginRight:ScreenWidth/28,

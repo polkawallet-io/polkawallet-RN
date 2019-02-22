@@ -35,61 +35,61 @@ export default class Polkawallet extends Component {
         votingState:[],
         votingStateIndex:[],
       }
-      this.votingState=this.votingState.bind(this)
+      // this.votingState=this.votingState.bind(this)
   }
-  // votingState(){
-  //   (async()=>{
-  //     this.state.votingState = []
-  //     ifNewIndex = false
-  //     test=0
-  //     l=0
-  //     const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-  //     for(i=0;i<this.state.votingIndex.length;i++){
-  //       await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
-  //         if(result[0]!=null){
-  //           if(this.state.votingState[0]!=null){
-  //             this.state.votingState.forEach(value => {
-  //               this.state.votingStateIndex.push(value[0].referendumId)
-  //             })
-  //             console.warn('votingStateIndex: '+ this.state.votingStateIndex)
-  //             for(k=0;k<this.state.votingState.length;k++){
-  //               console.warn("L: "+l+"length: "+this.state.votingState.length+' I: '+i+" k: "+k)
-  //               if(this.state.votingState[k][0].referendumId==result[0].referendumId){
-  //                 this.state.votingState[k] = result
-  //                 l--
-  //                 // console.warn('change__votingState'+JSON.stringify(this.state.votingState))
-  //                 break
-  //               }else if(l==this.state.votingState.length){
-  //                 ifNewIndex = true
-  //                 console.warn('isTrue')
-  //                 console.warn("*****L"+l+"length:"+this.state.votingState.length+' I: '+i+" k: "+k+' Index:'+this.state.votingIndex)
-  //                 l=0
-  //                 break
-  //               }
-  //               l++
-  //             }
-  //             if(ifNewIndex==true){
-  //               this.state.votingState.push(result)
-  //               ifNewIndex = false
-  //               // alert('new')
-  //               test++
-  //               // console.warn('test:'+test)
-  //               // console.warn('PushVotingState'+JSON.stringify(this.state.votingState))
-  //             }
-  //               // console.warn("ID:",result[0].referendumId)
-  //             console.warn("***"+JSON.stringify(this.state.votingState))  
-  //             this.setState({}) 
-  //           }else {
-  //             this.state.votingState.push(result)
-  //             console.warn('newArray')
-  //           }
-  //         }
+  votingState(){
+    (async()=>{
+      this.state.votingState = []
+      ifNewIndex = false
+      test=0
+      l=0
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      for(i=0;i<this.state.votingIndex.length;i++){
+        await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
+          if(result[0]!=null){
+            if(this.state.votingState[0]!=null){
+              // this.state.votingState.forEach(value => {
+              //   this.state.votingStateIndex.push(value[0].referendumId)
+              // })
+              // console.warn('votingStateIndex: '+ this.state.votingStateIndex)
+              for(k=0;k<this.state.votingState.length;k++){
+                // console.warn("L: "+l+"length: "+this.state.votingState.length+' I: '+i+" k: "+k)
+                if(this.state.votingState[k][0].referendumId==result[0].referendumId){
+                  this.state.votingState[k] = result
+                  l--
+                  // console.warn('change__votingState'+JSON.stringify(this.state.votingState))
+                  break
+                }else if(l==this.state.votingState.length){
+                  ifNewIndex = true
+                  // console.warn('isTrue')
+                  // console.warn("*****L"+l+"length:"+this.state.votingState.length+' I: '+i+" k: "+k+' Index:'+this.state.votingIndex)
+                  l=0
+                  break
+                }
+                l++
+              }
+              if(ifNewIndex==true){
+                this.state.votingState.push(result)
+                ifNewIndex = false
+                // alert('new')
+                test++
+                // console.warn('test:'+test)
+                // console.warn('PushVotingState'+JSON.stringify(this.state.votingState))
+              }
+                // console.warn("ID:",result[0].referendumId)
+              console.warn("***"+JSON.stringify(this.state.votingState))  
+              this.setState({}) 
+            }else {
+              this.state.votingState.push(result)
+              // console.warn('newArray')
+            }
+          }
           
-  //       })
-  //       console.warn('votingState'+JSON.stringify(this.state.votingState))
-  //     }
-  //   })()
-  // }
+        })
+        console.warn('votingState'+JSON.stringify(this.state.votingState))
+      }
+    })()
+  }
   componentWillMount(){
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
@@ -97,7 +97,7 @@ export default class Polkawallet extends Component {
         this.setState({votingCountdown:bestNumber})
       })
       await api.derive.democracy.referendums((result)=>{
-        this.setState({referendums:[],Actives_Nofixed:[],Actives_Nofixedvalue:[],Actives_Title:[],votingIndex:[],votingState:[]})
+        this.setState({referendums:[],Actives_Nofixed:[],Actives_Nofixedvalue:[],Actives_Title:[],votingState:[]})
         result.map((item,index)=>{
           info = item.unwrapOr(null)
           if (info) {
@@ -109,10 +109,16 @@ export default class Polkawallet extends Component {
             this.state.votingIndex.push(info.index)
           }
           this.setState({})
-          // this.votingState()
+          this.votingState()
         })
         
       })
+      // for(i=0;i<this.state.votingIndex.length;i++){
+      //   VotingFor = await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
+      //       this.state.votingState.push(result);
+      //     this.setState({})
+      //   })
+      // }
       
       
     })()
@@ -163,7 +169,7 @@ export default class Polkawallet extends Component {
                     <View style={{alignItems:'center',flexDirection:'row',marginTop:ScreenHeight/70,marginLeft:ScreenWidth/40,height:ScreenHeight/30}}>
                       <Text style={{fontSize:ScreenHeight/65}}>{'Threshold: '+item.threshold}</Text>
                     </View>
-                    <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
+                    {/* <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
                         <Image
                             style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
                             source={require('../../../images/Democracy/green_ellipse.png')}
@@ -178,9 +184,9 @@ export default class Polkawallet extends Component {
                         <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+item.Nay}</Text>
                         <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>33.25%</Text>
                         <Text style={{fontSize:ScreenWidth/45}}>{'('+item.nay+')'}</Text>
-                    </View>
+                    </View> */}
                     <View style={{flexDirection:'row',marginLeft:ScreenWidth/6,marginVertical:ScreenHeight/70}}>
-                        <VictoryPie
+                        {/* <VictoryPie
                             padding={{ top: 0, left:0 }}
                             colorScale={['#8fec41','#fb3232']}
                             innerRadius={ScreenWidth/30}
@@ -190,7 +196,7 @@ export default class Polkawallet extends Component {
                             ]}
                             height={ScreenWidth/5.86}
                             width={ScreenWidth/5.86}
-                        />
+                        /> */}
                         {/* Nay or Aye */}
                         <View style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}>
                          <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>

@@ -194,7 +194,6 @@ export default class Polkawallet extends Component {
                 this.props.navigation.navigate('Backup_Account',{key:this.state.key})
                 
             }else{
-              // /*
               this.pair.setMeta({'name':this.state.name})
               this.json = this.pair.toJson(this.state.password)
               this.json.meta = this.pair.getMeta()
@@ -204,7 +203,6 @@ export default class Polkawallet extends Component {
               this.props.rootStore.stateStore.Accountnum++
               this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
               this.props.navigation.navigate('Backup_Account',{key:this.state.key})
-              // */
             }
           }
           else{
@@ -275,7 +273,7 @@ export default class Polkawallet extends Component {
                 }}
               >
                 <View style={[styles.middle,{flex:1}]}>
-                  <Text style={{color:'white'}}>{this.state.way}</Text>
+                  <Text style={{fontSize:ScreenWidth/30,color:'white'}}>{this.state.way}</Text>
                 </View>
                 <Image
                   style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}

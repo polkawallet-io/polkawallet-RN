@@ -65,7 +65,7 @@ export default class Polkawallet extends Component {
       })
       for(i=0;i<this.state.Index.length;i++){
         balance = await api.query.democracy.depositOf(this.state.Index[i])
-        this.state.balances.push(JSON.parse(balance)[0])
+        this.state.balances.push((JSON.parse(balance))[0])
         this.setState({})
       }
     })();
