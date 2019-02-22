@@ -159,12 +159,13 @@ export default class IntegralMall extends Component {
       //查询nominating  //查询Staking状态
       nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
       nominatingBalance = await api.query.balances.freeBalance(nominating)
-      if (nominating!=null&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
+      if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
       {
+        console.warn(nominating)
         this.props.rootStore.stateStore.StakingState=3
       }
       this.setState({
-        nominating: nominating,
+        nominating: String(nominating),
         nominatingBalance: nominatingBalance,
       })
       if(this.props.rootStore.stateStore.StakingState==0){

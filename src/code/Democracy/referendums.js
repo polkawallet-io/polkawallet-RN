@@ -67,7 +67,7 @@ export default class Polkawallet extends Component {
         {
             (this.state.title==1)
             ?
-              <Active/>
+              <Active p={this.props.p}/>
             : 
               (this.state.title==2)
               ?

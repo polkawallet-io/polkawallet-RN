@@ -68,8 +68,9 @@ export default class New extends Component {
             this.props.rootStore.stateStore.isvalidators=1
           }
         })
-        if (nominating!=null&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
+        if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
         {
+          console.warn(String(nominating))
           this.props.rootStore.stateStore.StakingState=3
         }
         if(this.props.rootStore.stateStore.StakingState!=2&&this.props.rootStore.stateStore.StakingState!=3){
