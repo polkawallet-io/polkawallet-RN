@@ -163,13 +163,6 @@ export default class IntegralMall extends Component {
         nominatingBalance = await api.query.balances.freeBalance(nominating)
         this.props.rootStore.stateStore.StakingState=3
 
-        this.setState({
-          nominating: String(nominating),
-          nominatingBalance: nominatingBalance,
-        })
-      
-
-
         //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
         nominatingNominators = await api.query.staking.nominatorsFor(nominating)
         nominatingBalances = await Promise.all(
@@ -181,10 +174,17 @@ export default class IntegralMall extends Component {
         for(i=0;i<nominatingBalances.length;i++){
           sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
         }
+        this.setState({
+          nominating: String(nominating),
+          nominatingBalance: nominatingBalance,
+          sumnominatingBalance: sumnominatingBalance,
+        })
+
       }else {
         this.setState({
           nominating: [],
           nominatingBalance: 0,
+          sumnominatingBalance: 0,
         })
       }
 
@@ -278,7 +278,6 @@ export default class IntegralMall extends Component {
           validatorBalances: validatorBalances,
           next_up: _next_up,
           next_upBalances: next_upBalances,
-          sumnominatingBalance:sumnominatingBalance,
           sumnominatorsBalance: sumnominatorsBalance,
           sumnominatorsBalance2: sumnominatorsBalance2
         })
