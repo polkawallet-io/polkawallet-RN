@@ -132,7 +132,7 @@ import { observer, inject } from "mobx-react";
                     >
                         <Image
                         style={styles.image_title}
-                        source={require('../../../images/Assetes/Create_Account/back.png')}
+                        source={require('../../../images/Assets/Create_Account/back.png')}
                         />
                     </TouchableOpacity>
                     <Text style={styles.text_title}>DOT</Text>
@@ -140,7 +140,7 @@ import { observer, inject } from "mobx-react";
                         <Image 
                         style={styles.image_title}
                         //Need Open
-                        // source={require('../../../images/Assetes/coin_details/books.png')}
+                        // source={require('../../../images/Assets/coin_details/books.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -196,7 +196,7 @@ import { observer, inject } from "mobx-react";
                             >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
-                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assets/coin_details/down.png'):require('../../../images/Assets/coin_details/up.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
@@ -230,7 +230,7 @@ import { observer, inject } from "mobx-react";
                             >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
-                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assets/coin_details/down.png'):require('../../../images/Assets/coin_details/up.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
@@ -261,7 +261,7 @@ import { observer, inject } from "mobx-react";
                             >
                               <Image
                                 style={{marginLeft:ScreenWidth/20,height:ScreenHeight/25,width:ScreenHeight/25,resizeMode:'contain'}}
-                                source={(item.tx_type=="Receive")?require('../../../images/Assetes/coin_details/down.png'):require('../../../images/Assetes/coin_details/up.png')}
+                                source={(item.tx_type=="Receive")?require('../../../images/Assets/coin_details/down.png'):require('../../../images/Assets/coin_details/up.png')}
                               />
                               <View style={{marginLeft:ScreenWidth/16.30,flex:1}}>
                                 <Text
@@ -311,7 +311,7 @@ import { observer, inject } from "mobx-react";
                   >
                     <Image 
                       style={styles.SorR_Image}
-                      source={require('../../../images/Assetes/coin_details/send.png')}
+                      source={require('../../../images/Assets/coin_details/send.png')}
                     />
                     <Text style={styles.SorR_Text}>Send</Text>
                   </TouchableOpacity>
@@ -321,7 +321,7 @@ import { observer, inject } from "mobx-react";
                   >
                     <Image 
                       style={styles.SorR_Image}
-                      source={require('../../../images/Assetes/coin_details/receive.png')}
+                      source={require('../../../images/Assets/coin_details/receive.png')}
                     />
                     <Text style={styles.SorR_Text}>Receive</Text>
                   </TouchableOpacity>

@@ -162,7 +162,7 @@ import {
                         >
                           <Image
                             style={styles.image}
-                            source={require('../../../images/Assetes/transfer/eye.png')}
+                            source={require('../../../images/Assets/transfer/eye.png')}
                           />
                         </TouchableOpacity>
                     </View>

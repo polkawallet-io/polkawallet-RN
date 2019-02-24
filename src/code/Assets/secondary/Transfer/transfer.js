@@ -141,7 +141,7 @@ import {
                     >
                         <Image
                         style={styles.image_title}
-                        source={require('../../../../images/Assetes/Create_Account/back.png')}
+                        source={require('../../../../images/Assets/Create_Account/back.png')}
                         />
                     </TouchableOpacity>
                     <Text style={styles.text_title}>Transfer DOT</Text>
@@ -150,7 +150,7 @@ import {
                     >
                         <Image 
                         style={styles.image_title}
-                        source={require('../../../../images/Assetes/transfer/camera.png')}
+                        source={require('../../../../images/Assets/transfer/camera.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -185,7 +185,7 @@ import {
                                         >
                                             <Image
                                                 style={styles.image}
-                                                source={require('../../../../images/Assetes/transfer/address.png')}
+                                                source={require('../../../../images/Assets/transfer/address.png')}
                                             />
                                         </TouchableOpacity>
                                     :
@@ -203,7 +203,7 @@ import {
                                             </View>
                                             <Image
                                                 style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
-                                                source={require('../../../../images/Assetes/Create_Account/next.png')}
+                                                source={require('../../../../images/Assets/Create_Account/next.png')}
                                             />
                                         </TouchableOpacity>
                                     :<View/>

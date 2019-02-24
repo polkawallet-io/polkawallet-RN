@@ -230,7 +230,7 @@ export default class Polkawallet extends Component {
           >
             <Image
               style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
-              source={require('../../../images/Assetes/Create_Account/back.png')}
+              source={require('../../../images/Assets/Create_Account/back.png')}
               />
           </TouchableOpacity>
           <Text style={styles.text_title}>Create Account</Text>
@@ -277,7 +277,7 @@ export default class Polkawallet extends Component {
                 </View>
                 <Image
                   style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
-                  source={require('../../../images/Assetes/Create_Account/next.png')}
+                  source={require('../../../images/Assets/Create_Account/next.png')}
                 />
               </TouchableOpacity>
             </View>
@@ -311,7 +311,7 @@ export default class Polkawallet extends Component {
           }
           {/* pass */}
           <View style={styles.NandP}>
-            <Text style={{fontSize:ScreenWidth/30}}>enxrypt it using a password</Text>
+            <Text style={{fontSize:ScreenWidth/30}}>encrypt it using a password</Text>
             <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:'red'}]}
                 placeholder = "Please enter your password"
                 placeholderTextColor = "#666666"

@@ -43,7 +43,7 @@ import {
                     >
                         <Image
                         style={styles.image_title}
-                        source={require('../../../images/Assetes/Create_Account/back.png')}
+                        source={require('../../../images/Assets/Create_Account/back.png')}
                         />
                     </TouchableOpacity>
                     <Text style={styles.text_title}>Receive</Text>
@@ -51,7 +51,7 @@ import {
                         <Image 
                         style={styles.image_title}
                         //Need Open
-                        // source={require('../../../images/Assetes/share.png')}
+                        // source={require('../../../images/Assets/share.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -81,7 +81,7 @@ import {
                       >
                         <Image
                             style={styles.image_copy}
-                            source={require('../../../images/Assetes/copy.png')}
+                            source={require('../../../images/Assets/copy.png')}
                         />
                       </TouchableOpacity>
                     </View>

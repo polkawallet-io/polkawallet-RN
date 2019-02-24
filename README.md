@@ -1,6 +1,23 @@
 # polkawallet-RN
 polkawallet react native implementation
 
+### How to compile
+`$ git clone https://github.com/polkawallet-io/polkawallet-RN.git`  
+`$ cd polkawallet-RN && npm install`  
+
+Modify the file:  `polkawallet-RN/node_modules/bip39/index.js`  
+`var randomBytes = require('randomBytes')`  
+to: `var randomBytes = require('crypto').randomBytes;`  
+
+`$ ./node_modules/.bin/rn-nodeify --hack --install`  
+
+`$ react-native start`  
+
+Open a new terminal:  
+`$ react-native run-android`  
+or:  
+`$ react-native run-ios`
+
 ### Project introduce:
 
  [Polkawallet](http://polkawallet.io) provide Cross-chain asset one-stop management, convenient staking and governance, the private key is self-owned. 
@@ -68,8 +85,8 @@ In order to give users a more humane and more convenient experience, as the entr
 
 - [x] Display page implementation (plan: 2019.01.26 done)
 (then have the Chinese New Year, 14 days holiday)
-- [ ] Functional & logic implementation  (plan: 2019.02. 27 done)
-- [ ] Release Beta version (plan: 2019.02.28 release)
+- [x] Functional & logic implementation  (plan: 2019.02. 27 done)[actual: 02.22 done] 
+- [x] Release Beta version (plan: 2019.02.28 release)[actual: 02.23 done] 
 - [ ] Optimization and development
 - [ ] Integrate Parity Signer to Polkawallet
 - [ ] New and more functions, including finance, cross-chain ecosystem
