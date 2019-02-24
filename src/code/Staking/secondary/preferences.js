@@ -234,7 +234,7 @@ import { set } from 'mobx';
                             </View>
                             <Image
                                 style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
-                                source={require('../../../images/Assetes/Create_Account/next.png')}
+                                source={require('../../../images/Assets/Create_Account/next.png')}
                             />
                         </TouchableOpacity>
                     </View>
@@ -259,7 +259,7 @@ import { set } from 'mobx';
                         >
                           <Image
                             style={styles.image}
-                            source={require('../../../images/Assetes/transfer/eye.png')}
+                            source={require('../../../images/Assets/transfer/eye.png')}
                           />
                         </TouchableOpacity>
                     </View>

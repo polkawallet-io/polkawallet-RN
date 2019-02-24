@@ -5,7 +5,7 @@ import {
     AsyncStorage,
 } from 'react-native';
 import {TabBarBottom,createBottomTabNavigator} from 'react-navigation'
-import Assetes from './Assetes/Assetes'
+import Assets from './Assets/Assets'
 import Staking from './Staking/Staking'
 import Democracy from './Democracy/Democracy'
 import CrossChain from './CrossChain/CrossChain'
@@ -13,7 +13,7 @@ import Profile from './Profile/Profile'
 import Diceng from './bottom'
 const TabRouteConfigs = {
     B1:{
-        screen : Assetes,
+        screen : Assets,
         navigationOptions:()=>({
             tabBarLabel:'Assets',
             tabBarIcon:({b,tintColor})=>(

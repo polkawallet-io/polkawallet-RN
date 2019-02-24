@@ -74,7 +74,7 @@ export default class Polkawallet extends Component{
                     >
                       <Image 
                         style={styles.image}
-                        source={require('../../../images/Assetes/Create_Account/copy.png')}
+                        source={require('../../../images/Assets/Create_Account/copy.png')}
                       />
                     </TouchableOpacity>
                 </View>

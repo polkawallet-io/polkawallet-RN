@@ -57,7 +57,7 @@ export default class New extends Component {
         //查询Staking状态
         intentions = await api.query.staking.intentions()
         validators = await api.query.session.validators()
-        nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+        nominating = (await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)).unwrapOr(null)
         intentions.filter((address) =>{
           if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
             this.props.rootStore.stateStore.StakingState=2
@@ -68,7 +68,7 @@ export default class New extends Component {
             this.props.rootStore.stateStore.isvalidators=1
           }
         })
-        if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
+        if (nominating)
         {
           this.props.rootStore.stateStore.StakingState=3
         }
@@ -173,7 +173,7 @@ export default class New extends Component {
                   >
                     <Image
                       style={[{height:ScreenHeight/38,width:ScreenHeight/38,resizeMode:'contain'}]}
-                      source={require('../../../images/Assetes/right_menu/Scan.png')}
+                      source={require('../../../images/Assets/right_menu/Scan.png')}
                     />
                     <Text style={{marginTop:ScreenHeight/200,fontSize:ScreenWidth/25,color:'#333333'}}>Scan</Text>
                   </TouchableOpacity>
@@ -186,7 +186,7 @@ export default class New extends Component {
                   >
                     <Image
                       style={[{height:ScreenHeight/38,width:ScreenHeight/38,resizeMode:'contain'}]}
-                      source={require('../../../images/Assetes/right_menu/Create_Account.png')}
+                      source={require('../../../images/Assets/right_menu/Create_Account.png')}
                     />
                     <Text style={{marginTop:ScreenHeight/200,fontSize:ScreenWidth/25,color:'#333333'}}>Create Account</Text>
                   </TouchableOpacity>
@@ -200,7 +200,7 @@ export default class New extends Component {
                 {/* <TouchableOpacity style={[styles.middle,{height:ScreenHeight/13,flexDirection:'row'}]}>
                   <Image
                     style={[{height:ScreenHeight/48,width:ScreenHeight/48,resizeMode:'contain'}]}
-                    source={require('../../../images/Assetes/right_menu/help.png')}
+                    source={require('../../../images/Assets/right_menu/help.png')}
                   />
                   <Text style={{fontWeight:'500',color:'white',marginLeft:ScreenWidth/70,fontSize:ScreenWidth/38}}>Can I help you?</Text>
                 </TouchableOpacity> */}

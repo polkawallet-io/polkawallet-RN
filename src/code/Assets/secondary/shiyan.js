@@ -39,7 +39,7 @@ export default class Select extends Component {
           <TouchableOpacity style={{marginLeft:10}} 
             onPress={()=>{this.setState({showModal:true})}}
             hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}>
-            <Image style={styles.arrowStyle} source={require('../../../images/Assetes/right_menu/Create_Account.png')}/>
+            <Image style={styles.arrowStyle} source={require('../../../images/Assets/right_menu/Create_Account.png')}/>
           </TouchableOpacity>
         </View>
         <Modal  

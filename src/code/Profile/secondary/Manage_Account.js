@@ -184,7 +184,7 @@ export default class Manage_Account extends Component {
           >
             <Image
               style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
-              source={require('../../../images/Assetes/Create_Account/back.png')}
+              source={require('../../../images/Assets/Create_Account/back.png')}
               />
           </TouchableOpacity>
           <Text style={styles.text_title}>Manage Account</Text>

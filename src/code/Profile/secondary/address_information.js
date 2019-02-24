@@ -92,7 +92,7 @@ export default class New extends Component {
             >
                 <Image
                 style={styles.image_title}
-                source={require('../../../images/Assetes/Create_Account/back.png')}
+                source={require('../../../images/Assets/Create_Account/back.png')}
                 />
                 <View style={{width:ScreenWidth*0.0}}/>
             </TouchableOpacity>
@@ -133,7 +133,7 @@ export default class New extends Component {
                                   >
                                     <Image
                                         style={styles.inputimage}
-                                        source={require('../../../images/Assetes/copy.png')}
+                                        source={require('../../../images/Assets/copy.png')}
                                     />
                                   </TouchableOpacity>
                                 </View>

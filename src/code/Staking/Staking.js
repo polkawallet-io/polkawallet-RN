@@ -41,7 +41,7 @@ export default class IntegralMall extends Component {
         eraProgress:0,
         eraLength:0,
         nominating: [],
-        nominatingBalance: [],
+        nominatingBalance: 0,
         mynominators:[],
         mynominatorsBalance:[],
         validators:[],
@@ -156,33 +156,41 @@ export default class IntegralMall extends Component {
           mynominators: mynominators,
           mynominatorsBalance: mynominatorsBalance,
       })
+
       //查询nominating  //查询Staking状态
-      nominating = await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-      nominatingBalance = await api.query.balances.freeBalance(String(nominating))
-      if (String(nominating)!=''&&String(nominating)!='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')
-      {
+      nominating = (await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)).unwrapOr(null)
+      if(nominating){
+        nominatingBalance = await api.query.balances.freeBalance(nominating)
         this.props.rootStore.stateStore.StakingState=3
+
+        this.setState({
+          nominating: String(nominating),
+          nominatingBalance: nominatingBalance,
+        })
+      
+
+
+        //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
+        nominatingNominators = await api.query.staking.nominatorsFor(nominating)
+        nominatingBalances = await Promise.all(
+          nominatingNominators.map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        sumnominatingBalance = 0
+        for(i=0;i<nominatingBalances.length;i++){
+          sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
+        }
+      }else {
+        this.setState({
+          nominating: [],
+          nominatingBalance: 0,
+        })
       }
-      this.setState({
-        nominating: String(nominating),
-        nominatingBalance: nominatingBalance,
-      })
+
       if(this.props.rootStore.stateStore.StakingState==0){
         this.props.rootStore.stateStore.StakingState=1
-      }      
-      //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
-      nominatingNominators = await api.query.staking.nominatorsFor(String(nominating))
-      nominatingBalances = await Promise.all(
-        nominatingNominators.map(authorityId =>
-          api.query.balances.freeBalance(authorityId)
-        )
-      );
-      sumnominatingBalance = 0
-      for(i=0;i<nominatingBalances.length;i++){
-        sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
       }
-      
-      
 
       //求出给validators的提名者们
       nominators = await Promise.all(
@@ -503,7 +511,7 @@ export default class IntegralMall extends Component {
                     }}
                     >
                     <Text style={{color:this.state.titlebottomAA==3?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
-                      MyNominstors
+                      MyNominators
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -585,7 +593,7 @@ export default class IntegralMall extends Component {
                               </Text>
                             </View>
                       :
-                      // MyNominstors
+                      // MyNominators
                       <View>
                         {
                           (this.state.mynominators[0]==null)

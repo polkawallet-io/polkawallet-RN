@@ -60,7 +60,7 @@ export default class Polkawallet extends Component {
             }}
             >
             <Text style={{color:this.state.title==3?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
-                MyNominstors
+                MyNominators
             </Text>
             </TouchableOpacity> */}
           </View>

@@ -52,7 +52,7 @@ export default class New extends Component {
             >
                 <Image
                 style={styles.image_title}
-                source={require('../../../images/Assetes/Create_Account/back.png')}
+                source={require('../../../images/Assets/Create_Account/back.png')}
                 />
             </TouchableOpacity>
             {/* 标题 */}

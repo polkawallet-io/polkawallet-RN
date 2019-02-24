@@ -49,7 +49,7 @@ export default class Transfer_details extends PureComponent {
                     >
                         <Image
                         style={styles.image_title}
-                        source={require('../../../../images/Assetes/Create_Account/back.png')}
+                        source={require('../../../../images/Assets/Create_Account/back.png')}
                         />
                     </TouchableOpacity>
                     <Text style={styles.text_title}>Details</Text>
@@ -57,7 +57,7 @@ export default class Transfer_details extends PureComponent {
                         <Image 
                         style={styles.image_title}
                         // Need Open
-                        // source={require('../../../../images/Assetes/share.png')}
+                        // source={require('../../../../images/Assets/share.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -65,7 +65,7 @@ export default class Transfer_details extends PureComponent {
                   {/* 图标 */}
                   <Image
                     style={{height:ScreenHeight/16,width:ScreenHeight/16}}
-                    source={require('../../../../images/Assetes/transfer/successed.png')}
+                    source={require('../../../../images/Assets/transfer/successed.png')}
                   />
                   {/* 状态 */}
                   <Text style={{marginTop:ScreenHeight/70,fontSize:ScreenWidth/25,color:'black',fontWeight:'500'}}>{this.state.data.tx_type+':Successed'}</Text>
@@ -99,7 +99,7 @@ export default class Transfer_details extends PureComponent {
                     >
                         <Image 
                             style={styles.list_image}
-                            source={require('../../../../images/Assetes/copy.png')}
+                            source={require('../../../../images/Assets/copy.png')}
                         />
                     </TouchableOpacity>
                   </View>
@@ -120,7 +120,7 @@ export default class Transfer_details extends PureComponent {
                     >
                         <Image 
                             style={styles.list_image}
-                            source={require('../../../../images/Assetes/copy.png')}
+                            source={require('../../../../images/Assets/copy.png')}
                         />
                     </TouchableOpacity>
                   </View>
