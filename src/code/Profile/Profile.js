@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+let Platform = require('Platform');
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const Custom_Components=[
@@ -47,8 +48,7 @@ export default class New extends Component {
   render() {
     return (
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
-        <View style={{height:ScreenHeight/9,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
-          
+        <View style={{height:(Platform.OS === 'android')?ScreenHeight/9:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
               {/* logo */}
               <Text style={{marginBottom:ScreenHeight/50,fontSize:ScreenHeight/37,fontWeight:'bold',color:'white'}}>Profile</Text>

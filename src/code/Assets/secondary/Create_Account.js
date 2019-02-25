@@ -26,9 +26,9 @@ import { hexToU8a, isHex, stringToU8a, u8aToHex }  from '@polkadot/util'
 import { type } from 'os';
 
 const keyring = new Keyring();
-let Platform = require('Platform');
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+let Platform = require('Platform');
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
