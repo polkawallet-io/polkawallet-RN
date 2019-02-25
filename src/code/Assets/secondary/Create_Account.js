@@ -11,7 +11,7 @@ import {
   TextInput,
   Modal,
   Picker,
-  AsyncStorage,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
@@ -46,7 +46,12 @@ export default class Polkawallet extends Component {
       key:'',
       name:'',
       password:'',
+      passwordErepeat:'',
       address:'xxxxxxxxxxxxxxxxxxxxxxxx',
+      islookpwd:false,
+      ispwd:0,
+      ispwd2:0,
+      balance:0,
     }
     this.Save_Account=this.Save_Account.bind(this)
     this.onChangekey=this.onChangekey.bind(this)
@@ -54,7 +59,7 @@ export default class Polkawallet extends Component {
     this.onChangepassword=this.onChangepassword.bind(this)
     this.Modify_way=this.Modify_way.bind(this)
     this.Reset=this.Reset.bind(this)
-
+    this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
   }
   componentWillMount(){
     let key = mnemonicGenerate()
@@ -63,7 +68,6 @@ export default class Polkawallet extends Component {
       key:key,
       address:this.pair.address()
     })
-    this.props.rootStore.stateStore.balance='0'
     
   }
   Modify_way(){
@@ -130,7 +134,7 @@ export default class Polkawallet extends Component {
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
       balance = await api.query.balances.freeBalance(this.state.address);
-      this.props.rootStore.stateStore.balance=String(balance)
+      this.setState({balance:balance})
     })()
     
 
@@ -145,14 +149,34 @@ export default class Polkawallet extends Component {
     this.setState({
       password:Changepassword
     }) 
+    if(Changepassword!=''){
+      this.setState({ispwd:1})
+    }
+    if(Changepassword==''){
+      this.setState({ispwd:0})
+    }
+    
+  }
+  onChangpasswordErepeat(Changepassword){
+    this.setState({
+      passwordErepeat:Changepassword
+    }) 
+    if(Changepassword!=this.state.password){
+      this.setState({ispwd2:0})
+    }
+    if(Changepassword==this.state.password){
+      this.setState({ispwd2:1})
+    }
+    
   }
   Reset(){
     if(this.state.way=='Keystore'){
       this.setState({
         key:'',
-        address:''
+        address:'',
+        balance:0
       })
-      this.props.rootStore.stateStore.balance=0
+      
     }else{
       let key = this.state.way=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
       this.pair = keyring.addFromMnemonic(key)
@@ -163,53 +187,59 @@ export default class Polkawallet extends Component {
     }
   }
   Save_Account(){
-    if(this.state.password=='')
+    if(this.state.password==''||this.state.passwordErepeat == '')
     {
       alert('Please enter your password')
     }else{
-      SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
-        (result)=>{
-          if(result==null){
-            if(this.state.way == 'Keystore'){
-              loadPair = keyring.addFromJson(JSON.parse(this.state.key))
-              try{
-                loadPair.decodePkcs8(this.state.password)
-              }catch(error){
-                Alert.alert(
-                    'Alert',
-                    'Password mistake.',
-                    [
-                      {text: 'OK', onPress: () => {
-                      }},
-                    ],
-                    { cancelable: false }
-                )
-              }
-              loadPair.isLocked()?'':
-                SInfo.setItem(this.state.address,this.state.key,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}) 
+      if(this.state.password != this.state.passwordErepeat ){
+        alert('The two passwords do not match. Please re-enter them')
+      }else{
+        SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
+          (result)=>{
+            if(result==null){
+              if(this.state.way == 'Keystore'){
+                loadPair = keyring.addFromJson(JSON.parse(this.state.key))
+                try{
+                  loadPair.decodePkcs8(this.state.password)
+                }catch(error){
+                  Alert.alert(
+                      'Alert',
+                      'Password mistake.',
+                      [
+                        {text: 'OK', onPress: () => {
+                        }},
+                      ],
+                      { cancelable: false }
+                  )
+                }
+                loadPair.isLocked()?'':
+                  SInfo.setItem(this.state.address,this.state.key,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}) 
+                  this.props.rootStore.stateStore.isfirst=1
+                  this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(this.state.key).meta.name,address:this.state.address})
+                  this.props.rootStore.stateStore.Accountnum++
+                  this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+                  this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+                  
+              }else{
+                this.pair.setMeta({'name':this.state.name})
+                this.json = this.pair.toJson(this.state.password)
+                this.json.meta = this.pair.getMeta()
+                SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
                 this.props.rootStore.stateStore.isfirst=1
-                this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(this.state.key).meta.name,address:this.state.address})
+                this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
                 this.props.rootStore.stateStore.Accountnum++
                 this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+                this.props.rootStore.stateStore.balance=0
                 this.props.navigation.navigate('Backup_Account',{key:this.state.key})
-                
-            }else{
-              this.pair.setMeta({'name':this.state.name})
-              this.json = this.pair.toJson(this.state.password)
-              this.json.meta = this.pair.getMeta()
-              SInfo.setItem(this.state.address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'});  
-              this.props.rootStore.stateStore.isfirst=1
-              this.props.rootStore.stateStore.Accounts.push({account:this.state.name,address:this.pair.address()})
-              this.props.rootStore.stateStore.Accountnum++
-              this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
-              this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+              }
+            }
+            else{
+              alert('The address already exists!')
             }
           }
-          else{
-            alert('The address already exists!')
-          }
-        }
-      )
+        )
+      }
+      
       
     }
   }
@@ -237,8 +267,11 @@ export default class Polkawallet extends Component {
           <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
     
         </View>
-        <ScrollView>
-          <View style={{height:ScreenHeight/3.5,alignItems:'center'}}>
+        <KeyboardAvoidingView
+          behavior="padding"
+        >
+         <ScrollView>
+          <View style={{height:ScreenHeight/4.5,alignItems:'center'}}>
               {/* 头像 */}
               <View style={[styles.imageview]}>
                 <Identicon
@@ -257,11 +290,11 @@ export default class Polkawallet extends Component {
                   {this.state.address}
                 </Text>
               </View>
-              <Text style={styles.text1}>{'balance '+formatBalance(this.props.rootStore.stateStore.balance)}</Text>
+              <Text style={styles.text1}>{'balance '+formatBalance(this.state.balance)}</Text>
               {/* <Text style={[styles.text1,{marginTop:ScreenHeight/200}]}>transactions 0</Text> */}
           </View>
           {/* 密钥 */}
-          <View style={[styles.NandP,{height:ScreenHeight/5}]}>
+          <View style={[styles.NandP,{height:ScreenHeight/5.5}]}>
             <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/23}}>
               <Text style={{fontSize:ScreenWidth/33}}>create from mnemonic,seed or import keystore</Text>
               {/* 选择方式 */}
@@ -298,7 +331,7 @@ export default class Polkawallet extends Component {
               <View/>
             :
               // name 
-              <View style={styles.NandP}>
+              <View style={[styles.NandP,{height:ScreenHeight/10}]}>
                 <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
                 <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
                     placeholder = "New Keypair"
@@ -310,16 +343,32 @@ export default class Polkawallet extends Component {
               </View>
           }
           {/* pass */}
-          <View style={styles.NandP}>
+          <View style={[styles.NandP,{height:ScreenHeight/10}]}>
             <Text style={{fontSize:ScreenWidth/30}}>encrypt it using a password</Text>
-            <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:'red'}]}
-                placeholder = "Please enter your password"
-                placeholderTextColor = "#666666"
-                underlineColorAndroid="#ffffff00"
-                autoCorrect = {false}
-                secureTextEntry={true}
-                onChangeText = {this.onChangepassword}
-            />
+            <View>
+              <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd==0)?'red':'#4169E1'}]}
+                  placeholder = "Please enter your password"
+                  placeholderTextColor = "#666666"
+                  underlineColorAndroid="#ffffff00"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  onChangeText = {this.onChangepassword}
+              />
+            </View>
+          </View>
+          {/* repeatPass 2*/}
+          <View style={[styles.NandP,{height:ScreenHeight/10}]}>
+            <Text style={{fontSize:ScreenWidth/30}}>Please confirm the password</Text>
+            <View>
+              <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd2==0)?'red':'#4169E1'}]}
+                  placeholder = "Please enter your password"
+                  placeholderTextColor = "#666666"
+                  underlineColorAndroid="#ffffff00"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  onChangeText = {this.onChangpasswordErepeat}
+              />
+            </View>
           </View>
           {/* Reset or Save */}
           <View style={{height:ScreenHeight/6,width:ScreenWidth,justifyContent:'center',alignItems:'flex-end'}}>
@@ -348,7 +397,8 @@ export default class Polkawallet extends Component {
             </View>
           </View>
 
-        </ScrollView>
+         </ScrollView>
+        </KeyboardAvoidingView>
         <Modal
           animationType={'slide'}
           transparent={true}
@@ -397,9 +447,9 @@ const styles = StyleSheet.create({
   imageview:{
     justifyContent:'center',
     alignItems:'center',
-    marginTop:ScreenHeight/55,
+    marginTop:ScreenHeight/100,
     width:ScreenWidth,
-    height:ScreenHeight/3.81/2.5
+    height:ScreenHeight/10
   },
   image:{
     marginTop:ScreenHeight/30,
@@ -441,11 +491,11 @@ const styles = StyleSheet.create({
     borderColor:'grey',
     borderRadius:ScreenHeight/100,
     paddingLeft:ScreenHeight/100,
-    marginTop:ScreenHeight/70,
+    marginTop:ScreenHeight/100,
     paddingVertical: 0
   },
   NandP:{
-    paddingTop:ScreenHeight/100,
+    paddingTop:ScreenHeight/200,
     paddingLeft:ScreenWidth/20,
     height:ScreenHeight/8,
   },

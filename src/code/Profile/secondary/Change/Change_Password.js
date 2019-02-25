@@ -31,6 +31,9 @@ export default class New extends Component {
             Current_password:'',
             New_password:'',
             Reprat_password:'',
+            ispwd1:0,
+            ispwd2:0,
+            ispwd3:0,
         }
         this.back=this.back.bind(this)
         this.Current_password=this.Current_password.bind(this)
@@ -42,16 +45,34 @@ export default class New extends Component {
       this.props.navigation.navigate('Manage_Account')
   }
   Current_password(Current_password){
+      if(Current_password!=''){
+        this.setState({ispwd1:1})
+      }
+      if(Current_password==''){
+        this.setState({ispwd1:0})
+      }
       this.setState({
         Current_password:Current_password
       })
   }
   New_password(New_password){
+    if(New_password!=''){
+      this.setState({ispwd2:1})
+    }
+    if(New_password==''){
+      this.setState({ispwd2:0})
+    }
     this.setState({
         New_password:New_password
     })
   }
   Reprat_password(Reprat_password){
+    if(Reprat_password!=this.state.New_password){
+        this.setState({ispwd3:0})
+    }
+    if(Reprat_password==this.state.New_password){
+      this.setState({ispwd3:1})
+    }
     this.setState({
         Reprat_password:Reprat_password
     })
@@ -129,9 +150,10 @@ export default class New extends Component {
                     <View style={[styles.view]} key={index}>
                         <Text style={[styles.text]}>{item}</Text>
                         {
-                                <TextInput style = {[styles.textInputStyle]}  
-                                  autoCorrect={false}          
+                                <TextInput style = {[styles.textInputStyle,{borderColor:((index==0?this.state.ispwd1:index==1?this.state.ispwd2:this.state.ispwd3)==0)?'red':'#4169E1'}]}  
+                                  secureTextEntry={true}
                                   underlineColorAndroid="#ffffff00"
+                                  autoCorrect = {false}
                                   onChangeText = {(index==0)?this.Current_password:(index==1)?this.New_password:this.Reprat_password}
                                 />
                         }
@@ -196,7 +218,6 @@ const styles = StyleSheet.create({
         height:ScreenHeight/24,
         width:ScreenWidth*0.8,
         borderWidth:1,
-        borderColor:'red',
         fontSize:ScreenHeight/45,
         borderRadius:ScreenHeight/150,
         paddingLeft:ScreenHeight/100,
