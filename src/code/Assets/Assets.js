@@ -130,7 +130,7 @@ export default class Assets extends Component {
         }
       }
     )
-    setTimeout(() => {
+    setTimeout ( () => {
       if(this.props.rootStore.stateStore.isfirst==1){this.props.rootStore.stateStore.Account=1}
       this.setState({
         address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address
@@ -139,15 +139,55 @@ export default class Assets extends Component {
         // Query Balance
         (async()=>{
           const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+          const props = await api.rpc.system.properties();
           balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
           fees = await api.derive.balances.fees()
           this.props.rootStore.stateStore.balance=String(balance)
 
-          const props = await api.rpc.system.properties();
+          
           formatBalance.setDefaults({
             decimals: props.get('tokenDecimals'),
             unit: props.get('tokenSymbol')
-          });      
+          });     
+          //获取本地账户staking折线图数据
+          REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+          map = {
+                method:'POST'
+              }
+          privateHeaders = {
+            'Content-Type':'application/json'
+          }
+          map.headers = privateHeaders;
+          map.follow = 20;
+          map.timeout = 0;
+          map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+          // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+          fetch(REQUEST_URL,map).then(
+            (result)=>{
+              this.props.rootStore.stateStore.StakingOption.xAxis.data=[]
+              this.props.rootStore.stateStore.StakingOption.series[0].data=[]
+              JSON.parse(result._bodyInit).map((item,index)=>{
+                this.props.rootStore.stateStore.StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+                this.props.rootStore.stateStore.StakingOption.series[0].data.push(item.slash_balance)
+              })
+              max=0
+              for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+              {
+                if(this.props.rootStore.stateStore.StakingOption.series[0].data[i]>max){
+                  max=this.props.rootStore.stateStore.StakingOption.series[0].data[i]
+                }
+              }
+              power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
+              unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
+              
+              for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+              {
+                this.props.rootStore.stateStore.StakingOption.series[0].data[i]=(this.props.rootStore.stateStore.StakingOption.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
+                
+              }
+              this.props.rootStore.stateStore.StakingOption.title.text = 'Staking slash record, Unit ( '+unit+' )'
+            }
+          ).catch() 
           setInterval(async()=>{
             myDate=new Date()
             blockdate = await api.query.timestamp.now()
@@ -178,7 +218,7 @@ export default class Assets extends Component {
               color:'rgb('+a+','+b+','+c+')'
             })
            
-          },1000);
+          },0);
         })()
       }
    
@@ -215,7 +255,7 @@ export default class Assets extends Component {
             this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
           }
         ).catch()
-      }, 200);
+      }, 100);
       //获取本地账户的Staking Records
       let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
       let map = {
@@ -236,44 +276,7 @@ export default class Assets extends Component {
             }
       ).catch()
 
-      //获取本地账户staking折线图数据
-      REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
-        map = {
-              method:'POST'
-            }
-        privateHeaders = {
-          'Content-Type':'application/json'
-        }
-        map.headers = privateHeaders;
-        map.follow = 20;
-        map.timeout = 0;
-        map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
-        // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
-        fetch(REQUEST_URL,map).then(
-          (result)=>{
-            this.props.rootStore.stateStore.StakingOption.xAxis.data=[]
-            this.props.rootStore.stateStore.StakingOption.series[0].data=[]
-            JSON.parse(result._bodyInit).map((item,index)=>{
-              this.props.rootStore.stateStore.StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
-              this.props.rootStore.stateStore.StakingOption.series[0].data.push(item.slash_balance)
-            })
-            max=0
-            for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
-            {
-              if(this.props.rootStore.stateStore.StakingOption.series[0].data[i]>max){
-                max=this.props.rootStore.stateStore.StakingOption.series[0].data[i]
-              }
-            }
-            power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
-            unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
-            for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
-            {
-              this.props.rootStore.stateStore.StakingOption.series[0].data[i]=(this.props.rootStore.stateStore.StakingOption.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
-               
-            }
-            this.props.rootStore.stateStore.StakingOption.title.text = 'Staking slash record, Unit ( '+unit+' )'
-          }
-        ).catch()
+      
   }
   // 刷新
   refresh(){
