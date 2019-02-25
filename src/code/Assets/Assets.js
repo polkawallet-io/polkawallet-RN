@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   SafeAreaView,
+  StatusBar
 } from 'react-native';
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
@@ -297,6 +298,16 @@ export default class Assets extends Component {
   render() {
     return (
       <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
+        {
+          (Platform.OS === 'android')?
+            <StatusBar
+              backgroundColor={'transparent'} //状态栏背景颜色
+              translucent={true}
+              // backgroundColor={'white'} //状态栏背景颜色
+              barStyle={'dark-content'} //状态栏样式（黑字）
+            />
+          :<View/>
+        }
       <Drawer
         type='overlay'
         side='right'
@@ -310,7 +321,7 @@ export default class Assets extends Component {
       >
        <View style={{flex:1,backgroundColor:'white',}}>
         {/* 标题栏 */}
-        <View style={{height:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
+        <View style={{height:(Platform.OS === 'android')?ScreenHeight/9:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
           <View style={{marginLeft:ScreenWidth/26.79,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}></View>
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
               {/* logo */}

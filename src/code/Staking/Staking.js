@@ -10,6 +10,7 @@ import {
   Image,
   RefreshControl,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import moment from "moment/moment";
 import Identicon from 'polkadot-identicon-react-native';
@@ -17,6 +18,7 @@ import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import formatBalance from '../../util/formatBalance'
 import Echarts from 'native-echarts';
+let Platform = require('Platform');
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 // const Staking_Records=[
@@ -345,9 +347,10 @@ export default class IntegralMall extends Component {
   }
   render() {
     return (
-      <SafeAreaView style={{flex:1,backgroundColor:'white'}}>
+      <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
+        
         <View style={{flex:1,backgroundColor:'white'}}>
-          <View style={{height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
+          <View style={{marginTop:(Platform.OS === 'android')?ScreenHeight/20:ScreenHeight/70,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
             <TouchableOpacity 
               style={{justifyContent:'center',alignItems:'center',height:ScreenHeight/20,width:ScreenWidth*0.49,borderWidth:1,borderColor:'#0076ff',borderTopLeftRadius:8,borderBottomLeftRadius:8,backgroundColor:this.state.title==1?'#0076ff':'white'}}
               onPress={()=>{

@@ -18,6 +18,7 @@ import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import { Method } from '@polkadot/types';
 
+let Platform = require('Platform');
 
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
@@ -63,7 +64,7 @@ export default class IntegralMall extends Component {
     return (
     <SafeAreaView style={{flex:1,backgroundColor:'white'}}>
       <View style={{flex:1,backgroundColor:'white'}}>
-        <View style={{marginTop:ScreenHeight/70,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
+        <View style={{marginTop:(Platform.OS === 'android')?ScreenHeight/20:ScreenHeight/70,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
             <TouchableOpacity 
               style={{flexDirection:'row',justifyContent:'center',alignItems:'center',height:ScreenHeight/20,width:ScreenWidth*0.49,borderWidth:1,borderColor:'#0076ff',borderTopLeftRadius:8,borderBottomLeftRadius:8,backgroundColor:this.state.Toptitle==1?'#0076ff':'white'}}
               onPress={()=>{
