@@ -406,134 +406,132 @@ export default class Polkawallet extends Component {
          :
          //android
          <ScrollView>
-         <View style={{height:ScreenHeight/4.5,alignItems:'center'}}>
-             {/* 头像 */}
-             <View style={[styles.imageview]}>
-               <Identicon
-                 value={this.state.address}
-                 size={ScreenHeight/14}
-                 theme={'polkadot'}
-               />
-             </View>
-             {/* 地址 */}
-             <View style={styles.address_text}>
-               <Text 
-                 style={{width:ScreenWidth/2.5,fontSize:ScreenHeight/40,color:'#171717',}}
-                 ellipsizeMode={"middle"}
-                 numberOfLines={1}
-               >
-                 {this.state.address}
-               </Text>
-             </View>
-             <Text style={styles.text1}>{'balance '+formatBalance(this.state.balance)}</Text>
-             {/* <Text style={[styles.text1,{marginTop:ScreenHeight/200}]}>transactions 0</Text> */}
-         </View>
-         {/* 密钥 */}
-         <View style={[styles.NandP,{height:ScreenHeight/5.5}]}>
-           <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/23}}>
-             <Text style={{fontSize:ScreenWidth/33}}>create from mnemonic,seed or import keystore</Text>
-             {/* 选择方式 */}
-             <TouchableOpacity style={styles.Choose_way}
-               onPress={()=>{
-                 this.setState({
-                   isModel:true
-                 })
-               }}
-             >
-               <View style={[styles.middle,{flex:1}]}>
-                 <Text style={{fontSize:ScreenWidth/30,color:'white'}}>{this.state.way}</Text>
-               </View>
-               <Image
-                 style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
-                 source={require('../../../images/Assets/Create_Account/next.png')}
-               />
-             </TouchableOpacity>
-           </View>
-           <TextInput style = {[styles.textInputStyle,{height:ScreenHeight/10,fontSize:ScreenHeight/40}]}
-               // placeholder = {this.state.keyrandom}
-               autoCorrect = {false}
-               value = {this.state.key}
-               placeholderTextColor = "black"
-               underlineColorAndroid="#ffffff00"
-               multiline={true}
-               maxLength={1000}
-               onChangeText = {this.onChangekey}
-           />
-         </View>
-         {
-           (this.state.way == 'Keystore')
-           ?
-             <View/>
-           :
-             // name 
-             <View style={[styles.NandP,{height:ScreenHeight/10}]}>
-               <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
-               <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
-                   placeholder = "New Keypair"
-                   placeholderTextColor = "#666666"
-                   autoCorrect = {false}
-                   underlineColorAndroid="#ffffff00"
-                   onChangeText = {this.onChangename}
-               />
-             </View>
-         }
-         {/* pass */}
-         <View style={[styles.NandP,{height:ScreenHeight/10}]}>
-           <Text style={{fontSize:ScreenWidth/30}}>encrypt it using a password</Text>
-           <View>
-             <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd==0)?'red':'#4169E1'}]}
-                 placeholder = "Please enter your password"
-                 placeholderTextColor = "#666666"
-                 underlineColorAndroid="#ffffff00"
-                 autoCorrect = {false}
-                 secureTextEntry={true}
-                 onChangeText = {this.onChangepassword}
-             />
-           </View>
-         </View>
-         {/* repeatPass 2*/}
-         <View style={[styles.NandP,{height:ScreenHeight/10}]}>
-           <Text style={{fontSize:ScreenWidth/30}}>Please confirm the password</Text>
-           <View>
-             <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd2==0)?'red':'#4169E1'}]}
-                 placeholder = "Please enter your password"
-                 placeholderTextColor = "#666666"
-                 underlineColorAndroid="#ffffff00"
-                 autoCorrect = {false}
-                 secureTextEntry={true}
-                 onChangeText = {this.onChangpasswordErepeat}
-             />
-           </View>
-         </View>
-         {/* Reset or Save */}
-         <View style={{height:ScreenHeight/6,width:ScreenWidth,justifyContent:'center',alignItems:'flex-end'}}>
-           <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>
-           <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/20,width:ScreenWidth*0.2}}
-             onPress={this.Reset}
-           >
-             
-             <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
-               Reset
-             </Text>
-           </TouchableOpacity>
-           <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
-             onPress={this.Save_Account}
-           >
-             
-             <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
-               Save
-             </Text>
-           </TouchableOpacity>
-           <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
-             <Text style={{fontSize:ScreenHeight/70}}>
-               or
-             </Text>
-           </View>
-           </View>
-         </View>
-
-        </ScrollView>
-         
+          <View style={{height:ScreenHeight/4.5,alignItems:'center'}}>
+              {/* 头像 */}
+              <View style={[styles.imageview]}>
+                <Identicon
+                  value={this.state.address}
+                  size={ScreenHeight/14}
+                  theme={'polkadot'}
+                />
+              </View>
+              {/* 地址 */}
+              <View style={styles.address_text}>
+                <Text 
+                  style={{width:ScreenWidth/2.5,fontSize:ScreenHeight/40,color:'#171717',}}
+                  ellipsizeMode={"middle"}
+                  numberOfLines={1}
+                >
+                  {this.state.address}
+                </Text>
+              </View>
+              <Text style={styles.text1}>{'balance '+formatBalance(this.state.balance)}</Text>
+              {/* <Text style={[styles.text1,{marginTop:ScreenHeight/200}]}>transactions 0</Text> */}
+          </View>
+          {/* 密钥 */}
+          <View style={[styles.NandP,{height:ScreenHeight/5.5}]}>
+            <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/23}}>
+              <Text style={{fontSize:ScreenWidth/33}}>create from mnemonic,seed or import keystore</Text>
+              {/* 选择方式 */}
+              <TouchableOpacity style={styles.Choose_way}
+                onPress={()=>{
+                  this.setState({
+                    isModel:true
+                  })
+                }}
+              >
+                <View style={[styles.middle,{flex:1}]}>
+                  <Text style={{fontSize:ScreenWidth/30,color:'white'}}>{this.state.way}</Text>
+                </View>
+                <Image
+                  style={{backgroundColor:'white',marginRight:1,height:ScreenHeight/23-2,width:ScreenHeight/35,resizeMode:'center'}}
+                  source={require('../../../images/Assets/Create_Account/next.png')}
+                />
+              </TouchableOpacity>
+            </View>
+            <TextInput style = {[styles.textInputStyle,{height:ScreenHeight/10,fontSize:ScreenHeight/40}]}
+                // placeholder = {this.state.keyrandom}
+                autoCorrect = {false}
+                value = {this.state.key}
+                placeholderTextColor = "black"
+                underlineColorAndroid="#ffffff00"
+                multiline={true}
+                maxLength={1000}
+                onChangeText = {this.onChangekey}
+            />
+          </View>
+          {
+            (this.state.way == 'Keystore')
+            ?
+              <View/>
+            :
+              // name 
+              <View style={[styles.NandP,{height:ScreenHeight/10}]}>
+                <Text style={{fontSize:ScreenWidth/30}}>name the account</Text>
+                <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45}]}
+                    placeholder = "New Keypair"
+                    placeholderTextColor = "#666666"
+                    autoCorrect = {false}
+                    underlineColorAndroid="#ffffff00"
+                    onChangeText = {this.onChangename}
+                />
+              </View>
+          }
+          {/* pass */}
+          <View style={[styles.NandP,{height:ScreenHeight/10}]}>
+            <Text style={{fontSize:ScreenWidth/30}}>encrypt it using a password</Text>
+            <View>
+              <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd==0)?'red':'#4169E1'}]}
+                  placeholder = "Please enter your password"
+                  placeholderTextColor = "#666666"
+                  underlineColorAndroid="#ffffff00"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  onChangeText = {this.onChangepassword}
+              />
+            </View>
+          </View>
+          {/* repeatPass 2*/}
+          <View style={[styles.NandP,{height:ScreenHeight/10}]}>
+            <Text style={{fontSize:ScreenWidth/30}}>Please confirm the password</Text>
+            <View>
+              <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/45,borderColor:(this.state.ispwd2==0)?'red':'#4169E1'}]}
+                  placeholder = "Please enter your password"
+                  placeholderTextColor = "#666666"
+                  underlineColorAndroid="#ffffff00"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  onChangeText = {this.onChangpasswordErepeat}
+              />
+            </View>
+          </View>
+          {/* Reset or Save */}
+          <View style={{height:ScreenHeight/6,width:ScreenWidth,justifyContent:'center',alignItems:'flex-end'}}>
+            <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>
+            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#696969',height:ScreenHeight/20,width:ScreenWidth*0.2}}
+              onPress={this.Reset}
+            >
+              
+              <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
+                Reset
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
+              onPress={this.Save_Account}
+            >
+              
+              <Text style={{fontWeight:'bold',fontSize:ScreenHeight/50,color:'white'}}>
+                Save
+              </Text>
+            </TouchableOpacity>
+            <View style={{borderRadius:ScreenHeight/24/14*4,backgroundColor:'white',position:'absolute',height:ScreenHeight/24/7*4,width:ScreenHeight/24/7*4,alignItems:'center',justifyContent:'center'}}>
+              <Text style={{fontSize:ScreenHeight/70}}>
+                or
+              </Text>
+            </View>
+            </View>
+          </View>
+         </ScrollView>
         }
         
         
