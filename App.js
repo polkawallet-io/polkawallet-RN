@@ -29,6 +29,8 @@ import Change_Name from './src/code/Profile/secondary/Change/Change_Name'
 import NayorAye from './src/code/Democracy/secondary/NayorAye'
 import Settings from './src/code/Profile/secondary/Settings'
 import Set_Node from './src/code/Profile/secondary/Settings/Set_Node'
+import About from './src/code/Profile/secondary/About'
+
 
 
 
@@ -62,6 +64,7 @@ const Polkawallet_App =  StackNavigator({
   NayorAye:{screen:NayorAye,navigationOptions:{header:null}},
   Settings:{screen:Settings,navigationOptions:{header:null}},
   Set_Node:{screen:Set_Node,navigationOptions:{header:null}},
+  About:{screen:About,navigationOptions:{header:null}},
 
  })
  

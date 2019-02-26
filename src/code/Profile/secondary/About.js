@@ -13,11 +13,7 @@ import {
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
-const msg = [
-    // 'Language',
-    // 'Assets Display Unit',
-    'Remote Node'
-]
+
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
@@ -56,28 +52,28 @@ export default class New extends Component {
                 />
             </TouchableOpacity>
             {/* 标题 */}
-            <Text style={styles.text_title}>Settings</Text>
+            <Text style={styles.text_title}>About</Text>
             {/* 空白 */}
             <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,}}/>
         </View>
-        {
-            msg.map((item,index)=>{
-                return(
-                    <TouchableOpacity style={styles.msgView} key={index}
-                      onPress={()=>{
-                          if(index==0){this.Set_Node()}
-                      }}
-                    >
-                      <Text style={styles.msgText}>{item}</Text>
-                      <View style={{flex:1}}/>
-                      <Image
-                        style={styles.msgImage}
-                        source={require('../../../images/Profile/next.png')}
-                      />
-                    </TouchableOpacity>
-                )
-            })
-        }
+        {/* 图标 */}
+            <Image
+                style={styles.msgImage}
+                source={require('../../../images/Profile/secondary/logo.png')}
+            />
+        {/* 简介 */}
+        <View style={styles.msgView}>
+            <Text style={{fontSize:ScreenWidth/20,color:'#808080',fontWeight:'500'}}>Mobile wallet for Polkadot.</Text>
+        </View>
+        {/* 官网 */}
+        <View style={styles.msgView}>
+            <Text style={{fontSize:ScreenWidth/23,color:'#808080',fontWeight:'400'}}>https://polkawallet.io</Text>
+        </View>
+        {/* 版本 */}
+        <View style={{flex:1}}/>
+        <View style={[styles.msgView,{marginBottom:ScreenHeight/30}]}>
+            <Text style={{fontSize:ScreenWidth/25,color:'#808080'}}>Version: 0.0.8</Text>
+        </View>
       </View>
     );
   }
@@ -102,23 +98,22 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     },
     msgView:{
+        justifyContent:'center',
         backgroundColor:'white',
         flexDirection:'row',
         alignItems:'center',
-        height:ScreenHeight/13,
-        borderWidth:0.5,
-        borderColor:'#C0C0C0',
-        marginHorizontal:1,
-        paddingLeft:ScreenWidth*0.05
+        height:ScreenHeight/18,
     },
     msgText:{
-        fontSize:ScreenWidth/20,
-        color:'#696969'
+        fontSize:ScreenWidth/25,
+        color:'#808080'
     },
     msgImage:{
-        marginRight:ScreenWidth/28,
-        height:ScreenHeight/60,
-        width:ScreenHeight/60/1.83,
+        marginTop:ScreenHeight/10,
+        marginBottom:ScreenHeight/40,
+        alignSelf:'center',
+        height:ScreenHeight/4,
+        width:ScreenHeight/4,
         resizeMode:'contain'
     },
     
