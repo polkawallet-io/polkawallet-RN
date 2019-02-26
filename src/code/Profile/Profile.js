@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  SafeAreaView
 } from 'react-native';
 let Platform = require('Platform');
 let ScreenWidth = Dimensions.get("screen").width;
@@ -18,7 +19,7 @@ const Custom_Components=[
   {image:require('../../images/Profile/Addresses.png'),text:'Addresses'},
   {image:require('../../images/Profile/Settings.png'),text:'Settings'},
   // {image:require('../../images/Profile/Support.png'),text:'Support'},
-  // {image:require('../../images/Profile/About.png'),text:'About'},
+  {image:require('../../images/Profile/About.png'),text:'About'},
 ]
 import Identicon from 'polkadot-identicon-react-native';
 import { observer, inject } from "mobx-react";
@@ -34,6 +35,7 @@ export default class New extends Component {
         }
         this.Manage_Account=this.Manage_Account.bind(this)
         this.Addresses=this.Addresses.bind(this)
+        this.About = this.About.bind(this)
     }
   Manage_Account(){
     this.props.navigation.navigate('Manage_Account')
@@ -45,8 +47,12 @@ export default class New extends Component {
   Settings(){
     this.props.navigation.navigate('Settings')
   }
+  About(){
+    this.props.navigation.navigate('About')
+  }
   render() {
     return (
+    <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
       <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
         <View style={{height:(Platform.OS === 'android')?ScreenHeight/9:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
           <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
@@ -88,6 +94,7 @@ export default class New extends Component {
                   onPress={()=>{
                     if(index==0){this.Addresses()}
                     if(index==1){this.Settings()}
+                    if(index==2){this.About()}
                   }}
                   style={{backgroundColor:'white',marginTop:(index==3)?ScreenHeight/35:0,flexDirection:'row',alignItems:'center',height:ScreenHeight/13,borderWidth:0.5,borderColor:'#C0C0C0',marginHorizontal:1,borderBottomWidth:(index==4||index==2)?1:0.5}}
                 >
@@ -108,6 +115,7 @@ export default class New extends Component {
           
         </ScrollView>
       </View>
+    </SafeAreaView>
     );
   }
 }

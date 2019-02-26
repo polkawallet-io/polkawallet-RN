@@ -347,7 +347,7 @@ export default class IntegralMall extends Component {
   }
   render() {
     return (
-      <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
+      <SafeAreaView style={{flex:1,backgroundColor:'white'}}>
         
         <View style={{flex:1,backgroundColor:'white'}}>
           <View style={{marginTop:(Platform.OS === 'android')?ScreenHeight/20:ScreenHeight/70,height:ScreenHeight/20,width:ScreenWidth,flexDirection:'row',justifyContent:'center'}}>
@@ -432,7 +432,7 @@ export default class IntegralMall extends Component {
                           onPress={this.Unnominate}
                         >
                           <Image
-                            style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
+                            style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain',tintColor:'white'}}
                             source={require('../../images/Staking/branch.png')}
                           />
                           <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
@@ -460,8 +460,8 @@ export default class IntegralMall extends Component {
                           onPress={(this.props.rootStore.stateStore.StakingState==2)?this.Set_Prefs:(this.props.rootStore.stateStore.StakingState==1)?this.nominate:this.OffClick}
                         >
                           <Image
-                            style={{marginLeft:ScreenWidth/60,height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
-                            source={require('../../images/Staking/branch.png')}
+                            style={{marginLeft:ScreenWidth/60,height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain',tintColor:'white'}}
+                            source={this.props.rootStore.stateStore.StakingState==2?require('../../images/Staking/SetPrefs.png'):require('../../images/Staking/branch.png')}
                           />
                           <Text style={{marginLeft:ScreenWidth/40,fontWeight:'bold',fontSize:ScreenWidth/20,color:'white'}}>
                             {(this.props.rootStore.stateStore.StakingState==2)?'Set Prefs':'nominate'}
