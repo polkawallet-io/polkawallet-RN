@@ -93,6 +93,7 @@ import {
         else{
             this.props.rootStore.stateStore.value=this.state.value*this.state.multiple
             this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0&&this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.t_address
+            this.props.rootStore.stateStore.isaddresses=0
             this.props.rootStore.stateStore.transfer_address=0
             this.props.rootStore.stateStore.iscamera=0
             this.props.navigation.navigate('Make_transfer')
