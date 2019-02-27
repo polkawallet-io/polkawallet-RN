@@ -561,6 +561,7 @@ export default class Polkawallet extends Component {
             style={{width:ScreenWidth,backgroundColor:'#C0C0C0'}}
             selectedValue={this.state.way_change}
             onValueChange={(value) => this.setState({way_change: value})}
+            androidmode = {'dropdown'}
           >
             <Picker.Item label="Mnemonic" value="Mnemonic" />
             <Picker.Item label="Raw Seed" value="Raw Seed" />

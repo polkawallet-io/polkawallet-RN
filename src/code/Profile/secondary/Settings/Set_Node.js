@@ -78,7 +78,7 @@ export default class New extends Component {
     )
   }
   componentWillMount(){
-   
+      this.setState({chooseNode:this.props.rootStore.stateStore.ENDPOINT})
   }
   render() {
     return (

@@ -103,6 +103,7 @@ export default class Assets extends Component {
           this.setState({
             isfirst:1
           })
+          this.props.rootStore.stateStore.refreshBefore=this.props.rootStore.stateStore.Account
           this.props.rootStore.stateStore.Account=0
           this.props.rootStore.stateStore.Accountnum=0
           this.props.rootStore.stateStore.isfirst=1
@@ -132,10 +133,10 @@ export default class Assets extends Component {
       }
     )
     setTimeout ( () => {
+      // this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.refreshBefore
       if(this.props.rootStore.stateStore.isfirst==1){this.props.rootStore.stateStore.Account=1}
-      this.setState({
-        address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address
-      })
+      
+      this.props.rootStore.stateStore.Account=(this.props.rootStore.stateStore.refreshBefore==0)?1:this.props.rootStore.stateStore.refreshBefore
       if(this.props.rootStore.stateStore.Account!=0){
         // Query Balance
         (async()=>{
@@ -284,12 +285,13 @@ export default class Assets extends Component {
     this.setState({
       isrefresh:true
     })
+    this.Loading()
     setTimeout(()=>{
-      this.Loading()
       this.setState({
         isrefresh:false
       })
     },2000)
+    
   }
   componentWillMount(){
     this.Loading()

@@ -52,8 +52,9 @@ import { set } from 'mobx';
           })
       }
       Cancel(){
-        this.props.rootStore.stateStore.t_address=''
-        this.props.navigation.navigate('Transfer')
+        alert(this.props.rootStore.stateStore.value)
+        // this.props.rootStore.stateStore.t_address=''
+        // this.props.navigation.navigate('Transfer')
       }
       componentWillMount(){
         (async()=>{
@@ -102,6 +103,7 @@ import { set } from 'mobx';
                   api.tx.balances
                   .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
                 //   .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', this.props.rootStore.stateStore.value)
+                //   /*
                   .sign(loadPair, accountNonce)
                   .send(({ status, type }) => {
                       this.setState({
@@ -170,7 +172,8 @@ import { set } from 'mobx';
                         
                     }
                 }
-                  });
+                  })
+                //   */
                })()
             }
         )
