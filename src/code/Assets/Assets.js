@@ -104,11 +104,12 @@ export default class Assets extends Component {
             isfirst:1
           })
           this.props.rootStore.stateStore.refreshBefore=this.props.rootStore.stateStore.Account
+          this.props.rootStore.stateStore.balanceIndex=0
           this.props.rootStore.stateStore.Account=0
           this.props.rootStore.stateStore.Accountnum=0
           this.props.rootStore.stateStore.isfirst=1
           this.props.rootStore.stateStore.Accounts=[{account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}]
-          
+          this.props.rootStore.stateStore.balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:'0'}]
           if (Platform.OS === 'android') {
             //android
             for(var o in result){
@@ -126,25 +127,44 @@ export default class Assets extends Component {
                 this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
                 this.props.rootStore.stateStore.Account++
                 this.props.rootStore.stateStore.Accountnum++
+                (async()=>{
+                  const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+                  await api.query.balances.freeBalance(item.key,(balance)=>{
+                    let _address=item.key
+                    this.props.rootStore.stateStore.have=0
+                    this.props.rootStore.stateStore.balances.map((item,index)=>{
+                      if(item.address!=_address){console.warn(1)}else{
+                        this.props.rootStore.stateStore.have=1
+                        this.props.rootStore.stateStore.balances[index].balance=balance
+                      }
+                    })
+                    if(this.props.rootStore.stateStore.have==0){this.props.rootStore.stateStore.balances.push({address:_address,balance:balance})}
+                  })
+                })()
               })
             })
+            
           }
         }
       }
     )
     setTimeout ( () => {
-      // this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.refreshBefore
       if(this.props.rootStore.stateStore.isfirst==1){this.props.rootStore.stateStore.Account=1}
-      
-      this.props.rootStore.stateStore.Account=(this.props.rootStore.stateStore.refreshBefore==0)?1:this.props.rootStore.stateStore.refreshBefore
+      this.props.rootStore.stateStore.Account=(this.props.rootStore.stateStore.refreshBefore==0&&this.props.rootStore.stateStore.isfirst==1)?1:this.props.rootStore.stateStore.refreshBefore
       if(this.props.rootStore.stateStore.Account!=0){
         // Query Balance
         (async()=>{
           const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
           const props = await api.rpc.system.properties();
-          balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
           fees = await api.derive.balances.fees()
-          this.props.rootStore.stateStore.balance=String(balance)
+          alert(JSON.stringify(this.props.rootStore.stateStore.balances))
+          this.props.rootStore.stateStore.balances.map((item,index)=>{
+            if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+              this.props.rootStore.stateStore.balanceIndex=(index)
+            }
+          })
+          // balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+          // this.props.rootStore.stateStore.balance=String(balance)
 
           
           formatBalance.setDefaults({
@@ -220,7 +240,7 @@ export default class Assets extends Component {
               color:'rgb('+a+','+b+','+c+')'
             })
            
-          },0);
+          },500);
         })()
       }
    
@@ -420,7 +440,7 @@ export default class Assets extends Component {
                   <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
                 </View>
                 <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{formatBalance(this.props.rootStore.stateStore.balance)}</Text>
+                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{formatBalance(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].balance)}</Text>
                 </View>
             </View>
           </TouchableOpacity>

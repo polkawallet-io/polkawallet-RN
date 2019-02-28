@@ -69,7 +69,6 @@ export default class Manage_Account extends Component {
   ok(){
     SInfo.getItem(this.state.address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
       (result)=>{
-        // alert(result)
         loadPair = keyring.addFromJson(JSON.parse(result))
         try{
           loadPair.decodePkcs8(this.state.password)

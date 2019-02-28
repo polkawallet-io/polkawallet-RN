@@ -50,9 +50,14 @@ export default class New extends Component {
       (async()=>{
         this.props.rootStore.stateStore.isvalidators=0
         this.props.rootStore.stateStore.StakingState=0
+        this.props.rootStore.stateStore.balances.map((item,index)=>{
+          if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+            this.props.rootStore.stateStore.balanceIndex=(index)
+          }
+        })
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-        balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-        this.props.rootStore.stateStore.balance=String(balance)
+        // balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+        // this.props.rootStore.stateStore.balance=String(balance)
         
         //查询Staking状态
         intentions = await api.query.staking.intentions()

@@ -1,5 +1,4 @@
 import { observable,action, observe } from 'mobx'
-
 class RootStore {
     constructor() {
         this.stateStore = new stateStore();
@@ -64,6 +63,17 @@ class stateStore{
     @observable
     StakingNextPage;
 
+    //当前账户在balances中的为止
+    @observable
+    balanceIndex=0
+    //所有账户balance
+    @observable
+    balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:'0'}]
+
+    //所有账户中有没有这个用户地址
+    @observable
+    have=0
+        
     //balance
     @observable
     balance='0';
