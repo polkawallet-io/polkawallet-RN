@@ -1,5 +1,4 @@
 import { observable,action, observe } from 'mobx'
-
 class RootStore {
     constructor() {
         this.stateStore = new stateStore();
@@ -22,9 +21,9 @@ class stateStore{
     
     //wss
     @observable
-    ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
-    // ENDPOINT = 'ws://107.173.250.124:9944/';
-    // ENDPOINT = 'ws://127.0.0.1:9944/';
+    // ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
+    // ENDPOINT = 'ws://107 .173.250.124:9944/';
+    ENDPOINT = 'ws://127.0.0.1:9944/';
 
     // 是否是第一次登陆
     @observable
@@ -46,6 +45,9 @@ class stateStore{
     // 账户数量(除默认账户以外)
     @observable
     Accountnum = 0;
+    // 刷新前登陆的账户
+    @observable
+    refreshBefore = 0;
 
     // 交易信息
     @observable
@@ -61,6 +63,17 @@ class stateStore{
     @observable
     StakingNextPage;
 
+    //当前账户在balances中的为止
+    @observable
+    balanceIndex=0
+    //所有账户balance
+    @observable
+    balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:0}]
+
+    //所有账户中有没有这个用户地址
+    @observable
+    have=0
+        
     //balance
     @observable
     balance='0';

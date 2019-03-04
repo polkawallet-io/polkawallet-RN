@@ -14,7 +14,8 @@ import {
   import Api from '@polkadot/api/promise';
   import WsProvider from '@polkadot/rpc-provider/ws';
   import formatBalance from '../../../../util/formatBalance'
-  
+  import BN from 'bn.js'
+
   let ScreenWidth = Dimensions.get("screen").width;
   let ScreenHeight = Dimensions.get("screen").height;
   const t=[
@@ -38,6 +39,7 @@ import {
               way_change:'DOT',
               multiple:1000000000000000,
               fees:{},
+              tfColor:'black'
           }
           this.Make_transfer=this.Make_transfer.bind(this)
           this.back=this.back.bind(this)
@@ -91,12 +93,16 @@ import {
       {
         if(this.state.address==''&&this.props.rootStore.stateStore.transfer_address==0&&this.props.rootStore.stateStore.iscamera==0){alert('Please enter address')}
         else{
-            this.props.rootStore.stateStore.value=this.state.value*this.state.multiple
-            this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0&&this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.t_address
-            this.props.rootStore.stateStore.isaddresses=0
-            this.props.rootStore.stateStore.transfer_address=0
-            this.props.rootStore.stateStore.iscamera=0
-            this.props.navigation.navigate('Make_transfer')
+            if(this.state.balance<this.state.value*this.state.multiple){
+                alert('Lack of balance')
+            }else{
+                this.props.rootStore.stateStore.value=new BN(this.state.value*this.state.multiple)
+                this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0&&this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.t_address
+                this.props.rootStore.stateStore.isaddresses=0
+                this.props.rootStore.stateStore.transfer_address=0
+                this.props.rootStore.stateStore.iscamera=0
+                this.props.navigation.navigate('Make_transfer')
+            }
         }
       }
       ChangeAddress(changeAddress){
@@ -114,7 +120,8 @@ import {
       }
       ChangeValue(changeValue){
         this.setState({
-            value:changeValue
+            value:changeValue,
+            tfColor:(this.state.balance>changeValue*this.state.multiple)?'black':'red'
         })
       }
       componentWillMount(){
@@ -167,7 +174,7 @@ import {
                                 }
                             </View>
                             <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
-                                <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
+                                <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50,borderColor:(index==1)?this.state.tfColor:'black'}]}
                                     placeholder = {(index==0)?this.props.rootStore.stateStore.t_address:item.text2}
                                     placeholderTextColor = "#666666"
                                     underlineColorAndroid="#ffffff00"
@@ -190,7 +197,7 @@ import {
                                         </TouchableOpacity>
                                     :
                                         (index==1)?
-                                        //  选择方式 
+                                        //  选择单位 
                                         <TouchableOpacity style={styles.Choose_way}
                                             onPress={()=>{
                                                 this.setState({

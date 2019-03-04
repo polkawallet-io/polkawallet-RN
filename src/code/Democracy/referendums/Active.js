@@ -71,13 +71,11 @@ export default class Polkawallet extends Component {
               if(ifNewIndex==true){
                 this.state.votingState.push(result)
                 ifNewIndex = false
-                // alert('new')
                 test++
-                // console.warn('test:'+test)
                 // console.warn('PushVotingState'+JSON.stringify(this.state.votingState))
               }
                 // console.warn("ID:",result[0].referendumId)
-              console.warn("***"+JSON.stringify(this.state.votingState))  
+              // console.warn("***"+JSON.stringify(this.state.votingState))  
               this.setState({}) 
             }else {
               this.state.votingState.push(result)
@@ -86,7 +84,7 @@ export default class Polkawallet extends Component {
           }
           
         })
-        console.warn('votingState'+JSON.stringify(this.state.votingState))
+        // console.warn('votingState'+JSON.stringify(this.state.votingState))
       }
     })()
   }

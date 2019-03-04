@@ -10,6 +10,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   AsyncStorage,
+  Alert,
 } from 'react-native';
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -28,74 +29,80 @@ export default class New extends Component {
         this.json
         this.state = {
             New_name:'',
+            Current_password:'',
+            ispwd1:0,
+            ispwd2:0
         }
         this.back=this.back.bind(this)
-        this.save=this.save.bind(this)
         this.Change_Name=this.Change_Name.bind(this)
         this.Change=this.Change.bind(this)  
+        this.Current_password=this.Current_password.bind(this)
 
     }
   back(){
       this.props.navigation.navigate('Manage_Account')
   }
+  Current_password(Current_password){
+    if(Current_password!=''){
+        this.setState({ispwd1:1})
+    }
+    if(Current_password==''){
+        this.setState({ispwd1:0})
+    }
+    this.setState({
+        Current_password:Current_password
+      })
+  }
   Change_Name(New_name){
+      if(New_name!=''){
+        this.setState({ispwd2:1})
+      }
+      if(New_name==''){
+        this.setState({ispwd2:0})
+      }
       this.setState({
         New_name:New_name
       })
   }
   Change(){
+
     SInfo.getItem(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}).then(
         (result)=>{
-            // alert(result)
             loadPair = keyring.addFromJson(JSON.parse(result))
-            loadPair.setMeta({'name':this.state.New_name})
-            // this.json = loadPair.toJson()
-            // this.json.meta = loadPair.getMeta()
-            // alert(JSON.stringify(this.json))
-            // this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account = this.state.New_name
-            // JSON.parse(change).setMeta({'name':this.state.New_name})
-            // JSON.parse(change).meta.name = '111'
-            // alert(JSON.parse(change).meta.name)
-            // // alert(change)
-        })
-    // SInfo.setItem('k1','v1',{sharedPreferencesName:'sy',keychainService: 'sy'})
-    // SInfo.setItem('k2','v2',{sharedPreferencesName:'sy',keychainService: 'sy'})
-    // SInfo.setItem('k3','v3',{sharedPreferencesName:'sy',keychainService: 'sy'})
-    // SInfo.setItem('k2','v4',{sharedPreferencesName:'sy',keychainService: 'sy'})
-    // SInfo.getAllItems({sharedPreferencesName:'sy',keychainService:'sy'}).then(
-    //     (result) => {
-    //       alert(JSON.stringify(result))
-    //     }
-    // );
+            try{
+                loadPair.decodePkcs8(this.state.Current_password)
+            }catch(error){
+                Alert.alert(
+                    'Alert',
+                    'Password mistake.',
+                    [
+                    {text: 'OK', onPress: () => {
+                    }},
+                    ],
+                    { cancelable: false }
+                )
+            }
+            loadPair.isLocked()?'':
+                loadPair.setMeta({'name':this.state.New_name})
+                this.json = loadPair.toJson(this.state.Current_password)
+                this.json.meta = loadPair.getMeta()
+                SInfo.setItem(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address, JSON.stringify(this.json),{sharedPreferencesName:'Polkawallet',keychainService: 'PolkawalletKey'}); 
+                this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account=this.state.New_name
+                Alert.alert(
+                    'Alert',
+                    'Modify the success.',
+                    [
+                    {text: 'OK', onPress: () => {
+                        this.props.navigation.navigate('Manage_Account')
+                    }},
+                    ],
+                    { cancelable: false }
+                ) 
+    })
   }
   componentWillMount(){
-    // let key = mnemonicGenerate()
-    // this.pair = keyring.addFromMnemonic(key)
   }
-  save(){
-      AsyncStorage.getItem('Addresses').then(
-          (result)=>{
-              if(result==null)
-              {
-                AsyncStorage.setItem('Addresses',JSON.stringify([{Name:this.state.name,Memo:this.state.memo,Address:this.state.address}])).then(
-                    alert('Save success')
-                )
-              }else{
-                  if(this.state.address==''&&this.props.rootStore.stateStore.iscamera==0)
-                  {
-                      alert('The address cannot be empty')
-                  }else{
-                    a=JSON.parse(result)
-                    a.push({Name:this.state.name,Memo:this.state.memo,Address:(this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.QRaddress})
-                    AsyncStorage.setItem('Addresses',JSON.stringify(a)).then(()=>{
-                      this.props.rootStore.stateStore.iscamera=0
-                      this.props.navigation.navigate('Tabbed_Navigation')}
-                    )
-                  }
-              }
-          }
-      )
-  }
+  
   render() {
     return (
       <View style={{flex:1,backgroundColor:'white',}}>
@@ -125,18 +132,23 @@ export default class New extends Component {
         <KeyboardAvoidingView
           behavior="padding"
         >
-          {
-              
-                    <View style={[styles.view]}>
-                        <Text style={[styles.text]}>New name</Text>
-                        <TextInput style = {[styles.textInputStyle]}  
-                            autoCorrect={false}          
-                            underlineColorAndroid="#ffffff00"
-                            onChangeText ={this.Change_Name}
-                        />
-                    </View>
-             
-          }
+            <View style={[styles.view]}>
+                <Text style={[styles.text]}>Current password</Text>
+                <TextInput style = {[styles.textInputStyle,{borderColor:this.state.ispwd1==0?'red':'#4169E1'}]}  
+                    secureTextEntry={true}
+                    autoCorrect={false}          
+                    underlineColorAndroid="#ffffff00"
+                    onChangeText ={this.Current_password}
+                />
+            </View>
+            <View style={[styles.view]}>
+                <Text style={[styles.text]}>New name</Text>
+                <TextInput style = {[styles.textInputStyle,{borderColor:this.state.ispwd2==0?'red':'#4169E1'}]}  
+                    autoCorrect={false}          
+                    underlineColorAndroid="#ffffff00"
+                    onChangeText ={this.Change_Name}
+                />
+            </View>
         </KeyboardAvoidingView>
         <TouchableOpacity
           style={styles.Change}
@@ -194,7 +206,6 @@ const styles = StyleSheet.create({
         height:ScreenHeight/24,
         width:ScreenWidth*0.8,
         borderWidth:1,
-        borderColor:'red',
         fontSize:ScreenHeight/45,
         borderRadius:ScreenHeight/150,
         paddingLeft:ScreenHeight/100,
@@ -216,7 +227,7 @@ const styles = StyleSheet.create({
         height:ScreenHeight/17,
         width:ScreenWidth*0.8,
         marginTop:ScreenHeight/30,
-        backgroundColor:'#40E0D0',
+        backgroundColor:'#4dabd0',
         borderRadius:ScreenHeight/100,
         alignItems:'center',
         justifyContent:'center'

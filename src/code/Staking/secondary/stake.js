@@ -120,9 +120,9 @@ import { set } from 'mobx';
                     <Text style={styles.text_title}>Stake</Text>
                 </View>
                 <View style={styles.submit_view}>
-                  <Text style={styles.title_b}>Submit Transaction</Text>
+                  <Text style={styles.title_b}>Submit Stake</Text>
                   <Text style={{fontSize:ScreenWidth/25,color:'black',marginTop:ScreenHeight/50}}>
-                    You are about to sugn a message from 
+                    You are about to sign a message from 
                   </Text>
                   <View style={[styles.grey_text,{marginTop:ScreenHeight/100,width:ScreenWidth*0.8}]}>
                     {/* address */}
@@ -170,8 +170,7 @@ import { set } from 'mobx';
                   {/* Reset or Save */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
-                      <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/>
-                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.2}}
+                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.3}}
                         onPress={this.Cancel}
                         >
                         

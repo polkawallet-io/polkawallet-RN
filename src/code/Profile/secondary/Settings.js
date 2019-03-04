@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   AsyncStorage,
+  Switch
 } from 'react-native';
 
 let ScreenWidth = Dimensions.get("screen").width;
@@ -16,7 +17,7 @@ let ScreenHeight = Dimensions.get("screen").height;
 const msg = [
     // 'Language',
     // 'Assets Display Unit',
-    'Remote Node'
+    'Remote Node',
 ]
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
@@ -26,11 +27,15 @@ export default class New extends Component {
     {
         super(props)
         this.state = {
-           
+            Gesture:false,
+            Fingerprint:false,
+            Facial_Recognition:false,
         }
         this.back=this.back.bind(this)
         this.Set_Node=this.Set_Node.bind(this)
-
+        this.Gesture=this.Gesture.bind(this)
+        this.Fingerprint=this.Fingerprint.bind(this)
+        this.Facial_Recognition=this.Facial_Recognition.bind(this)
     }
   back(){
     this.props.navigation.navigate('Tabbed_Navigation')
@@ -38,12 +43,21 @@ export default class New extends Component {
   Set_Node(){
     this.props.navigation.navigate('Set_Node')
   }
+  Gesture(e)  {
+    this.setState({Gesture: e});
+  }
+  Fingerprint(e)  {
+    this.setState({Fingerprint: e});
+  }
+  Facial_Recognition(e)  {
+    this.setState({Facial_Recognition: e});
+  }
   componentWillMount(){
    
   }
   render() {
     return (
-      <View style={{flex:1,backgroundColor:'white',}}>
+      <View style={{flex:1,backgroundColor:'#F5F5F5',}}>
         {/* 标题栏 */}
         <View style={styles.title}>
             {/* 返回 */}
@@ -78,6 +92,40 @@ export default class New extends Component {
                 )
             })
         }
+        
+        {/* Gesture */}
+        {/* <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
+        >
+            <Text style={styles.msgText}>Gesture</Text>
+            <View style={{flex:1}}/>
+            <Switch
+              style={{marginRight:ScreenWidth/28}}
+              value={this.state.Gesture}//默认状态
+              onValueChange={(e) => this.Gesture(e)} //当状态值发生变化值回调
+            />
+        </View> */}
+        {/* Fingerprint */}
+        {/* <View style={styles.msgView}
+        >
+            <Text style={styles.msgText}>Fingerprint</Text>
+            <View style={{flex:1}}/>
+            <Switch
+              style={{marginRight:ScreenWidth/28}}
+              value={this.state.Fingerprint}//默认状态
+              onValueChange={(e) => this.Fingerprint(e)} //当状态值发生变化值回调
+            />
+        </View> */}
+        {/* Facial recognition */}
+        {/* <View style={styles.msgView}
+        >
+            <Text style={styles.msgText}>Facial recognition</Text>
+            <View style={{flex:1}}/>
+            <Switch
+              style={{marginRight:ScreenWidth/28}}
+              value={this.state.Facial_Recognition}//默认状态
+              onValueChange={(e) => this.Facial_Recognition(e)} //当状态值发生变化值回调
+            />
+        </View> */}
       </View>
     );
   }
