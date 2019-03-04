@@ -12,6 +12,7 @@ import {
   Modal,
   Picker,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
@@ -23,7 +24,6 @@ import Keyring from '@polkadot/keyring'
 import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a,randomAsHex, mnemonicGenerate } from '@polkadot/util-crypto';
 
 import { hexToU8a, isHex, stringToU8a, u8aToHex }  from '@polkadot/util'
-import { type } from 'os';
 
 const keyring = new Keyring();
 let ScreenWidth = Dimensions.get("screen").width;
@@ -219,6 +219,12 @@ export default class Polkawallet extends Component {
                   this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(this.state.key).meta.name,address:this.state.address})
                   this.props.rootStore.stateStore.Accountnum++
                   this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
+                  this.props.rootStore.stateStore.balances.push({address:this.state.address,balance:this.state.balance})
+                  this.props.rootStore.stateStore.balances.map((item,index)=>{
+                    if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+                      this.props.rootStore.stateStore.balanceIndex=(index)
+                    }
+                  })
                   this.props.navigation.navigate('Backup_Account',{key:this.state.key})
                   
               }else{
@@ -231,6 +237,12 @@ export default class Polkawallet extends Component {
                 this.props.rootStore.stateStore.Accountnum++
                 this.props.rootStore.stateStore.Account=this.props.rootStore.stateStore.Accountnum
                 this.props.rootStore.stateStore.balance=0
+                this.props.rootStore.stateStore.balances.push({address:this.state.address,balance:this.state.balance})
+                this.props.rootStore.stateStore.balances.map((item,index)=>{
+                  if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+                    this.props.rootStore.stateStore.balanceIndex=(index)
+                  }
+                })
                 this.props.navigation.navigate('Backup_Account',{key:this.state.key})
               }
             }

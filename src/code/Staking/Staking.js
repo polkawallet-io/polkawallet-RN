@@ -28,6 +28,7 @@ let ScreenHeight = Dimensions.get("screen").height;
 //   {Staking_Record:'Staking Reward',time:'12/12/2018 09:17:31',num:26}
 // ]
 import { observer, inject } from "mobx-react";
+import { async } from 'rxjs/internal/scheduler/async';
 @inject('rootStore')
 @observer
 export default class IntegralMall extends Component {
@@ -115,7 +116,27 @@ export default class IntegralMall extends Component {
           intentionNum: intentions.length
         })
       })
-      
+      //求出给validators的提名者们
+      nominators = await Promise.all(
+        this.state.validators.map(authorityId =>
+          api.query.staking.nominatorsFor(authorityId)
+        )
+      );
+      //求出给validators的提名者们nominators的额度总和
+      sumnominatorsBalance=[]
+      for(i=0;i<nominators.length;i++){
+        nominatorsBalance = await Promise.all(
+          nominators[i].map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        sum=0
+        for(j=0;j<nominatorsBalance.length;j++){
+          sum=sum+Number(nominatorsBalance[j])
+        }
+        sumnominatorsBalance.push(sum)
+      }
+
 
       //查询Staking状态
       this.state.intentions.filter((address) =>{
@@ -194,27 +215,97 @@ export default class IntegralMall extends Component {
         this.props.rootStore.stateStore.StakingState=1
       }
 
-      //求出给validators的提名者们
-      nominators = await Promise.all(
-        this.state.validators.map(authorityId =>
-          api.query.staking.nominatorsFor(authorityId)
-        )
-      );
-      //求出给validators的提名者们nominators的额度总和
-      sumnominatorsBalance=[]
-      for(i=0;i<nominators.length;i++){
-        nominatorsBalance = await Promise.all(
-          nominators[i].map(authorityId =>
+      //实时监控
+      setInterval(async()=>{
+        const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+        //求出给validators的提名者们
+        nominators = await Promise.all(
+          this.state.validators.map(authorityId =>
+            api.query.staking.nominatorsFor(authorityId)
+          )
+        );
+        //求出给validators的提名者们nominators的额度总和
+        sumnominatorsBalance=[]
+        for(i=0;i<nominators.length;i++){
+          nominatorsBalance = await Promise.all(
+            nominators[i].map(authorityId =>
+              api.query.balances.freeBalance(authorityId)
+            )
+          );
+          sum=0
+          for(j=0;j<nominatorsBalance.length;j++){
+            sum=sum+Number(nominatorsBalance[j])
+          }
+          sumnominatorsBalance.push(sum)
+        }
+
+        // 找出Next up
+        _intentions=[]
+        _validators=[]
+        _next_up=[]
+        this.state.intentions.map((item,index)=>{
+          _intentions.push(String(item))
+        })
+        this.state.validators.map((item,index)=>{
+          _validators.push(String(item))
+        })
+        _intentions.filter((address) =>{
+          if(!_validators.includes(address)){
+            _next_up.push(address)
+          }
+        })
+
+        
+        //找到next_up的提名者
+        nominators2 = await Promise.all(
+          _next_up.map(authorityId =>
+            api.query.staking.nominatorsFor(authorityId)
+          )
+        );
+        //求出给next_up的提名者们nominators的额度总和
+        
+        sumnominatorsBalance2=[]
+        for(i=0;i<nominators2.length;i++){
+          nominatorsBalance2 = await Promise.all(
+            nominators2[i].map(authorityId =>
+              api.query.balances.freeBalance(authorityId)
+            )
+          );
+          sum2=0
+          for(j=0;j<nominatorsBalance2.length;j++){
+            sum2=sum2+Number(nominatorsBalance2[j])
+          }
+          sumnominatorsBalance2.push(sum2)
+        }
+        //查询next_up额度
+        next_upBalances = await Promise.all(
+          _next_up.map(authorityId =>
             api.query.balances.freeBalance(authorityId)
           )
         );
-        sum=0
-        for(j=0;j<nominatorsBalance.length;j++){
-          sum=sum+Number(nominatorsBalance[j])
+        if (this.state.validators && this.state.validators.length > 0) {
+          //查询validators额度
+          validatorBalances = await Promise.all(
+            this.state.validators.map(authorityId =>
+              api.query.balances.freeBalance(authorityId)
+            )
+          );
+          //查询next_up额度
+          next_upBalances = await Promise.all(
+            _next_up.map(authorityId =>
+              api.query.balances.freeBalance(authorityId)
+            )
+          );
+          this.setState({
+            validatorBalances: validatorBalances,
+            next_up: _next_up,
+            next_upBalances: next_upBalances,
+            sumnominatorsBalance: sumnominatorsBalance,
+            sumnominatorsBalance2: sumnominatorsBalance2
+          })
         }
-        sumnominatorsBalance.push(sum)
-      }
-
+      },5000)
+      
     // 找出Next up
     _intentions=[]
     _validators=[]
@@ -231,7 +322,7 @@ export default class IntegralMall extends Component {
        }
     })
 
-    
+
     //找到next_up的提名者
     nominators2 = await Promise.all(
       _next_up.map(authorityId =>
@@ -252,11 +343,7 @@ export default class IntegralMall extends Component {
         sum2=sum2+Number(nominatorsBalance2[j])
       }
       sumnominatorsBalance2.push(sum2)
-    }
-      
-      
-        
-      
+    } 
       if (this.state.validators && this.state.validators.length > 0) {
         //查询validators额度
         validatorBalances = await Promise.all(
@@ -271,12 +358,6 @@ export default class IntegralMall extends Component {
           )
         );
         this.setState({
-          // validatorNum: validators.length,
-          // intentionNum: intentions.length,
-          // validatorCount: validatorCount,
-          // sessionLength: sessionLength,
-          // eraLength: eraLength,
-          // validators: validators,
           validatorBalances: validatorBalances,
           next_up: _next_up,
           next_upBalances: next_upBalances,

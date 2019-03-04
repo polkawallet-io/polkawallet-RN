@@ -109,7 +109,7 @@ export default class Assets extends Component {
           this.props.rootStore.stateStore.Accountnum=0
           this.props.rootStore.stateStore.isfirst=1
           this.props.rootStore.stateStore.Accounts=[{account:'NeedCreate',address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx'}]
-          this.props.rootStore.stateStore.balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:'0'}]
+          this.props.rootStore.stateStore.balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:0}]
           if (Platform.OS === 'android') {
             //android
             for(var o in result){
@@ -127,13 +127,14 @@ export default class Assets extends Component {
                 this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(item.value).meta.name,address:item.key})
                 this.props.rootStore.stateStore.Account++
                 this.props.rootStore.stateStore.Accountnum++
+                //创建查询每个账户的进程
                 (async()=>{
                   const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
                   await api.query.balances.freeBalance(item.key,(balance)=>{
                     let _address=item.key
                     this.props.rootStore.stateStore.have=0
                     this.props.rootStore.stateStore.balances.map((item,index)=>{
-                      if(item.address!=_address){console.warn(1)}else{
+                      if(item.address!=_address){}else{
                         this.props.rootStore.stateStore.have=1
                         this.props.rootStore.stateStore.balances[index].balance=balance
                       }
@@ -157,7 +158,6 @@ export default class Assets extends Component {
           const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
           const props = await api.rpc.system.properties();
           fees = await api.derive.balances.fees()
-          alert(JSON.stringify(this.props.rootStore.stateStore.balances))
           this.props.rootStore.stateStore.balances.map((item,index)=>{
             if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
               this.props.rootStore.stateStore.balanceIndex=(index)
@@ -214,7 +214,7 @@ export default class Assets extends Component {
             myDate=new Date()
             blockdate = await api.query.timestamp.now()
             lastBlockTime=Number(myDate)-Number(blockdate)
-            // console.warn(lastBlockTime)
+            // console.warn(blockdate)
             if(lastBlockTime>120000){
               a=192,b=192,c=192
             }else if(lastBlockTime<6000){

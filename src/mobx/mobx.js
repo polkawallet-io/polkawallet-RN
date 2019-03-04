@@ -68,7 +68,7 @@ class stateStore{
     balanceIndex=0
     //所有账户balance
     @observable
-    balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:'0'}]
+    balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:0}]
 
     //所有账户中有没有这个用户地址
     @observable

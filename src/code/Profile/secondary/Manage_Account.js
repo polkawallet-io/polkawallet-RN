@@ -147,6 +147,11 @@ export default class Manage_Account extends Component {
                             })
                           })
                         }
+                        this.props.rootStore.stateStore.balances.map((item,index)=>{
+                          if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+                            this.props.rootStore.stateStore.balanceIndex=(index)
+                          }
+                        })
                         this.props.navigation.navigate('Tabbed_Navigation')
                       }
                     }
@@ -211,7 +216,7 @@ export default class Manage_Account extends Component {
               </View>
           </View>
           {/* Change Name */}
-          {/* <View style={{alignItems:'center'}}>
+          <View style={{alignItems:'center'}}>
             <TouchableOpacity
                   style={styles.export}
                   onPress={this.Change_Name}
@@ -223,7 +228,7 @@ export default class Manage_Account extends Component {
                     source={require('../../../images/Profile/next.png')}
                   />
             </TouchableOpacity>
-          </View> */}
+          </View>
           {/* Change password */}
           <View style={{alignItems:'center'}}>
             <TouchableOpacity

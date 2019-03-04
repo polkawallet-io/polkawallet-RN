@@ -33,6 +33,7 @@ export default class IntegralMall extends Component {
       StakingNextPage:false,
       StakingRecords:{},
       pageNum:1,
+      inNominators:false,
       StakingOption:this.props.navigation.state.params.StakingOption,
       // StakingOption: {
       //   title: {
@@ -54,6 +55,7 @@ export default class IntegralMall extends Component {
     }
     this.back=this.back.bind(this)
     this.nominate=this.nominate.bind(this)
+    this.Unnominate=this.Unnominate.bind(this)
     this.copy=this.copy.bind(this)
     this.Loadmore=this.Loadmore.bind(this)
   }  
@@ -63,6 +65,9 @@ export default class IntegralMall extends Component {
   nominate(){
     this.props.rootStore.stateStore.tonominate=1
     this.props.navigation.navigate('Nominate',{address:this.state.address})
+  }
+  Unnominate(){
+    this.props.navigation.navigate('Unnominate')
   }
   async copy(){
     Clipboard.setString(this.state.address);
@@ -126,6 +131,12 @@ export default class IntegralMall extends Component {
         );
         //查询validator额度
         validatorBalances = await api.query.balances.freeBalance(this.state.address)
+        //查询本地账户是否在所选账户的nominators里面
+        nominators.filter((address) =>{
+          if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
+            this.setState({inNominators:true})
+          }
+        })
         // alert(validatorBalances)
         this.setState({
             nominators: nominators,
@@ -198,15 +209,15 @@ export default class IntegralMall extends Component {
                   {/* <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text> */}
                   {/* nominate */}
                   <View style={{flexDirection:'row',flex:1,alignItems:'center',justifyContent:'center',width:ScreenWidth}}>
-                    <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#4eacd1',height:ScreenHeight/16,width:ScreenWidth*0.4}}
-                      onPress={this.nominate}
+                    <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:this.state.inNominators?'#FF4081C7':'#4eacd1',height:ScreenHeight/16,width:ScreenWidth*0.5}}
+                      onPress={this.state.inNominators?this.Unnominate:this.nominate}
                     >
                       <Image
                         style={{height:ScreenHeight/32,width:ScreenHeight/32,resizeMode:'contain'}}
                         source={require('../../../images/Staking/branch.png')}
                       />
                       <Text style={{marginLeft:ScreenWidth/30,fontWeight:'bold',fontSize:ScreenHeight/40,color:'white'}}>
-                        nominate
+                        {this.state.inNominators?'Unnominate':'Nominate'}
                       </Text>
                     </TouchableOpacity>
                   </View>

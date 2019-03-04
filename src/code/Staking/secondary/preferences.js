@@ -268,8 +268,8 @@ import { set } from 'mobx';
                   {/* Cancel or Set */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
-                      <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/>
-                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.2}}
+                      {/* <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/> */}
+                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.3}}
                         onPress={this.Cancel}
                         >
                         
