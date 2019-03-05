@@ -134,6 +134,21 @@ class stateStore{
             data: []
         }]
     };
+    //Staking界面本地账户的nominating
+    @observable
+    nominating=[]
+    //Staking界面本地账户的nominating的余额
+    @observable
+    nominatingBalance=0
+    //Staking界面本地账户的mynominators
+    @observable
+    mynominators=[]
+    //Staking界面本地账户的mynominators的余额
+    @observable
+    mynominatorsBalance=[]
+    //Staking界面本地账户的mynominators的余额额度总和sumnominatingBalance
+    @observable
+    sumnominatingBalance=[]
 
     //******************* */Democracy界面*******************
     //referendumCount
@@ -187,13 +202,14 @@ class stateStore{
 
 
 
-
-
-    //Staking
-    //validators
-    // @observable
-    // validators='';
-
+    //*****************************   设置   *********************************** 
+    //手势密码
+    @observable
+    Gesture='';
+    //手势密码的模式：0 代表无密码，1 代表确认密码，2 代表验证密码
+    @observable
+    GestureState=0;
+    
 
 
 

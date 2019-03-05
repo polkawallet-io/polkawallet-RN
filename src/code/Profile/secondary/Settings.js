@@ -9,7 +9,8 @@ import {
   Image,
   TouchableOpacity,
   AsyncStorage,
-  Switch
+  Switch,
+  Alert
 } from 'react-native';
 
 let ScreenWidth = Dimensions.get("screen").width;
@@ -27,7 +28,7 @@ export default class New extends Component {
     {
         super(props)
         this.state = {
-            Gesture:false,
+            Gesture:this.props.rootStore.stateStore.GestureState==0?false:true,
             Fingerprint:false,
             Facial_Recognition:false,
         }
@@ -43,8 +44,25 @@ export default class New extends Component {
   Set_Node(){
     this.props.navigation.navigate('Set_Node')
   }
-  Gesture(e)  {
+  Gesture(e){
     this.setState({Gesture: e});
+    if(e){
+        this.props.navigation.navigate('Gesture')
+    }else{
+        Alert.alert(
+            'Alert',
+            'Delete gesture password ？',
+            [
+                {text: 'Cancel', onPress: () => {this.setState({Gesture:true})}, style: 'cancel'},
+                {text: 'Confirm', onPress: () => {
+                    AsyncStorage.removeItem('Gesture').then(
+                        alert('The gesture password has been canceled.')
+                    )
+                }},
+            ],
+            { cancelable: false }
+        )
+    }
   }
   Fingerprint(e)  {
     this.setState({Fingerprint: e});
@@ -94,7 +112,7 @@ export default class New extends Component {
         }
         
         {/* Gesture */}
-        {/* <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
+        <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
         >
             <Text style={styles.msgText}>Gesture</Text>
             <View style={{flex:1}}/>
@@ -103,9 +121,9 @@ export default class New extends Component {
               value={this.state.Gesture}//默认状态
               onValueChange={(e) => this.Gesture(e)} //当状态值发生变化值回调
             />
-        </View> */}
+        </View>
         {/* Fingerprint */}
-        {/* <View style={styles.msgView}
+        <View style={styles.msgView}
         >
             <Text style={styles.msgText}>Fingerprint</Text>
             <View style={{flex:1}}/>
@@ -114,9 +132,9 @@ export default class New extends Component {
               value={this.state.Fingerprint}//默认状态
               onValueChange={(e) => this.Fingerprint(e)} //当状态值发生变化值回调
             />
-        </View> */}
+        </View>
         {/* Facial recognition */}
-        {/* <View style={styles.msgView}
+        <View style={styles.msgView}
         >
             <Text style={styles.msgText}>Facial recognition</Text>
             <View style={{flex:1}}/>
@@ -125,7 +143,7 @@ export default class New extends Component {
               value={this.state.Facial_Recognition}//默认状态
               onValueChange={(e) => this.Facial_Recognition(e)} //当状态值发生变化值回调
             />
-        </View> */}
+        </View>
       </View>
     );
   }

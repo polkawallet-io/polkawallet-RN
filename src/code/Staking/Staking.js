@@ -169,16 +169,16 @@ export default class IntegralMall extends Component {
 
 
       //Account Actions
+      //查询mynominators和mynominators的余额
       mynominators = await api.query.staking.nominatorsFor(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
       mynominatorsBalance = await Promise.all(
         mynominators.map(authorityId =>
           api.query.balances.freeBalance(authorityId)
         )
       );
-      this.setState({
-          mynominators: mynominators,
-          mynominatorsBalance: mynominatorsBalance,
-      })
+      this.props.rootStore.stateStore.mynominators = mynominators
+      this.props.rootStore.stateStore.mynominatorsBalance = mynominatorsBalance
+      
 
       //查询nominating  //查询Staking状态
       nominating = (await api.query.staking.nominating(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)).unwrapOr(null)
@@ -197,18 +197,10 @@ export default class IntegralMall extends Component {
         for(i=0;i<nominatingBalances.length;i++){
           sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
         }
-        this.setState({
-          nominating: String(nominating),
-          nominatingBalance: nominatingBalance,
-          sumnominatingBalance: sumnominatingBalance,
-        })
-
-      }else {
-        this.setState({
-          nominating: [],
-          nominatingBalance: 0,
-          sumnominatingBalance: 0,
-        })
+        
+        this.props.rootStore.stateStore.nominating = nominating
+        this.props.rootStore.stateStore.nominatingBalance = nominatingBalance
+        this.props.rootStore.stateStore.sumnominatingBalance = sumnominatingBalance
       }
 
       if(this.props.rootStore.stateStore.StakingState==0){
@@ -375,6 +367,11 @@ export default class IntegralMall extends Component {
     setTimeout(()=>{
       this.props.rootStore.stateStore.isvalidators=0
       this.props.rootStore.stateStore.StakingState=0
+      this.props.rootStore.stateStore.nominating=[]
+      this.props.rootStore.stateStore.nominatingBalance=0
+      this.props.rootStore.stateStore.mynominators=[]
+      this.props.rootStore.stateStore.mynominatorsBalance=[]
+      this.props.rootStore.stateStore.sumnominatingBalance=[]
       this.loding()
       this.setState({
         isrefresh:false
@@ -648,7 +645,7 @@ export default class IntegralMall extends Component {
                     </View>
                     :(this.state.titlebottomAA==2)?
                       // Nominating
-                      (this.state.nominating[0]==null||String(this.state.nominating)=='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')?
+                      (String(this.props.rootStore.stateStore.nominating)==''||String(this.props.rootStore.stateStore.nominating)=='5C4hrfjw9DjXZTzV3MwzrrAr9P1MJhSrvWGWqi1eSuyUppTZ')?
                         <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
                           <Text style={{marginTop:20,color:'#696969'}}>-You are not nominating.</Text>
                         </View>
@@ -656,7 +653,7 @@ export default class IntegralMall extends Component {
                             <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:1,borderBottomWidth:1,borderColor:'grey'}}>
                               <Identicon
                                   style={{marginLeft:ScreenWidth/20}}
-                                  value={String(this.state.nominating)}
+                                  value={String(this.props.rootStore.stateStore.nominating)}
                                   size={ScreenHeight/21}
                                   theme={'polkadot'}
                               />
@@ -666,26 +663,26 @@ export default class IntegralMall extends Component {
                                   ellipsizeMode={"middle"}
                                   numberOfLines={1}
                                 >
-                                  {String(this.state.nominating)}
+                                  {String(this.props.rootStore.stateStore.nominating)}
                                 </Text>
                               </View>
                               <Text
                                 style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                               >
-                                {formatBalance(String(this.state.nominatingBalance))+'('+formatBalance(String(this.state.sumnominatingBalance))+')'} 
+                                {formatBalance(String(this.props.rootStore.stateStore.nominatingBalance))+'('+formatBalance(String(this.props.rootStore.stateStore.sumnominatingBalance))+')'} 
                               </Text>
                             </View>
                       :
                       // MyNominators
                       <View>
                         {
-                          (this.state.mynominators[0]==null)
+                          (String(this.props.rootStore.stateStore.mynominators)=='')
                           ?
                           <View style={{borderTopWidth:1,borderTopColor:'grey',alignItems:'center',height:ScreenHeight/2.5}}>
                             <Text style={{marginTop:20,color:'#696969'}}>-You don't have nominee.</Text>
                           </View>
                           :
-                          this.state.mynominators.map((item,index)=>{
+                          this.props.rootStore.stateStore.mynominators.map((item,index)=>{
                             return(
                               <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderTopWidth:(index==0)?1:0,borderBottomWidth:1,borderColor:'grey'}} key={index}>
                                 <Identicon
@@ -706,7 +703,7 @@ export default class IntegralMall extends Component {
                                 <Text
                                   style={{marginRight:ScreenWidth/20,fontSize:ScreenWidth/32,color:'#666666'}}
                                 >
-                                  {formatBalance(this.state.mynominatorsBalance[index])} 
+                                  {formatBalance(this.props.rootStore.stateStore.mynominatorsBalance[index])} 
                                 </Text>
                               </View>
                             )

@@ -243,7 +243,7 @@ export default class Polkawallet extends Component {
                     this.props.rootStore.stateStore.balanceIndex=(index)
                   }
                 })
-                this.props.navigation.navigate('Backup_Account',{key:this.state.key})
+                this.props.navigation.navigate('Backup_Account',{key:this.state.key,address:this.state.address})
               }
             }
             else{
