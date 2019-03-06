@@ -496,7 +496,7 @@ export default class IntegralMall extends Component {
                   </Text>
                   {/* 余额 */}
                   <Text style={{marginBottom:ScreenHeight/80,fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>
-                    {'balance  '+formatBalance(this.props.rootStore.stateStore.balance)}
+                    {'balance  '+formatBalance(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].balance)}
                   </Text>
                   {/* transactions */}
                   {/* <Text style={{fontSize:ScreenHeight/47.65,color:'#4B4B4B'}}>47 transactions</Text> */}

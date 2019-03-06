@@ -19,6 +19,8 @@ let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 
 import { observer, inject } from "mobx-react";
+import { async } from 'rxjs/internal/scheduler/async';
+import { array } from 'prop-types';
 @inject('rootStore')
 @observer
 export default class Polkawallet extends Component {
@@ -95,7 +97,7 @@ export default class Polkawallet extends Component {
         this.setState({votingCountdown:bestNumber})
       })
       await api.derive.democracy.referendums((result)=>{
-        this.setState({referendums:[],Actives_Nofixed:[],Actives_Nofixedvalue:[],Actives_Title:[],votingState:[]})
+        this.setState({referendums:[],Actives_Nofixed:[],Actives_Nofixedvalue:[],Actives_Title:[],votingIndex:[],votingState:[]})
         result.map((item,index)=>{
           info = item.unwrapOr(null)
           if (info) {
@@ -105,21 +107,47 @@ export default class Polkawallet extends Component {
             this.state.Actives_Nofixed.push(meta.arguments)
             this.state.referendums.push(info)
             this.state.votingIndex.push(info.index)
+            this.props.rootStore.stateStore.have = 0
+            for(i=0;i<this.state.votingState.length;i++){
+              if(this.state.votingState[i].index==index){
+                this.props.rootStore.stateStore.have=1
+              }
+            }
+            if(this.props.rootStore.stateStore.have == 0){
+              this.state.votingState.push({index:info.index,msg:[]})
+            }
+            this.setState({})
           }
-          this.setState({})
+          // this.setState({})
+          (async()=>{
+            const index = info.index
+            const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+            await api.derive.democracy.referendumVotesFor(index,(result)=>{
+                this.props.rootStore.stateStore.have = 0
+                for(i=0;i<this.state.votingState.length;i++){
+                  if(this.state.votingState[i].index==index){
+                    this.props.rootStore.stateStore.have=1
+                    this.state.votingState[i].msg = result
+                  }
+                }
+                alert(JSON.stringify(this.state.votingState))
+                this.setState({})
+            })
+          })()
+          
           // this.votingState()
         })
-        
+        // alert(JSON.stringify(this.state.votingState))
       })
       // console.warn(this.state.votingIndex)
-      for(i=0;i<this.state.votingIndex.length;i++){
-        await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
-          alert(this.state.votingIndex[i])
-            // console.warn(result)
-            this.state.votingState.push(result);
-            this.setState({})
-        })
-      }
+      // for(i=0;i<this.state.votingIndex.length;i++){
+      //   await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
+      //     alert(typeof(this.state.votingIndex[i]))
+      //       console.warn(result)
+      //       this.state.votingState.push(result);
+      //       this.setState({})
+      //   })
+      // }
       // console.warn(this.state.votingState)
       
       
@@ -171,7 +199,7 @@ export default class Polkawallet extends Component {
                     <View style={{alignItems:'center',flexDirection:'row',marginTop:ScreenHeight/70,marginLeft:ScreenWidth/40,height:ScreenHeight/30}}>
                       <Text style={{fontSize:ScreenHeight/65}}>{'Threshold: '+item.threshold}</Text>
                     </View>
-                    {/* <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
+                    <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
                         <Image
                             style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
                             source={require('../../../images/Democracy/green_ellipse.png')}
@@ -186,7 +214,7 @@ export default class Polkawallet extends Component {
                         <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+item.Nay}</Text>
                         <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>33.25%</Text>
                         <Text style={{fontSize:ScreenWidth/45}}>{'('+item.nay+')'}</Text>
-                    </View> */}
+                    </View>
                     <View style={{flexDirection:'row',marginLeft:ScreenWidth/6,marginVertical:ScreenHeight/70}}>
                         <VictoryPie
                             padding={{ top: 0, left:0 }}
