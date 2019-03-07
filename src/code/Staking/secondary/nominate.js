@@ -159,7 +159,7 @@ import { set } from 'mobx';
                         <View style={{flex:1}}/>
                     </View>
                     <View style={{flexDirection:'row',marginTop:ScreenHeight/70,alignItems:'center'}}>
-                        <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50}]}
+                        <TextInput style = {[styles.textInputStyle,{fontSize:ScreenHeight/50,borderTopRightRadius:0,borderBottomRightRadius:0}]}
                             placeholder = ''
                             placeholderTextColor = "#666666"
                             underlineColorAndroid="#ffffff00"
@@ -167,7 +167,7 @@ import { set } from 'mobx';
                             onChangeText = {this.onChangepassword}
                         />
                         <TouchableOpacity 
-                          style={styles.eye}
+                          style={[styles.eye,{borderTopRightRadius:ScreenHeight/200,borderBottomRightRadius:ScreenHeight/200}]}
                           onPress={this.lookpwd}
                         >
                           <Image
@@ -180,9 +180,9 @@ import { set } from 'mobx';
 
                   {/* Cancel or nominate */}
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
-                    <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'center'}}>
-                      {/* <View style={{height:ScreenHeight/20,width:ScreenWidth*0.1}}/> */}
-                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.3}}
+                    <View style={{marginRight:ScreenWidth*0.08-ScreenWidth/40,flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'flex-end'}}>
+                     <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
+                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.2}}
                         onPress={this.Cancel}
                         >
                         
@@ -192,7 +192,7 @@ import { set } from 'mobx';
                       </TouchableOpacity>
                       {this.state.onlyone==0?
                         <TouchableOpacity 
-                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
                             onPress={this.Nominate}
                         >
                         
@@ -202,7 +202,7 @@ import { set } from 'mobx';
                         </TouchableOpacity>
                         :
                         <View 
-                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.3}}
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
                         >
                         
                             <Text style={styles.choessText}>
@@ -215,6 +215,7 @@ import { set } from 'mobx';
                             or
                         </Text>
                       </View>
+                     </View>
                     </View>
                   </View>
                   <Modal
