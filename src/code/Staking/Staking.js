@@ -202,10 +202,13 @@ export default class IntegralMall extends Component {
         this.props.rootStore.stateStore.nominatingBalance = nominatingBalance
         this.props.rootStore.stateStore.sumnominatingBalance = sumnominatingBalance
       }
-
-      if(this.props.rootStore.stateStore.StakingState==0){
-        this.props.rootStore.stateStore.StakingState=1
-      }
+ 
+      setTimeout(()=>{
+        if(this.props.rootStore.stateStore.StakingState==0){
+          this.props.rootStore.stateStore.StakingState=1
+        }
+      },1000)
+      
 
       //实时监控
       setInterval(async()=>{
@@ -296,7 +299,7 @@ export default class IntegralMall extends Component {
             sumnominatorsBalance2: sumnominatorsBalance2
           })
         }
-      },5000)
+      },30000)
       
     // 找出Next up
     _intentions=[]
@@ -567,7 +570,7 @@ export default class IntegralMall extends Component {
                     }}
                     >
                     <Text style={{color:this.state.titlebottomAA==1?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
-                      Staking Records
+                      Slash Records
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity 

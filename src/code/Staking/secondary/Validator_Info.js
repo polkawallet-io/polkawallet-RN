@@ -244,7 +244,7 @@ export default class IntegralMall extends Component {
                       }}
                       >
                       <Text style={{color:this.state.titlebottomAA==2?'#005bae':'#696969',fontSize:ScreenWidth/30}}>
-                        Staking Records
+                        Slash Records
                       </Text>
                     </TouchableOpacity>
                     <View 

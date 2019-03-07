@@ -12,6 +12,7 @@ import {
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import { Method } from '@polkadot/types';
+import formatBalance from '../../../util/formatBalance'
 
 import { VictoryPie} from "victory-native";
 
@@ -37,7 +38,27 @@ export default class Polkawallet extends Component {
         votingState:[],
         votingStateIndex:[],
       }
-      // this.votingState=this.votingState.bind(this)
+      this.votingState=this.votingState.bind(this)
+      this.Nay=this.Nay.bind(this)
+      this.Aye=this.Aye.bind(this)
+  }
+  Nay(votingState){
+    let balance = 0
+    for(i=0;i<votingState.msg.length;i++){
+      if(JSON.stringify(votingState.msg[i].vote) == '"0x00"'){
+        balance = balance + Number(votingState.msg[i].balance)
+      }
+    }
+    return balance
+  }
+  Aye(votingState){
+    let balance = 0
+    for(i=0;i<votingState.msg.length;i++){
+      if(JSON.stringify(votingState.msg[i].vote) == '"0xff"'){
+        balance = balance + Number(votingState.msg[i].balance)
+      }
+    }
+    return balance
   }
   votingState(){
     (async()=>{
@@ -102,18 +123,18 @@ export default class Polkawallet extends Component {
           info = item.unwrapOr(null)
           if (info) {
             let {meta, method, section } = Method.findFunction(info.proposal.callIndex)
+            have = 0
             this.state.Actives_Title.push({section:section,method:method})
             this.state.Actives_Nofixedvalue.push(info.proposal.args)
             this.state.Actives_Nofixed.push(meta.arguments)
             this.state.referendums.push(info)
             this.state.votingIndex.push(info.index)
-            this.props.rootStore.stateStore.have = 0
             for(i=0;i<this.state.votingState.length;i++){
               if(this.state.votingState[i].index==index){
-                this.props.rootStore.stateStore.have=1
+                have = 1
               }
             }
-            if(this.props.rootStore.stateStore.have == 0){
+            if(have == 0){
               this.state.votingState.push({index:info.index,msg:[]})
             }
             this.setState({})
@@ -130,9 +151,10 @@ export default class Polkawallet extends Component {
                     this.state.votingState[i].msg = result
                   }
                 }
-                alert(JSON.stringify(this.state.votingState))
+                // alert(JSON.stringify(this.state.votingState))
                 this.setState({})
             })
+            // alert(JSON.stringify(this.state.votingState))
           })()
           
           // this.votingState()
@@ -149,8 +171,6 @@ export default class Polkawallet extends Component {
       //   })
       // }
       // console.warn(this.state.votingState)
-      
-      
     })()
     
   }
@@ -204,15 +224,15 @@ export default class Polkawallet extends Component {
                             style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
                             source={require('../../../images/Democracy/green_ellipse.png')}
                         />
-                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Aye '+item.Aye}</Text>
-                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#7ad52a'}}>66.75%</Text>
+                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Aye '+formatBalance(this.Aye(this.state.votingState[index]))}</Text>
+                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#7ad52a'}}>{(this.Aye(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
                         <Text style={{fontSize:ScreenWidth/45}}>{'('+item.aye+')'}</Text>
                         <Image
                             style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
                             source={require('../../../images/Democracy/red_ellipse.png')}
                         />
-                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+item.Nay}</Text>
-                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>33.25%</Text>
+                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+formatBalance(this.Nay(this.state.votingState[index]))}</Text>
+                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>{(this.Nay(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
                         <Text style={{fontSize:ScreenWidth/45}}>{'('+item.nay+')'}</Text>
                     </View>
                     <View style={{flexDirection:'row',marginLeft:ScreenWidth/6,marginVertical:ScreenHeight/70}}>
@@ -221,8 +241,8 @@ export default class Polkawallet extends Component {
                             colorScale={['#8fec41','#fb3232']}
                             innerRadius={ScreenWidth/30}
                             data={[
-                                { x: 1, y: 3, },
-                                { x: 2, y: 1, },
+                                { x: 1, y: this.Aye(this.state.votingState[index]), },
+                                { x: 2, y: this.Nay(this.state.votingState[index]), },
                             ]}
                             height={ScreenWidth/5.86}
                             width={ScreenWidth/5.86}

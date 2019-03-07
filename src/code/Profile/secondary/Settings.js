@@ -112,7 +112,7 @@ export default class New extends Component {
         }
         
         {/* Gesture */}
-        <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
+        {/* <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
         >
             <Text style={styles.msgText}>Gesture</Text>
             <View style={{flex:1}}/>
@@ -121,9 +121,9 @@ export default class New extends Component {
               value={this.state.Gesture}//默认状态
               onValueChange={(e) => this.Gesture(e)} //当状态值发生变化值回调
             />
-        </View>
+        </View> */}
         {/* Fingerprint */}
-        <View style={styles.msgView}
+        {/* <View style={styles.msgView}
         >
             <Text style={styles.msgText}>Fingerprint</Text>
             <View style={{flex:1}}/>
@@ -132,9 +132,9 @@ export default class New extends Component {
               value={this.state.Fingerprint}//默认状态
               onValueChange={(e) => this.Fingerprint(e)} //当状态值发生变化值回调
             />
-        </View>
+        </View> */}
         {/* Facial recognition */}
-        <View style={styles.msgView}
+        {/* <View style={styles.msgView}
         >
             <Text style={styles.msgText}>Facial recognition</Text>
             <View style={{flex:1}}/>
@@ -143,7 +143,7 @@ export default class New extends Component {
               value={this.state.Facial_Recognition}//默认状态
               onValueChange={(e) => this.Facial_Recognition(e)} //当状态值发生变化值回调
             />
-        </View>
+        </View> */}
       </View>
     );
   }
