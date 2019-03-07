@@ -107,16 +107,20 @@ export default class Polkawallet extends Component {
             this.state.votingIndex.push(info.index)
           }
           this.setState({})
-          this.votingState()
+          // this.votingState()
         })
         
       })
-      // for(i=0;i<this.state.votingIndex.length;i++){
-      //   VotingFor = await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
-      //       this.state.votingState.push(result);
-      //     this.setState({})
-      //   })
-      // }
+      // console.warn(this.state.votingIndex)
+      for(i=0;i<this.state.votingIndex.length;i++){
+        await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
+          alert(this.state.votingIndex[i])
+            // console.warn(result)
+            this.state.votingState.push(result);
+            this.setState({})
+        })
+      }
+      // console.warn(this.state.votingState)
       
       
     })()
@@ -184,7 +188,7 @@ export default class Polkawallet extends Component {
                         <Text style={{fontSize:ScreenWidth/45}}>{'('+item.nay+')'}</Text>
                     </View> */}
                     <View style={{flexDirection:'row',marginLeft:ScreenWidth/6,marginVertical:ScreenHeight/70}}>
-                        {/* <VictoryPie
+                        <VictoryPie
                             padding={{ top: 0, left:0 }}
                             colorScale={['#8fec41','#fb3232']}
                             innerRadius={ScreenWidth/30}
@@ -194,7 +198,7 @@ export default class Polkawallet extends Component {
                             ]}
                             height={ScreenWidth/5.86}
                             width={ScreenWidth/5.86}
-                        /> */}
+                        />
                         {/* Nay or Aye */}
                         <View style={{flex:1,justifyContent:'flex-end',alignItems:'flex-end'}}>
                          <View style={{flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.5,alignItems:'center',justifyContent:'center'}}>

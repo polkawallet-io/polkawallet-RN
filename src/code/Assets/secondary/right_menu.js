@@ -50,6 +50,11 @@ export default class New extends Component {
       (async()=>{
         this.props.rootStore.stateStore.isvalidators=0
         this.props.rootStore.stateStore.StakingState=0
+        this.props.rootStore.stateStore.nominating=[]
+        this.props.rootStore.stateStore.nominatingBalance=0
+        this.props.rootStore.stateStore.mynominators=[]
+        this.props.rootStore.stateStore.mynominatorsBalance=[]
+        this.props.rootStore.stateStore.sumnominatingBalance=[]
         this.props.rootStore.stateStore.balances.map((item,index)=>{
           if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
             this.props.rootStore.stateStore.balanceIndex=(index)
@@ -75,8 +80,34 @@ export default class New extends Component {
         })
         if (nominating)
         {
+          nominatingBalance = await api.query.balances.freeBalance(nominating)
           this.props.rootStore.stateStore.StakingState=3
+
+          //求出给nominating的提名者们nominatingNominators的额度总和sumnominatingBalance
+          nominatingNominators = await api.query.staking.nominatorsFor(nominating)
+          nominatingBalances = await Promise.all(
+            nominatingNominators.map(authorityId =>
+              api.query.balances.freeBalance(authorityId)
+            )
+          );
+          sumnominatingBalance = 0
+          for(i=0;i<nominatingBalances.length;i++){
+            sumnominatingBalance = sumnominatingBalance + Number(nominatingBalances[i])
+          }
+          
+          this.props.rootStore.stateStore.nominating = nominating
+          this.props.rootStore.stateStore.nominatingBalance = nominatingBalance
+          this.props.rootStore.stateStore.sumnominatingBalance = sumnominatingBalance
         }
+        //查询mynominators和mynominators的余额
+        mynominators = await api.query.staking.nominatorsFor(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+        mynominatorsBalance = await Promise.all(
+          mynominators.map(authorityId =>
+            api.query.balances.freeBalance(authorityId)
+          )
+        );
+        this.props.rootStore.stateStore.mynominators = mynominators
+        this.props.rootStore.stateStore.mynominatorsBalance = mynominatorsBalance
         if(this.props.rootStore.stateStore.StakingState!=2&&this.props.rootStore.stateStore.StakingState!=3){
           this.props.rootStore.stateStore.StakingState=1
         }

@@ -26,16 +26,47 @@ export default class Polkawallet extends Component{
   {
     super(props)
     this.state={
-        text:this.props.navigation.state.params.key
+        text:this.props.navigation.state.params.key,
+        address:this.props.navigation.state.params.address
     }
     this.copy=this.copy.bind(this)
     this.Cancel=this.Cancel.bind(this)
     this.Continue=this.Continue.bind(this)
   }
   Cancel(){
+    //创建查询每个账户的进程
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      await api.query.balances.freeBalance(this.state.address,(balance)=>{
+        let _address=this.state.address
+        this.props.rootStore.stateStore.have=0
+        this.props.rootStore.stateStore.balances.map((item,index)=>{
+          if(item.address!=_address){}else{
+            this.props.rootStore.stateStore.have=1
+            this.props.rootStore.stateStore.balances[index].balance=balance
+          }
+        })
+        if(this.props.rootStore.stateStore.have==0){this.props.rootStore.stateStore.balances.push({address:_address,balance:balance})}
+      })
+    })()
     this.props.navigation.navigate('Create_Account')
   }
   Continue(){
+    //创建查询每个账户的进程
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      await api.query.balances.freeBalance(this.state.address,(balance)=>{
+        let _address=this.state.address
+        this.props.rootStore.stateStore.have=0
+        this.props.rootStore.stateStore.balances.map((item,index)=>{
+          if(item.address!=_address){}else{
+            this.props.rootStore.stateStore.have=1
+            this.props.rootStore.stateStore.balances[index].balance=balance
+          }
+        })
+        if(this.props.rootStore.stateStore.have==0){this.props.rootStore.stateStore.balances.push({address:_address,balance:balance})}
+      })
+    })()
     this.props.rootStore.stateStore.isvalidators=0
     this.props.rootStore.stateStore.StakingState=0
     this.props.navigation.navigate('Tabbed_Navigation')
