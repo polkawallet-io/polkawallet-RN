@@ -168,7 +168,7 @@ import { set } from 'mobx';
                   <View style={{flex:1,justifyContent:'center',alignItems:'flex-end'}}>
                     <View style={{marginRight:ScreenWidth*0.08-ScreenWidth/40,flexDirection:'row',height:ScreenHeight/20,width:ScreenWidth*0.7,alignItems:'center',justifyContent:'flex-end'}}>
                      <View style={{alignItems:'center',flexDirection:'row',justifyContent:'center'}}>
-                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.2}}
+                      <TouchableOpacity style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#FF4081',height:ScreenHeight/20,width:ScreenWidth*0.25}}
                         onPress={this.Cancel}
                         >
                         
@@ -178,7 +178,7 @@ import { set } from 'mobx';
                       </TouchableOpacity>
                       {this.state.onlyone==0?
                         <TouchableOpacity 
-                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.25}}
                             onPress={this.Nominate}
                         >
                         
@@ -188,7 +188,7 @@ import { set } from 'mobx';
                         </TouchableOpacity>
                         :
                         <View 
-                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.2}}
+                            style={{flexDirection:'row',alignItems:'center',justifyContent:'center',borderRadius:5,backgroundColor:'#97BEC7',marginLeft:ScreenWidth/100,height:ScreenHeight/20,width:ScreenWidth*0.25}}
                         >
                         
                             <Text style={{fontWeight:'500',fontSize:ScreenWidth/28,color:'white'}}>

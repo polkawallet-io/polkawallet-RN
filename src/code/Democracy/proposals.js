@@ -22,6 +22,7 @@ const Proposals=[
 ]
 import { observer, inject } from "mobx-react";
 import { async } from 'rxjs/internal/scheduler/async';
+import { array } from 'prop-types';
 @inject('rootStore')
 @observer
 export default class Polkawallet extends Component {
@@ -65,7 +66,31 @@ export default class Polkawallet extends Component {
       })
       for(i=0;i<this.state.Index.length;i++){
         balance = await api.query.democracy.depositOf(this.state.Index[i])
-        this.state.balances.push((JSON.parse(balance))[0])
+        if(balance){
+          this.state.balances.push((JSON.parse(balance))[0])
+        }
+        this.setState({})
+      }
+      for(i=0;i<this.state.balances.length;i++){
+        for(j=0;j<this.state.balances.length-i-1;j++){
+          if(this.state.balances[j]<this.state.balances[j+1]){
+            // console.warn(this.state.publicProps[j+1])
+            tmp = this.state.balances[j]
+            this.state.balances[j] = this.state.balances[j+1]
+            this.state.balances[j+1] = tmp
+            tmp_publicProps = this.state.publicProps[j]
+            this.state.publicProps[j] = this.state.publicProps[j+1]
+            this.state.publicProps[j+1] = tmp_publicProps
+            tmp_Actives_Nofixed = this.state.Actives_Nofixed[j]
+            this.state.Actives_Nofixed[j] = this.state.Actives_Nofixed[j+1]
+            this.state.Actives_Nofixed[j+1] = tmp_Actives_Nofixed
+            tmp_Actives_Nofixedvalue = this.state.Actives_Nofixedvalue[j]
+            this.state.Actives_Nofixedvalue[j] = this.state.Actives_Nofixedvalue[j+1]
+            this.state.Actives_Nofixedvalue[j+1] = tmp_Actives_Nofixedvalue
+            this.setState({})
+          }
+          this.setState({})
+        }
         this.setState({})
       }
     })();
@@ -106,7 +131,7 @@ export default class Polkawallet extends Component {
                             style={{marginLeft:ScreenWidth/40,height:ScreenHeight/50,width:ScreenHeight/50,resizeMode:'contain'}}
                             source={require('../../images/Democracy/time.png')}
                         />
-                        <Text style={{fontWeight:'500',marginLeft:ScreenWidth/80,color:'#90BD5B',fontSize:ScreenWidth/35}}>{this.state.launchCountdown}</Text>
+                        <Text style={{fontWeight:'500',marginLeft:ScreenWidth/80,color:'#90BD5B',fontSize:ScreenWidth/35}}>{this.state.launchCountdown+9*index}</Text>
                         <Text style={{fontWeight:'500',color:'#90BD5B',fontSize:ScreenWidth/40}}> {' blocks launch'}</Text>
                         <View style={{flex:1}}></View>
                         <Text style={{marginRight:ScreenWidth/70,fontSize:ScreenWidth/26}}>{'#'+item[0]}</Text>
