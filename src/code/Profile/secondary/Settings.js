@@ -112,7 +112,7 @@ export default class New extends Component {
         }
         
         {/* Gesture */}
-        {/* <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
+        <View style={[styles.msgView,{marginTop:ScreenHeight/40}]}
         >
             <Text style={styles.msgText}>Gesture</Text>
             <View style={{flex:1}}/>
@@ -121,7 +121,7 @@ export default class New extends Component {
               value={this.state.Gesture}//默认状态
               onValueChange={(e) => this.Gesture(e)} //当状态值发生变化值回调
             />
-        </View> */}
+        </View>
         {/* Fingerprint */}
         {/* <View style={styles.msgView}
         >

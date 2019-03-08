@@ -59,6 +59,7 @@ export default class Gesture_Test1 extends Component{
                         status: 'right',
                         message: 'Password is correct.'
                     });
+                    setTimeout(()=>{this.props.navigation.navigate('Tabbed_Navigation')},500)
                 }else{
                     this.setState({
                         status: 'wrong',

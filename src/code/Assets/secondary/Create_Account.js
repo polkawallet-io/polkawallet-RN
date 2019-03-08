@@ -18,6 +18,7 @@ import Identicon from 'polkadot-identicon-react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import formatBalance from '../../../util/formatBalance'
+import moment from "moment/moment";
 
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
@@ -30,6 +31,7 @@ let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 let Platform = require('Platform');
 import { observer, inject } from "mobx-react";
+import { async } from 'rxjs/internal/scheduler/async';
 @inject('rootStore')
 @observer
 export default class Polkawallet extends Component {
@@ -61,15 +63,23 @@ export default class Polkawallet extends Component {
     this.Modify_way=this.Modify_way.bind(this)
     this.Reset=this.Reset.bind(this)
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
+    this.unit=this.unit.bind(this)
   }
   componentWillMount(){
-    let key = mnemonicGenerate()
-    this.pair = keyring.addFromMnemonic(key)
-    this.setState({
-      key:key,
-      address:this.pair.address()
-    })
-    
+    (async()=>{
+      let key = mnemonicGenerate()
+      this.pair = keyring.addFromMnemonic(key)
+      this.setState({
+        key:key,
+        address:this.pair.address()
+      })
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      const props = await api.rpc.system.properties();
+      formatBalance.setDefaults({
+        decimals: props.get('tokenDecimals'),
+        unit: props.get('tokenSymbol')
+      });     
+    })()
   }
   Modify_way(){
     this.setState({
@@ -187,6 +197,56 @@ export default class Polkawallet extends Component {
       })
     }
   }
+  unit(){
+    (async()=>{
+      const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+      const props = await api.rpc.system.properties();
+      formatBalance.setDefaults({
+        decimals: props.get('tokenDecimals'),
+        unit: props.get('tokenSymbol')
+      });     
+      //获取本地账户staking折线图数据
+      REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+      map = {
+            method:'POST'
+          }
+      privateHeaders = {
+        'Content-Type':'application/json'
+      }
+      map.headers = privateHeaders;
+      map.follow = 20;
+      map.timeout = 0;
+      map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+      // map.body = '{"user_address":"'+'5Enp67VYwLviZWuyf2XfM5mJXgTWHaa45podYXhUhDCUeQUM'+'","UTCdate":"'+moment((new Date()).getTime()).format('YYYY-MM-DD HH:mm:ss')+'"}';
+      fetch(REQUEST_URL,map).then(
+        (result)=>{
+          this.props.rootStore.stateStore.StakingOption.xAxis.data=[]
+          this.props.rootStore.stateStore.StakingOption.series[0].data=[]
+          JSON.parse(result._bodyInit).map((item,index)=>{
+            this.props.rootStore.stateStore.StakingOption.xAxis.data.push(item.time.substring(5,7)+'/'+item.time.substring(8,10))
+            this.props.rootStore.stateStore.StakingOption.series[0].data.push(item.slash_balance)
+          })
+          max=0
+          for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+          {
+            if(this.props.rootStore.stateStore.StakingOption.series[0].data[i]>max){
+              max=this.props.rootStore.stateStore.StakingOption.series[0].data[i]
+            }
+          }
+          power = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).power+formatBalance.getDefaults().decimals
+          unit = formatBalance.calcSi(String(max),formatBalance.getDefaults().decimals).text
+          
+          for(i=0;i<this.props.rootStore.stateStore.StakingOption.series[0].data.length;i++)
+          {
+            this.props.rootStore.stateStore.StakingOption.series[0].data[i]=(this.props.rootStore.stateStore.StakingOption.series[0].data[i]/Number(Math.pow(10,power))).toFixed(3)
+            
+          }
+          this.props.rootStore.stateStore.StakingOption.title.text = 'Staking slash record, Unit ( '+unit+' )'
+        }
+      ).catch() 
+    })()
+    
+  }
   Save_Account(){
     if(this.state.password==''||this.state.passwordErepeat == '')
     {
@@ -225,6 +285,7 @@ export default class Polkawallet extends Component {
                       this.props.rootStore.stateStore.balanceIndex=(index)
                     }
                   })
+                  this.unit()
                   this.props.navigation.navigate('Backup_Account',{key:this.state.key})
                   
               }else{
@@ -243,6 +304,7 @@ export default class Polkawallet extends Component {
                     this.props.rootStore.stateStore.balanceIndex=(index)
                   }
                 })
+                this.unit()
                 this.props.navigation.navigate('Backup_Account',{key:this.state.key,address:this.state.address})
               }
             }
