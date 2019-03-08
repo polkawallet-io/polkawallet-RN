@@ -108,7 +108,7 @@ import { set } from 'mobx';
                                     'Nominate success',
                                     [
                                       {text: 'OK', onPress: () => {
-                                            this.props.rootStore.stateStore.StakingState=1
+                                            this.props.rootStore.stateStore.StakingState=0
                                             this.setState({
                                                 isModal:false
                                             })

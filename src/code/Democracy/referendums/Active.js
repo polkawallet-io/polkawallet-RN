@@ -41,6 +41,8 @@ export default class Polkawallet extends Component {
       this.votingState=this.votingState.bind(this)
       this.Nay=this.Nay.bind(this)
       this.Aye=this.Aye.bind(this)
+      this.NayNumber=this.NayNumber.bind(this)
+      this.AyeNumber=this.AyeNumber.bind(this)
   }
   Nay(votingState){
     let balance = 0
@@ -51,6 +53,15 @@ export default class Polkawallet extends Component {
     }
     return balance
   }
+  NayNumber(votingState){
+    let NayNumber = 0
+    for(i=0;i<votingState.msg.length;i++){
+      if(JSON.stringify(votingState.msg[i].vote) == '"0x00"'){
+        NayNumber = NayNumber+1
+      }
+    }
+    return NayNumber
+  }
   Aye(votingState){
     let balance = 0
     for(i=0;i<votingState.msg.length;i++){
@@ -59,6 +70,15 @@ export default class Polkawallet extends Component {
       }
     }
     return balance
+  }
+  AyeNumber(votingState){
+    let AyeNumber = 0
+    for(i=0;i<votingState.msg.length;i++){
+      if(JSON.stringify(votingState.msg[i].vote) == '"0xff"'){
+        AyeNumber = AyeNumber +1
+      }
+    }
+    return AyeNumber
   }
   votingState(){
     (async()=>{
@@ -151,26 +171,11 @@ export default class Polkawallet extends Component {
                     this.state.votingState[i].msg = result
                   }
                 }
-                // alert(JSON.stringify(this.state.votingState))
                 this.setState({})
             })
-            // alert(JSON.stringify(this.state.votingState))
           })()
-          
-          // this.votingState()
         })
-        // alert(JSON.stringify(this.state.votingState))
       })
-      // console.warn(this.state.votingIndex)
-      // for(i=0;i<this.state.votingIndex.length;i++){
-      //   await api.derive.democracy.referendumVotesFor(this.state.votingIndex[i],(result)=>{
-      //     alert(typeof(this.state.votingIndex[i]))
-      //       console.warn(result)
-      //       this.state.votingState.push(result);
-      //       this.setState({})
-      //   })
-      // }
-      // console.warn(this.state.votingState)
     })()
     
   }
@@ -216,25 +221,35 @@ export default class Polkawallet extends Component {
                         })
                     }
                     {/* threshold */}
-                    <View style={{alignItems:'center',flexDirection:'row',marginTop:ScreenHeight/70,marginLeft:ScreenWidth/40,height:ScreenHeight/30}}>
-                      <Text style={{fontSize:ScreenHeight/65}}>{'Threshold: '+item.threshold}</Text>
-                    </View>
-                    <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
-                        <Image
-                            style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
-                            source={require('../../../images/Democracy/green_ellipse.png')}
-                        />
-                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Aye '+formatBalance(this.Aye(this.state.votingState[index]))}</Text>
-                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#7ad52a'}}>{(this.Aye(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
-                        <Text style={{fontSize:ScreenWidth/45}}>{'('+item.aye+')'}</Text>
-                        <Image
-                            style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
-                            source={require('../../../images/Democracy/red_ellipse.png')}
-                        />
-                        <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+formatBalance(this.Nay(this.state.votingState[index]))}</Text>
-                        <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>{(this.Nay(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
-                        <Text style={{fontSize:ScreenWidth/45}}>{'('+item.nay+')'}</Text>
-                    </View>
+                    
+                    {
+                      (this.Aye(this.state.votingState[index])==0)
+                      ?
+                        <View/>
+                      :
+                       <View>
+                        <View style={{alignItems:'center',flexDirection:'row',marginTop:ScreenHeight/70,marginLeft:ScreenWidth/40,height:ScreenHeight/30}}>
+                          <Text style={{fontSize:ScreenHeight/65}}>{'Threshold: '+item.threshold}</Text>
+                        </View>
+                        <View style={{borderRadius:ScreenHeight/200,height:ScreenHeight/30,flexDirection:'row',alignItems:'center'}}>
+                          <Image
+                              style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
+                              source={require('../../../images/Democracy/green_ellipse.png')}
+                          />
+                          <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Aye '+formatBalance(this.Aye(this.state.votingState[index]))}</Text>
+                          <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#7ad52a'}}>{(this.Aye(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
+                          <Text style={{fontSize:ScreenWidth/45}}>{'('+this.AyeNumber(this.state.votingState[index])+')'}</Text>
+                          <Image
+                              style={{marginLeft:ScreenWidth/40,height:ScreenWidth/17.86*0.52,width:ScreenWidth/17.86,resizeMode:'cover'}}
+                              source={require('../../../images/Democracy/red_ellipse.png')}
+                          />
+                          <Text style={{marginLeft:ScreenWidth/100,fontSize:ScreenWidth/45}}>{'Nay '+formatBalance(this.Nay(this.state.votingState[index]))}</Text>
+                          <Text style={{marginLeft:ScreenWidth/80,fontSize:ScreenWidth/45,color:'#fb3232'}}>{(this.Nay(this.state.votingState[index])/(this.Aye(this.state.votingState[index])+this.Nay(this.state.votingState[index]))*100).toFixed(2)+'%'}</Text>
+                          <Text style={{fontSize:ScreenWidth/45}}>{'('+this.NayNumber(this.state.votingState[index])+')'}</Text>
+                        </View>
+                       </View>
+                    }
+                    
                     <View style={{flexDirection:'row',marginLeft:ScreenWidth/6,marginVertical:ScreenHeight/70}}>
                         <VictoryPie
                             padding={{ top: 0, left:0 }}

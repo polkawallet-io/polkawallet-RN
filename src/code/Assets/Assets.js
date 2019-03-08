@@ -10,7 +10,9 @@ import {
   TouchableOpacity,
   RefreshControl,
   SafeAreaView,
-  StatusBar
+  StatusBar,
+  AsyncStorage,
+  AppState
 } from 'react-native';
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
@@ -46,6 +48,7 @@ export default class Assets extends Component {
         this.Coin_details=this.Coin_details.bind(this)
         this.refresh=this.refresh.bind(this)
         this.Loading=this.Loading.bind(this)
+        this.handleAppStateChange=this.handleAppStateChange.bind(this)
     }
 
 
@@ -112,10 +115,27 @@ export default class Assets extends Component {
           this.props.rootStore.stateStore.balances=[{address:'xxxxxxxxxxxxxxxxxxxxxxxxxxx',balance:0}]
           if (Platform.OS === 'android') {
             //android
+            //android
             for(var o in result){
               this.props.rootStore.stateStore.Accounts.push({account:JSON.parse(result[o]).meta.name,address:JSON.parse(result[o]).address})
               this.props.rootStore.stateStore.Account++
               this.props.rootStore.stateStore.Accountnum++
+              //创建查询每个账户的进程
+              (async()=>{
+                  let _address = o
+                  const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+                  await api.query.balances.freeBalance(_address,(balance)=>{
+                    this.props.rootStore.stateStore.have=0
+                    this.props.rootStore.stateStore.balances.map((item,index)=>{
+                      if(item.address!=_address){}else{
+                        this.props.rootStore.stateStore.have=1
+                        this.props.rootStore.stateStore.balances[index].balance=balance
+                      }
+                    })
+                    if(this.props.rootStore.stateStore.have==0){
+                      this.props.rootStore.stateStore.balances.push({address:_address,balance:balance})}
+                  })
+              })()
             }
           }else{
             //ios
@@ -161,6 +181,7 @@ export default class Assets extends Component {
           this.props.rootStore.stateStore.balances.map((item,index)=>{
             if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
               this.props.rootStore.stateStore.balanceIndex=(index)
+              
             }
           })
           // balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
@@ -214,13 +235,10 @@ export default class Assets extends Component {
             myDate=new Date()
             blockdate = await api.query.timestamp.now()
             lastBlockTime=Number(myDate)-Number(blockdate)
-            // console.warn(blockdate)
             if(lastBlockTime>120000){
               a=192,b=192,c=192
-            }else if(lastBlockTime<6000){
-              a=0;b=255;c=0;
             }else{
-              colorPara = (lastBlockTime / 1000 - 6) * (255 / 60)
+              colorPara = (lastBlockTime / 1000) * (255 / 18)
               a=0;
               b=255;
               c=0;
@@ -313,7 +331,33 @@ export default class Assets extends Component {
     },2000)
     
   }
+  handleAppStateChange(appState){
+    if(appState=='background'&&this.props.rootStore.stateStore.GestureState==2){
+      this.props.navigation.navigate('Gesture')
+    }
+  }
   componentWillMount(){
+    setInterval(()=>{
+      this.props.rootStore.stateStore.balances.map((item,index)=>{
+        if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
+          this.props.rootStore.stateStore.balanceIndex=(index)
+        }
+      })
+      // alert(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].address)
+    },5000)
+    AppState.addEventListener('change', this.handleAppStateChange)
+    AsyncStorage.getItem('Gesture').then(
+      (result)=>{
+          if(result==null){
+              this.props.rootStore.stateStore.GestureState=0
+          }else{
+              this.props.rootStore.stateStore.GestureState=2
+              this.props.navigation.navigate('Gesture')
+          }
+          this.props.rootStore.stateStore.Gesture=result
+      }
+    )
+    
     this.Loading()
   }
   

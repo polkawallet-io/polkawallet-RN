@@ -97,7 +97,6 @@ export default class IntegralMall extends Component {
   loding(){
     (async()=>{
       const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-
       //查询all
       [validatorCount,sessionLength,eraLength] = await Promise.all([
         api.query.staking.validatorCount(),
@@ -136,8 +135,6 @@ export default class IntegralMall extends Component {
         }
         sumnominatorsBalance.push(sum)
       }
-
-
       //查询Staking状态
       this.state.intentions.filter((address) =>{
         if(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address.includes(address)){
@@ -208,7 +205,6 @@ export default class IntegralMall extends Component {
           this.props.rootStore.stateStore.StakingState=1
         }
       },1000)
-      
 
       //实时监控
       setInterval(async()=>{
@@ -299,7 +295,7 @@ export default class IntegralMall extends Component {
             sumnominatorsBalance2: sumnominatorsBalance2
           })
         }
-      },30000)
+      },5000)
       
     // 找出Next up
     _intentions=[]
