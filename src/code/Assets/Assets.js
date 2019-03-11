@@ -14,6 +14,8 @@ import {
   AsyncStorage,
   AppState
 } from 'react-native';
+import {NavigationActions, StackActions} from "react-navigation";
+
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
 import SInfo from 'react-native-sensitive-info';
@@ -333,7 +335,13 @@ export default class Assets extends Component {
   }
   handleAppStateChange(appState){
     if(appState=='background'&&this.props.rootStore.stateStore.GestureState==2){
-      this.props.navigation.navigate('Gesture')
+      let resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+            NavigationActions.navigate({ routeName: 'Gesture'})
+        ]
+      })
+      this.props.navigation.dispatch(resetAction)
     }
   }
   componentWillMount(){
@@ -343,7 +351,6 @@ export default class Assets extends Component {
           this.props.rootStore.stateStore.balanceIndex=(index)
         }
       })
-      // alert(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].address)
     },5000)
     AppState.addEventListener('change', this.handleAppStateChange)
     AsyncStorage.getItem('Gesture').then(
@@ -351,10 +358,18 @@ export default class Assets extends Component {
           if(result==null){
               this.props.rootStore.stateStore.GestureState=0
           }else{
+            if(this.props.rootStore.stateStore.GestureState!=2){
+              this.props.rootStore.stateStore.Gesture=result
               this.props.rootStore.stateStore.GestureState=2
-              this.props.navigation.navigate('Gesture')
+              let resetAction = StackActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Gesture'})
+                ]
+              })
+              this.props.navigation.dispatch(resetAction)
+            }
           }
-          this.props.rootStore.stateStore.Gesture=result
       }
     )
     
