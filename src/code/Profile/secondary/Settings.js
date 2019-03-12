@@ -12,7 +12,7 @@ import {
   Switch,
   Alert
 } from 'react-native';
-
+import {NavigationActions, StackActions} from "react-navigation";
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 const msg = [
@@ -47,7 +47,13 @@ export default class New extends Component {
   Gesture(e){
     this.setState({Gesture: e});
     if(e){
-        this.props.navigation.navigate('Gesture')
+        let resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Gesture'})
+            ]
+        })
+        this.props.navigation.dispatch(resetAction)
     }else{
         Alert.alert(
             'Alert',
@@ -55,6 +61,7 @@ export default class New extends Component {
             [
                 {text: 'Cancel', onPress: () => {this.setState({Gesture:true})}, style: 'cancel'},
                 {text: 'Confirm', onPress: () => {
+                    this.props.rootStore.stateStore.GestureState=0
                     AsyncStorage.removeItem('Gesture').then(
                         alert('The gesture password has been canceled.')
                     )
@@ -70,8 +77,7 @@ export default class New extends Component {
   Facial_Recognition(e)  {
     this.setState({Facial_Recognition: e});
   }
-  componentWillMount(){
-   
+  componentWillUpdate(){
   }
   render() {
     return (

@@ -6,6 +6,8 @@ import {
   View,
   AsyncStorage
 } from 'react-native';
+import {NavigationActions, StackActions} from "react-navigation";
+
 import PasswordGesture from 'react-native-gesture-password';
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
@@ -42,7 +44,15 @@ export default class Gesture_Test1 extends Component{
                     status: 'right',
                     message: 'Confirmed, password set successfully.'
                 });
-                setTimeout(()=>{this.props.navigation.navigate('Settings')},500)
+                setTimeout(()=>{
+                    let resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({ routeName: 'Settings'})
+                        ]
+                    })
+                    this.props.navigation.dispatch(resetAction)
+                },500)
             }else{
                 //确认失败
                 this.props.rootStore.stateStore.GestureState=0
@@ -59,7 +69,15 @@ export default class Gesture_Test1 extends Component{
                         status: 'right',
                         message: 'Password is correct.'
                     });
-                    setTimeout(()=>{this.props.navigation.navigate('Tabbed_Navigation')},500)
+                    setTimeout(()=>{
+                        let resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [
+                                NavigationActions.navigate({ routeName: 'Tabbed_Navigation'})
+                            ]
+                        })
+                        this.props.navigation.dispatch(resetAction)
+                    },500)
                 }else{
                     this.setState({
                         status: 'wrong',
@@ -84,7 +102,7 @@ export default class Gesture_Test1 extends Component{
     }); 
   }
   componentWillMount(){
-    //   alert(this.props.rootStore.stateStore.Gesture==null?'Please set the gesture password':'Password')
+      
   }
     render() {
         return (

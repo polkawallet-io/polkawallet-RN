@@ -204,7 +204,7 @@ export default class New extends Component {
   render() {
         return (
             <View style={[styles.container]}>
-              <TouchableOpacity style={{width:ScreenWidth*0.43,flex:1}}
+              <TouchableOpacity style={{width:ScreenWidth*0.43,flex:1,height:ScreenHeight}}
                 onPress={()=>{
                   this.props.t.setState({
                     is:false
