@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   AsyncStorage
 } from 'react-native';
+
 let Platform = require('Platform');
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -52,16 +53,6 @@ export default class New extends Component {
     this.props.navigation.navigate('About')
   }
   componentWillMount(){
-    AsyncStorage.getItem('Gesture').then(
-      (result)=>{
-          if(result==null){
-              this.props.rootStore.stateStore.GestureState=0
-          }else{
-              this.props.rootStore.stateStore.GestureState=2
-          }
-          this.props.rootStore.stateStore.Gesture=result
-      }
-    )
   }
   render() {
     return (

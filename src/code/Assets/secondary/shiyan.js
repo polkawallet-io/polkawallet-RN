@@ -1,163 +1,146 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Image,
-  ListView,
-  Modal ,
-} from 'react-native';
-var Dimensions = require('Dimensions');
-const {width,height} = Dimensions.get('window');
-export default class Select extends Component {
-  constructor(props){
-    super(props);
-    this.state=({
-      showModal:false,
-      course:"语文",
-    });
+    StyleSheet,
+    Platform,
+    Text,
+    View,
+    Alert,
+    TouchableOpacity,
+    Linking,  
+} from "react-native";
+import Api from '@polkadot/api/promise';
+import WsProvider from '@polkadot/rpc-provider/ws';
+import {
+  isFirstTime,
+  isRolledBack,
+  packageVersion,
+  currentVersion,
+  checkUpdate,
+  downloadUpdate,
+  switchVersion,
+  switchVersionLater,
+  markSuccess,
+} from 'react-native-update';
+
+
+import _updateConfig from '../../../../update.json';
+const {appKey} = _updateConfig[Platform.OS];
+const ENDPOINT = 'wss://poc3-rpc.polkadot.io/';
+export default class AppDelegate extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+          balance:'0'
+      }
+      this.balance=this.balance.bind(this)
   }
   componentWillMount(){
     
-  }
-  selCourse(course){
-    this.setState({
-      showModal:false,
-      course:course,
+    checkUpdate(appKey).then(info => {
+        alert(JSON.stringify(info))
+        if (info.upToDate) {} else {
+          Alert.alert('提示', '检查到新的版本'+info.name+',是否下载? \n'+ info.description, [
+            {text: '是', onPress: ()=>{this.doUpdate(info)}},
+            {text: '否',}, ]);
+          }
+    }).catch(err => {
+      Alert.alert('提示', '更新失败.'); 
     });
+        // if(isFirstTime){
+        //     Alert.alert(
+        //         '提示', 
+        //     '这是当前版本第一次启动,是否要模拟启动失败?失败将回滚到上一版本', 
+        //     [
+        //         {text: '是', onPress: ()=>{throw new Error('模拟启动失败,请 重启应用')}},
+        //         {text: '否', onPress: ()=>{markSuccess()}}, 
+        //     ]);
+        // }else if (isRolledBack) {
+        //     Alert.alert('提示', '刚刚更新失败了,版本被回滚.');
+        // }
+        this.balance()
   }
+  balance(){
+    (async()=>{
+        const provider = new WsProvider(ENDPOINT);
+        const api = await Api.create(provider);
+        api.query.balances.freeBalance('5Dn8F1SUX6SoLt1BTfKEPL5VY9wMvG1A6tEJTSCHpLsinThm', (balance) => {
+            this.setState({
+              balance:String(balance)
+            });
+        });
+    })()
+  }
+  doUpdate = info => {
+    downloadUpdate(info).then(hash => {
+    Alert.alert('提示', '下载完毕,是否重启应用?', [
+            {text: '是', onPress: ()=>{switchVersion(hash);}},
+            {text: '否',},
+            {text: '下次启动时', onPress: ()=>{switchVersionLater(hash);}},
+        ]);
+    }).catch(err => {
+        Alert.alert('提示', '更新失败.'); 
+    });
+  };
+  checkUpdate = () => {
+    checkUpdate(appKey).then(info => {
+      if (info.expired) {
+        Alert.alert('提示', '您的应用版本已更新,请前往应用商店下载新的版本', [
+        {text: '确定', onPress: ()=>{info.downloadUrl && Linking.openURL(info.downloadUrl)}},
+                ]);
+              } else if (info.upToDate) {
+        Alert.alert('提示', '您的应用版本已是最新.'); } else {
+        Alert.alert('提示', '检查到新的版本'+info.name+',是否下载? \n'+ info.description, [
+        {text: '是', onPress: ()=>{this.doUpdate(info)}},
+        {text: '否',}, ]);
+              }
+            }).catch(err => {
+                Alert.alert('提示', '更新失败.'); 
+            });
+  };
+
+    
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.headStyle}>
-          <Text style={styles.headText} onPress={()=>{this.setState({showModal:true})}}>
-            {this.state.course}
+      return (
+        //   <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+              
+        //       <Text style={{fontSize:50}}>HotUpdate2</Text>
+        //       <Text style={{fontSize:20}}>{appKey}</Text>
+        //   </View>
+        <View style={styles.container}>
+          <Text style={styles.welcome}> 
+            欢迎使用热更新服务
           </Text>
-          <TouchableOpacity style={{marginLeft:10}} 
-            onPress={()=>{this.setState({showModal:true})}}
-            hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}>
-            <Image style={styles.arrowStyle} source={require('../../../images/Assets/right_menu/Create_Account.png')}/>
+          <Text style={{fontSize:30}}>HotUpdate6</Text>
+          <Text style={{fontSize:15}}>{'balance: '+this.state.balance}</Text>
+          <Text style={styles.instructions}>
+            这是版本三 {'\n'}
+            当前包版本号: {packageVersion}{'\n'}
+            当前版本Hash: {currentVersion||'(空)'}{'\n'}
+          </Text>
+          <TouchableOpacity onPress={this.checkUpdate}>
+            <Text style={styles.instructions}> 
+              点击这里检查更新
+            </Text>
           </TouchableOpacity>
         </View>
-        <Modal  
-          visible={this.state.showModal}   
-          transparent={true}  
-          animationType='fade'   
-          onRequestClose={() => {}}  
-          style={{flex:1}}  
-          ref="modal"  >
-          <TouchableWithoutFeedback onPress={()=>{this.setState({showModal:false})}} >
-          <View style={{flex:1,alignItems:'center',backgroundColor:'rgba(0, 0, 0, 0.5)',}} 
-            
-            >
-            <TouchableWithoutFeedback onPress={()=>{}}>
-              <View style={{backgroundColor:'#fff',width:width,
-                justifyContent:'center',
-                
-              }}
-              
-              > 
-                <View style={styles.headStyle}>
-                  <Text style={styles.headText} onPress={()=>{this.setState({showModal:false})}}>
-                    {this.state.course}
-                  </Text>
-                  <TouchableOpacity style={{marginLeft:10}} 
-                    onPress={()=>{this.setState({showModal:false})}}
-                    hitSlop={{top: 15, left: 15, bottom: 15, right: 15}}>
-                    <Image style={styles.arrStyle} source={{uri:'arr_up'}}/>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.courseWrap}>
-                  <CourseItem course="语文" onPress={()=>{this.selCourse('语文')}}/>
-                  <CourseItem course="数学" onPress={()=>{this.selCourse('数学')}}/>
-                  <CourseItem course="英语" onPress={()=>{this.selCourse('英语')}}/>
-                </View>
-                <View style={[styles.courseWrap,{marginBottom:10}]}>
-                  <CourseItem course="物理" onPress={()=>{this.selCourse('物理')}}/>
-                  <CourseItem course="化学" onPress={()=>{this.selCourse('化学')}}/>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-      </View>
-    );
+      )
   }
+
 }
-class CourseItem extends Component{
-  render(){
-    return(
-      <TouchableOpacity style={styles.boxView} onPress={this.props.onPress}>
-        <View style={{padding:10}}>
-          <Text style={{fontSize:18,fontWeight:'bold'}}>{this.props.course}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
-}
-var cols = 3;
-var boxW = 70;
-var vMargin = (width-cols*boxW)/(cols+1);
-var hMargin = 25;
 const styles = StyleSheet.create({
-   arrStyle:{
-    width:26,
-    height:26,
-    resizeMode:'contain',
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#F5FCFF',
+  }, welcome: {
+      fontSize: 20,
+      textAlign: 'center',
+      margin: 10,
+    },
+    instructions: {
+        textAlign: 'center',
+        color: '#333333',
+        marginBottom: 5,
   },
-  boxView:{
-    justifyContent:'center',
-    alignItems:'center',
-    width:boxW,
-    height:boxW,
-    marginLeft:vMargin,
-    marginTop:hMargin,
-    borderWidth:StyleSheet.hairlineWidth,
-    borderColor:'#999',
-    borderRadius:5,
-  },
-  courseWrap:{
-    flexDirection:'row',
-    justifyContent:'flex-start',
-    borderWidth:0,
-    borderColor:'orange',
-  },
-  selCourseText:{
-    padding:8,
-    fontSize:18,
-  },
-  blackText:{
-    color:'black',
-    fontSize:16,
-  },
-  arrowStyle:{
-    width:20,
-    height:20,
-  },
-  textWrapView:{
-    paddingTop:10,
-    paddingBottom:10,
-  },
-  headText:{
-    fontSize:22,
-  },
-  headStyle:{
-    flexDirection:'row',
-    width:width,
-    justifyContent:"center",
-    alignItems:'center',
-    backgroundColor:'#F2F2F2',
-    paddingTop:15,
-    paddingBottom:15,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  
 });

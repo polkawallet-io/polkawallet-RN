@@ -323,21 +323,27 @@ export default class Polkawallet extends Component {
       <View style={styles.container}>
         {/* 标题栏 */}
         <View style={styles.title}>
-          <TouchableOpacity
-            onPress={()=>{
-              (async()=>{
-                const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-                balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-                this.props.rootStore.stateStore.balance=String(balance)
-              })()
-              this.props.navigation.navigate('Tabbed_Navigation')
-            }}
-          >
-            <Image
-              style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
-              source={require('../../../images/Assets/Create_Account/back.png')}
-              />
-          </TouchableOpacity>
+          {
+            this.props.rootStore.stateStore.isfirst==0
+            ?
+              <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.3}}/>
+            :
+            <TouchableOpacity
+              onPress={()=>{
+                (async()=>{
+                  const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+                  balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+                  this.props.rootStore.stateStore.balance=String(balance)
+                })()
+                this.props.navigation.navigate('Tabbed_Navigation')
+              }}
+            >
+              <Image
+                style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
+                source={require('../../../images/Assets/Create_Account/back.png')}
+                />
+            </TouchableOpacity>
+          }  
           <Text style={styles.text_title}>Create Account</Text>
           <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
     

@@ -12,8 +12,25 @@ import {
   SafeAreaView,
   StatusBar,
   AsyncStorage,
-  AppState
+  AppState,
+  Alert,
+  Linking,
 } from 'react-native';
+import {
+  isFirstTime,
+  isRolledBack,
+  packageVersion,
+  currentVersion,
+  checkUpdate,
+  downloadUpdate,
+  switchVersion,
+  switchVersionLater,
+  markSuccess,
+} from 'react-native-update';
+import _updateConfig from '../../../update.json';
+
+import {NavigationActions, StackActions} from "react-navigation";
+
 import Identicon from 'polkadot-identicon-react-native';
 import moment from "moment/moment";
 import SInfo from 'react-native-sensitive-info';
@@ -28,7 +45,7 @@ import formatBalance from '../../util/formatBalance'
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 let Platform = require('Platform');
-
+const {appKey} = _updateConfig[Platform.OS];
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
 @observer
@@ -49,6 +66,7 @@ export default class Assets extends Component {
         this.refresh=this.refresh.bind(this)
         this.Loading=this.Loading.bind(this)
         this.handleAppStateChange=this.handleAppStateChange.bind(this)
+        this.doUpdate=this.doUpdate.bind(this)
     }
 
 
@@ -101,7 +119,14 @@ export default class Assets extends Component {
       (result)=>{
         if(JSON.stringify(result).length<10 )
         {
-          this.props.navigation.navigate('Create_Account',{t:this})
+          let resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Create_Account'},{t:this})
+            ]
+          })
+          this.props.navigation.dispatch(resetAction)
+          // this.props.navigation.navigate('Create_Account',{t:this})
         }else{
           this.setState({
             isfirst:1
@@ -333,17 +358,45 @@ export default class Assets extends Component {
   }
   handleAppStateChange(appState){
     if(appState=='background'&&this.props.rootStore.stateStore.GestureState==2){
-      this.props.navigation.navigate('Gesture')
+      let resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+            NavigationActions.navigate({ routeName: 'Gesture'})
+        ]
+      })
+      this.props.navigation.dispatch(resetAction)
     }
   }
+  doUpdate(info){
+    downloadUpdate(info).then(hash => {
+    Alert.alert('Alert', 'Download finished, whether to restart the application?', [
+            {text: 'Yes', onPress: ()=>{switchVersion(hash);}},
+            {text: 'No',},
+            {text: 'Next startup time', onPress: ()=>{switchVersionLater(hash);}},
+        ]);
+    }).catch(err => {
+        Alert.alert('Alert', 'Update failed.'); 
+    });
+  };
   componentWillMount(){
+    if(isFirstTime){
+      markSuccess()
+    }
+    // checkUpdate(appKey).then(info => {
+    //   if (info.upToDate) {} else {
+    //     Alert.alert('Alert', 'Check the new version:'+info.name+',whether to download? \n'+ info.description, [
+    //       {text: 'Yes', onPress: ()=>{this.doUpdate(info)}},
+    //       {text: 'No',}, ]);
+    //     }
+    // }).catch(err => {
+    //   Alert.alert('Alert', 'Update failed.'); 
+    // });
     setInterval(()=>{
       this.props.rootStore.stateStore.balances.map((item,index)=>{
         if(item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address){
           this.props.rootStore.stateStore.balanceIndex=(index)
         }
       })
-      // alert(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].address)
     },5000)
     AppState.addEventListener('change', this.handleAppStateChange)
     AsyncStorage.getItem('Gesture').then(
@@ -351,10 +404,18 @@ export default class Assets extends Component {
           if(result==null){
               this.props.rootStore.stateStore.GestureState=0
           }else{
+            if(this.props.rootStore.stateStore.GestureState!=2){
+              this.props.rootStore.stateStore.Gesture=result
               this.props.rootStore.stateStore.GestureState=2
-              this.props.navigation.navigate('Gesture')
+              let resetAction = StackActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Gesture'})
+                ]
+              })
+              this.props.navigation.dispatch(resetAction)
+            }
           }
-          this.props.rootStore.stateStore.Gesture=result
       }
     )
     

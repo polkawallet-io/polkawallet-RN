@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet
 } from 'react-native';
-import Start from './src/code/Start'
 import {StackNavigator} from 'react-navigation'
 import Tabbed_Navigation from './src/code/Tabbed_Navigation.js'
 import Create_Account from './src/code/Assets/secondary/Create_Account'
@@ -40,7 +39,6 @@ import {Provider} from 'mobx-react'
 import AppState from './src/mobx/mobx'
 
 const Polkawallet_App =  StackNavigator({
-  // Start:{screen:Start,navigationOptions:{header:null}},
   Tabbed_Navigation:{screen:Tabbed_Navigation,navigationOptions:{header:null}},
   Create_Account:{screen:Create_Account,navigationOptions:{header:null}},
   Backup_Account:{screen:Backup_Account,navigationOptions:{header:null}},

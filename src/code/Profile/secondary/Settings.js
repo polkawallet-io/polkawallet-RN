@@ -10,15 +10,31 @@ import {
   TouchableOpacity,
   AsyncStorage,
   Switch,
-  Alert
+  Alert,
+  Linking,
+  Platform,
 } from 'react-native';
-
+import {
+    isFirstTime,
+    isRolledBack,
+    packageVersion,
+    currentVersion,
+    checkUpdate,
+    downloadUpdate,
+    switchVersion,
+    switchVersionLater,
+    markSuccess,
+  } from 'react-native-update';
+import _updateConfig from '../../../../update.json';
+import {NavigationActions, StackActions} from "react-navigation";
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
+const {appKey} = _updateConfig[Platform.OS];
 const msg = [
     // 'Language',
     // 'Assets Display Unit',
     'Remote Node',
+    'Check Update'
 ]
 import { observer, inject } from "mobx-react";
 @inject('rootStore')
@@ -37,6 +53,7 @@ export default class New extends Component {
         this.Gesture=this.Gesture.bind(this)
         this.Fingerprint=this.Fingerprint.bind(this)
         this.Facial_Recognition=this.Facial_Recognition.bind(this)
+        this.Check_Update=this.Check_Update.bind(this)
     }
   back(){
     this.props.navigation.navigate('Tabbed_Navigation')
@@ -44,10 +61,45 @@ export default class New extends Component {
   Set_Node(){
     this.props.navigation.navigate('Set_Node')
   }
+  doUpdate = info => {
+    downloadUpdate(info).then(hash => {
+    alert(hash)
+    Alert.alert('Alert', 'Download finished, whether to restart the application?', [
+            {text: 'Yes', onPress: ()=>{switchVersion(hash)}},
+            {text: 'No',},
+            {text: 'Next startup time', onPress: ()=>{switchVersionLater(hash);}},
+        ]);
+    }).catch(err => {
+        Alert.alert('Alert', 'Update failed.'); 
+    });
+  };
+  Check_Update(){
+    checkUpdate(appKey).then(info => {
+        if (info.expired) {
+            Alert.alert('Alert', 'Your application version has been updated, please go to the app store to download the new version', [
+            {text: 'Yes', onPress: ()=>{info.downloadUrl && Linking.openURL(info.downloadUrl)}},
+                    ]);
+        } else if (info.upToDate) {
+            Alert.alert('Alert', 'Your application version is up to date.'); 
+        } else {
+            Alert.alert('Alert', 'Check the new version:'+info.name+',whether to download? \n'+ info.description, [
+            {text: 'Yes', onPress: ()=>{this.doUpdate(info)}},
+            {text: 'No',}, ]);
+        }
+    }).catch(err => {
+        Alert.alert('Alert', 'Update failed.'); 
+    });
+  }
   Gesture(e){
     this.setState({Gesture: e});
     if(e){
-        this.props.navigation.navigate('Gesture')
+        let resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'Gesture'})
+            ]
+        })
+        this.props.navigation.dispatch(resetAction)
     }else{
         Alert.alert(
             'Alert',
@@ -55,6 +107,7 @@ export default class New extends Component {
             [
                 {text: 'Cancel', onPress: () => {this.setState({Gesture:true})}, style: 'cancel'},
                 {text: 'Confirm', onPress: () => {
+                    this.props.rootStore.stateStore.GestureState=0
                     AsyncStorage.removeItem('Gesture').then(
                         alert('The gesture password has been canceled.')
                     )
@@ -70,8 +123,7 @@ export default class New extends Component {
   Facial_Recognition(e)  {
     this.setState({Facial_Recognition: e});
   }
-  componentWillMount(){
-   
+  componentWillUpdate(){
   }
   render() {
     return (
@@ -98,6 +150,7 @@ export default class New extends Component {
                     <TouchableOpacity style={styles.msgView} key={index}
                       onPress={()=>{
                           if(index==0){this.Set_Node()}
+                          if(index==1){this.Check_Update()}
                       }}
                     >
                       <Text style={styles.msgText}>{item}</Text>

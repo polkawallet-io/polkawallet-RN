@@ -152,6 +152,7 @@ configurations.all {
 }
 
 dependencies {
+    compile project(':react-native-update')
     compile project(':react-native-udp')
     compile project(':react-native-tcp')
     compile project(':react-native-secure-storage')
