@@ -5,12 +5,6 @@ polkawallet react native implementation
 `$ git clone https://github.com/polkawallet-io/polkawallet-RN.git`  
 `$ cd polkawallet-RN && npm install`  
 
-Modify the file:  `polkawallet-RN/node_modules/bip39/index.js`  
-`var randomBytes = require('randomBytes')`  
-to: `var randomBytes = require('crypto').randomBytes;`  
-
-`$ ./node_modules/.bin/rn-nodeify --hack --install`  
-
 `$ react-native start`  
 
 Open a new terminal:  
