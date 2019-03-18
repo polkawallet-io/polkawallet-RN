@@ -27,17 +27,22 @@ export default class Transfer_details extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            data:this.props.navigation.state.params.data
+            data:this.props.navigation.state.params.data,
         };
         this.back=this.back.bind(this)
-        this.copy=this.copy.bind(this)
+        this.copyTo=this.copyTo.bind(this)
+        this.copyFrom=this.copyFrom.bind(this)
     }
     back(){
         this.props.navigation.navigate('Coin_details')
     }
-    async copy(){
-        Clipboard.setString(this.state.text);
-        let  str = await Clipboard.getString()
+    async copyTo(){
+        Clipboard.setString((this.state.data.tx_type=="Send")?this.state.data.tx_address:this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+        alert('Copy success')
+    }
+    async copyFrom(){
+        Clipboard.setString(this.state.data.tx_type=="Send"?this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address:this.state.data.tx_address);
+        alert('Copy success')
     }
     render() {
         return (
@@ -93,8 +98,7 @@ export default class Transfer_details extends PureComponent {
                     </View>
                     <TouchableOpacity
                       onPress={()=>{
-                        alert('Copy success')
-                        this.copy()
+                        this.copyTo()
                       }}
                     >
                         <Image 
@@ -114,8 +118,7 @@ export default class Transfer_details extends PureComponent {
                     
                     <TouchableOpacity
                       onPress={()=>{
-                        alert('Copy success')
-                        this.copy()
+                        this.copyFrom()
                       }}
                     >
                         <Image 

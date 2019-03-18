@@ -40,18 +40,15 @@ import { observer, inject } from "mobx-react";
           this.Receive=this.Receive.bind(this)
           this.Loadmore=this.Loadmore.bind(this)
           this.refresh=this.refresh.bind(this)
+          this.Load=this.Load.bind(this)
       }  
       
       back(){
         this.props.navigation.navigate('Tabbed_Navigation')
       }
-      // 刷新
-      refresh(){
-        this.setState({
-          isrefresh:true
-        })
-        setTimeout(()=>{
-          //清除缓存
+      //加载信息
+      Load(){
+        //清除缓存
         let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
         let map = {
               method:'POST'
@@ -82,6 +79,14 @@ import { observer, inject } from "mobx-react";
                 this.props.rootStore.stateStore.transactions=JSON.parse(result._bodyInit)
               }
             ).catch()
+      }
+      // 刷新
+      refresh(){
+        this.setState({
+          isrefresh:true
+        })
+        setTimeout(()=>{
+            this.Load()
           }, 200);
           this.setState({
             isrefresh:false
@@ -120,6 +125,7 @@ import { observer, inject } from "mobx-react";
         this.props.navigation.navigate('QR_Code')
       }
       componentWillMount(){
+        this.Load()
       }
       render(){
           return(
