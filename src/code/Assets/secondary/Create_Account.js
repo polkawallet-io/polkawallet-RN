@@ -19,7 +19,7 @@ import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
 import formatBalance from '../../../util/formatBalance'
 import moment from "moment/moment";
-
+import {NavigationActions, StackActions} from "react-navigation";
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
 import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a,randomAsHex, mnemonicGenerate } from '@polkadot/util-crypto';
@@ -323,21 +323,33 @@ export default class Polkawallet extends Component {
       <View style={styles.container}>
         {/* 标题栏 */}
         <View style={styles.title}>
-          <TouchableOpacity
-            onPress={()=>{
-              (async()=>{
-                const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
-                balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
-                this.props.rootStore.stateStore.balance=String(balance)
-              })()
-              this.props.navigation.navigate('Tabbed_Navigation')
-            }}
-          >
-            <Image
-              style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
-              source={require('../../../images/Assets/Create_Account/back.png')}
-              />
-          </TouchableOpacity>
+          {
+            this.props.rootStore.stateStore.isfirst==0
+            ?
+              <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.3}}/>
+            :
+            <TouchableOpacity
+              onPress={()=>{
+                (async()=>{
+                  const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT));
+                  balance = await api.query.balances.freeBalance(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address);
+                  this.props.rootStore.stateStore.balance=String(balance)
+                })()
+                let resetAction = StackActions.reset({
+                  index: 0,
+                  actions: [
+                      NavigationActions.navigate({ routeName: 'Tabbed_Navigation'})
+                  ]
+                })
+                this.props.navigation.dispatch(resetAction)
+              }}
+            >
+              <Image
+                style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35,resizeMode:'contain'}}
+                source={require('../../../images/Assets/Create_Account/back.png')}
+                />
+            </TouchableOpacity>
+          }  
           <Text style={styles.text_title}>Create Account</Text>
           <View style={{height:ScreenHeight/33.35,width:ScreenHeight/33.35}}/>
     

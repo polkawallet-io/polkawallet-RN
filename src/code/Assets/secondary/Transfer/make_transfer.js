@@ -95,6 +95,24 @@ import { set } from 'mobx';
               }
               loadPair.isLocked()?'':
                (async()=>{
+                //   setTimeout(()=>{
+                //     if(this.state.type=='pending...'){
+                //         Alert.alert(
+                //             '',
+                //             'Long time no response, please try again.',
+                //             [
+                //                 {text:'OK',onPress:()=>{
+                //                     this.props.rootStore.stateStore.t_address=''
+                //                     this.props.navigation.navigate('Transfer')
+                //                     this.setState({
+                //                         isModal:false
+                //                     })
+                //                 }}
+                //             ],
+                //             { cancelable: false }
+                //         )
+                //     }
+                //   },30000)
                   const provider = new WsProvider(this.props.rootStore.stateStore.ENDPOINT);
                   const api = await Api.create(provider);
                   const accountNonce = await api.query.system.accountNonce(loadPair.address());

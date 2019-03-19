@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import Api from '@polkadot/api/promise';
 import WsProvider from '@polkadot/rpc-provider/ws';
+import {NavigationActions, StackActions} from "react-navigation";
 
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
@@ -69,7 +70,13 @@ export default class Polkawallet extends Component{
     })()
     this.props.rootStore.stateStore.isvalidators=0
     this.props.rootStore.stateStore.StakingState=0
-    this.props.navigation.navigate('Tabbed_Navigation')
+    let resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+          NavigationActions.navigate({ routeName: 'Tabbed_Navigation'})
+      ]
+    })
+    this.props.navigation.dispatch(resetAction)
   }
   async copy(){
     alert('Copy success')
