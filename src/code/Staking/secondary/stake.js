@@ -88,7 +88,7 @@ import { set } from 'mobx';
                           type:type
                       })
                     //   console.warn(type)
-                        if(type === 'Finalised'){
+                        if(status.isFinalized){
                             setTimeout(() => {
                                 Alert.alert(
                                     'Alert',

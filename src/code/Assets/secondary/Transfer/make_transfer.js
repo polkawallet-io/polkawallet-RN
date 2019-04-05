@@ -121,14 +121,14 @@ import { set } from 'mobx';
                   .transfer(this.props.rootStore.stateStore.inaddress, this.props.rootStore.stateStore.value)
                 //   .transfer('5DYnksEZFc7kgtfyNM1xK2eBtW142gZ3Ho3NQubrF2S6B2fq', this.props.rootStore.stateStore.value)
                   .sign(loadPair, accountNonce)
-                  .send(({ status, type }) => {
+                  .send(({ status }) => {
                       this.setState({
-                          type:type
+                          type:status.type
                       })
-                    if (type === 'Ready'||type==='Broadcast') {
+                    if (status.type === 'Ready'||status.type ==='Broadcast') {
                        
                     }else{
-                        if (type === 'Finalised') {
+                        if (status.isFinalized) {
                         this.setState({
                             isModal:false
                         })

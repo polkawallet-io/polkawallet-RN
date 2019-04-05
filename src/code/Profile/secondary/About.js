@@ -72,7 +72,7 @@ export default class New extends Component {
         {/* 版本 */}
         <View style={{flex:1}}/>
         <View style={[styles.msgView,{marginBottom:ScreenHeight/30}]}>
-            <Text style={{fontSize:ScreenWidth/25,color:'#808080'}}>Version: 0.1.5</Text>
+            <Text style={{fontSize:ScreenWidth/25,color:'#808080'}}>Version: 0.1.6</Text>
         </View>
       </View>
     );

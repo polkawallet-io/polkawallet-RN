@@ -86,10 +86,10 @@ import {
                   const api = await Api.create(provider);
                   await api.tx.democracy.vote(Number(this.state.index),this.state.choose=='Aye'?true:false).signAndSend(loadPair,({ status, type }) => {
                       this.setState({
-                        type:type
+                        type:status.type
                       })
                     //   console.warn(type)
-                        if(type === 'Finalised'){
+                        if(status.isFinalized){
                             setTimeout(() => {
                                 Alert.alert(
                                     'Alert',
