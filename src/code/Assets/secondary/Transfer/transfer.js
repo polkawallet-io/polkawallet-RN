@@ -93,16 +93,18 @@ import {
       {
         if(this.state.address==''&&this.props.rootStore.stateStore.transfer_address==0&&this.props.rootStore.stateStore.iscamera==0){alert('Please enter address')}
         else{
-            // if(this.state.balance<this.state.value*this.state.multiple){
-            //     alert('Lack of balance')
-            // }else{
+            let totalFees = this.state.value + this.state.fees.creationFee + this.state.fees.existentialDeposit + this.state.fees.transactionBaseFee + this.state.fees.transactionByteFee +this.state.fees.transferFee ;
+
+            if(this.state.balance<totalFees){
+                alert('Insufficient balance')
+            }else{
                 this.props.rootStore.stateStore.value=String(this.state.value*this.state.multiple)
                 this.props.rootStore.stateStore.inaddress=(this.props.rootStore.stateStore.isaddresses==0&&this.props.rootStore.stateStore.iscamera==0)?this.state.address:this.props.rootStore.stateStore.t_address
                 this.props.rootStore.stateStore.isaddresses=0
                 this.props.rootStore.stateStore.transfer_address=0
                 this.props.rootStore.stateStore.iscamera=0
                 this.props.navigation.navigate('Make_transfer')
-            // }
+            }
         }
       }
       ChangeAddress(changeAddress){
