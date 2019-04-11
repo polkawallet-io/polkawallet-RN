@@ -86,23 +86,30 @@ export default class Polkawallet extends Component {
       isModel:false,
       way:this.state.way_change,
     })
+    let key;
     if(this.state.way_change == 'Keystore'){
       this.setState({
         key:'',
         address:''
       })
+      return;
+    }else if(this.state.way_change === 'Mnemonic'){
+      key = mnemonicGenerate()
+    }else if(this.state.way_change === 'Mnemonic24'){
+      key = mnemonicGenerate(24)
+
     }else{
-      let key = this.state.way_change=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
-      this.pair = keyring.addFromMnemonic(key)
-      this.setState({
-        key:key,
-        address:this.pair.address()
-      })
+      key = u8aToHex(randomAsU8a())
     }
+    this.pair = keyring.addFromMnemonic(key)
+    this.setState({
+      key:key,
+      address:this.pair.address()
+    })
   }
   
   onChangekey(Changekey){
-    if(this.state.way=='Mnemonic')
+    if(this.state.way=='Mnemonic' || 'Mnemonic24')
     {
       // alert('1')
       this.pair = keyring.addFromMnemonic(Changekey)
@@ -181,21 +188,27 @@ export default class Polkawallet extends Component {
     
   }
   Reset(){
-    if(this.state.way=='Keystore'){
+    let key;
+    if(this.state.way == 'Keystore'){
       this.setState({
         key:'',
         address:'',
-        balance:0
+        balance: 0
       })
-      
+      return;
+    }else if(this.state.way === 'Mnemonic'){
+      key = mnemonicGenerate()
+    }else if(this.state.way === 'Mnemonic24'){
+      key = mnemonicGenerate(24)
+
     }else{
-      let key = this.state.way=='Mnemonic'?mnemonicGenerate():u8aToHex(randomAsU8a())
-      this.pair = keyring.addFromMnemonic(key)
-      this.setState({
-        key:key,
-        address:this.pair.address()
-      })
+      key = u8aToHex(randomAsU8a())
     }
+    this.pair = keyring.addFromMnemonic(key)
+    this.setState({
+      key:key,
+      address:this.pair.address()
+    })
   }
   unit(){
     (async()=>{
@@ -386,7 +399,7 @@ export default class Polkawallet extends Component {
             {/* 密钥 */}
             <View style={[styles.NandP,{height:ScreenHeight/5.5}]}>
               <View style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/23}}>
-                <Text style={{fontSize:ScreenWidth/33}}>create from mnemonic,seed or import keystore</Text>
+                <Text style={{fontSize:ScreenWidth/33}}>Create from mnemonic,seed or import keystore</Text>
                 {/* 选择方式 */}
                 <TouchableOpacity style={styles.Choose_way}
                   onPress={()=>{
@@ -649,7 +662,8 @@ export default class Polkawallet extends Component {
             onValueChange={(value) => this.setState({way_change: value})}
             androidmode = {'dropdown'}
           >
-            <Picker.Item label="Mnemonic" value="Mnemonic" />
+            <Picker.Item label="12 Word Mnemonic" value="Mnemonic" />
+            <Picker.Item label="24 Word Mnemonic" value="Mnemonic24" />
             <Picker.Item label="Raw Seed" value="Raw Seed" />
             <Picker.Item label="import keystore" value="Keystore" />
           </Picker>
