@@ -22,11 +22,12 @@ import moment from "moment/moment";
 import {NavigationActions, StackActions} from "react-navigation";
 import SInfo from 'react-native-sensitive-info';
 import Keyring from '@polkadot/keyring'
-import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a,randomAsHex, mnemonicGenerate } from '@polkadot/util-crypto';
+import { mnemonicToSeed, mnemonicValidate, naclKeypairFromSeed, randomAsU8a, randomAsHex, mnemonicGenerate } from '@polkadot/util-crypto';
+import { waitReady, isReady } from '@polkadot/wasm-crypto';
 
 import { hexToU8a, isHex, stringToU8a, u8aToHex }  from '@polkadot/util'
 
-const keyring = new Keyring();
+const keyring = new Keyring({type: 'sr25519'});
 let ScreenWidth = Dimensions.get("screen").width;
 let ScreenHeight = Dimensions.get("screen").height;
 let Platform = require('Platform');
@@ -67,6 +68,7 @@ export default class Polkawallet extends Component {
   }
   componentWillMount(){
     (async()=>{
+      await waitReady();
       let key = mnemonicGenerate()
       this.pair = keyring.addFromMnemonic(key)
       this.setState({
@@ -107,9 +109,9 @@ export default class Polkawallet extends Component {
       address:this.pair.address()
     })
   }
-  
+
   onChangekey(Changekey){
-    if(this.state.way=='Mnemonic' || 'Mnemonic24')
+    if(this.state.way=='Mnemonic' || this.state.way=='Mnemonic24')
     {
       // alert('1')
       this.pair = keyring.addFromMnemonic(Changekey)
@@ -327,11 +329,16 @@ export default class Polkawallet extends Component {
           }
         )
       }
-      
-      
+
+
     }
   }
   render() {
+    // wait for wasm-crypto to be loaded
+    if (!isReady()) {
+      return <View style={styles.container}><Text>Loading...</Text></View>;
+    }
+
     return (
       <View style={styles.container}>
         {/* 标题栏 */}
