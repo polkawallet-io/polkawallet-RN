@@ -14,7 +14,7 @@ import {
   AsyncStorage,
   AppState,
   Alert,
-  Linking,
+  Linking,Modal,Animated,Easing
 } from 'react-native';
 import {
   isFirstTime,
@@ -59,7 +59,7 @@ export default class Assets extends Component {
             address:'0',
             isfirst:0,
             isrefresh:false,
-            color:'rgb(0,255,0)'
+            color:'rgb(0,255,0)',
         }
         this.QR_Code=this.QR_Code.bind(this)
         this.Coin_details=this.Coin_details.bind(this)
@@ -67,6 +67,12 @@ export default class Assets extends Component {
         this.Loading=this.Loading.bind(this)
         this.handleAppStateChange=this.handleAppStateChange.bind(this)
         this.doUpdate=this.doUpdate.bind(this)
+
+        this.animatedValue = new Animated.Value(0);
+        this.movingMargin = this.animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [ScreenWidth*0.57, 0],
+        });
     }
 
 
@@ -377,6 +383,33 @@ export default class Assets extends Component {
         Alert.alert('Alert', 'Update failed.'); 
     });
   };
+  show(){
+      this.setState({
+          is:true
+      });
+      this.animatedValue.setValue(0);
+      Animated.timing(
+          this.animatedValue,
+          {
+              toValue: 1,
+              duration: 600,
+              // easing: Easing.linear
+          }
+      ).start();
+  }
+  hide(){
+      Animated.timing(
+          this.animatedValue,
+          {
+              toValue: 0,
+              duration: 600,
+              // easing: Easing.linear
+          }
+      ).start();
+      setTimeout(function () {
+          this.setState({is:false});
+      }.bind(this),600);
+  }
   componentWillMount(){
     if(isFirstTime){
       markSuccess()
@@ -420,8 +453,9 @@ export default class Assets extends Component {
     
     this.Loading()
   }
-  
-  render() {
+
+
+    render() {
     return (
       <SafeAreaView style={{flex:1,backgroundColor:'#776f71'}}>
         {
@@ -434,123 +468,126 @@ export default class Assets extends Component {
             />
           :<View/>
         }
-      <Drawer
-        type='overlay'
-        side='right'
-        content={<Right_menu p={this.props} t={this}/>}
-        open={this.state.is}
-        tapToClose={true}//点底层可关闭
-        // openDrawerOffset={0.43} // 左边留0.336
-        openDrawerOffset={0} // 左边留0.336
-        closedDrawerOffset={0}//左边留0
-        panOpenMask={0.1}
-      >
-       <View style={{flex:1,backgroundColor:'white',}}>
-        {/* 标题栏 */}
-        <View style={{height:(Platform.OS === 'android')?ScreenHeight/9:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
-          <View style={{marginLeft:ScreenWidth/26.79,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}></View>
-          <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
-              {/* logo */}
-              <Image
-                style={{marginRight:ScreenHeight/20*4.73/4,marginBottom:ScreenHeight/75,height:ScreenHeight/20,width:ScreenHeight/20*4.73,resizeMode:'contain'}}
-                source={require('../../images/Assets/logo.png')}
-              />
-          </View>
-          {/* 右菜单 */}
-          <TouchableOpacity
-            onPress={()=>{
-              this.setState({
-                is:true
-              })
-            }}
-          >
-            <Image
-              style={{marginRight:ScreenWidth/26.79,marginBottom:ScreenHeight/75,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}
-              source={require('../../images/Assets/rightMenu.png')}
-            />
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          refreshControl={<RefreshControl
-                            refreshing={this.state.isrefresh}
-                            onRefresh={this.refresh}/>}
-        >
-          <View style={{height:ScreenHeight/3.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
-              <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
-                {/* 头像 */}
-                <Identicon
-                  value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
-                  size={ScreenHeight/14}
-                  theme={'polkadot'}
-                />
-                
-              </View>
-              <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
-                {/* 用户名 */}
-                <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].account}
-                </Text>
-              </View>
-              <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
-                {/* 地址 */}
-                <Text 
-                  style={{fontWeight:"200",width:ScreenWidth*0.5,fontSize:ScreenHeight/45,color:'white'}}
-                  ellipsizeMode={"middle"}
-                  numberOfLines={1}
-                >
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
-                </Text>
-                {/* 二维码 */}
-                <TouchableOpacity
-                  onPress={this.QR_Code}
-                >
-                  <Image
-                    style={{marginLeft:ScreenWidth/53.57,height:ScreenHeight/45,width:ScreenHeight/45,opacity:0.8}}
-                    source={require('../../images/Assets/QrButton.png')}
+          <Modal animationType="fade"
+                 transparent={true}
+                 onRequestClose={() => {
+                     this.setState({is:false});
+                 }}
+                 visible={this.state.is}>
+              <View style={{flex:1,backgroundColor: 'rgba(0,0,0,.3)',flexDirection:'row'}}>
+                  <TouchableOpacity style={{width:ScreenWidth*0.43,flex:1,height:ScreenHeight}}
+                                    onPress={()=>{
+                                        this.hide();
+                                    }}
                   />
-                </TouchableOpacity>
+                  <Animated.View style={{paddingLeft: this.movingMargin}}>
+                      <Right_menu p={this.props} t={this}/>
+                  </Animated.View>
               </View>
-              <View style={{flex:1}}></View>
-              <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-between',height:ScreenHeight/3.81/3.8,width:ScreenWidth}}>
-                <Text style={{fontWeight:'bold',marginLeft:ScreenWidth/40,color:'white',fontSize:ScreenWidth/25}}>Assets</Text>
-                {/* 添加币种 */}
-                <TouchableOpacity
-                  onPress={()=>{this.setState({s:2})}}
-                >
-                  <Image
-                    style={{marginRight:ScreenWidth/20,height:ScreenHeight/30,width:ScreenHeight/30,opacity:0.9}}
-                    //Need Open
-                    // source={require('../../images/Assets/addAssets.png')}
-                  />
-                </TouchableOpacity>
-              </View>
-          </View>
-          {/* 各种币具体信息 */}
-          <TouchableOpacity
-            onPress={this.Coin_details}
-          >
-            <View style={{flexDirection:'row',height:ScreenHeight/10,backgroundColor:'white',borderBottomColor:'#F5F5F5',borderBottomWidth:2}}>
-                <View style={{justifyContent:'center',alignItems:'center',width:ScreenWidth/6,height:ScreenHeight/10}}>
-                    <Image
-                      style={{borderRadius:ScreenHeight/32,height:ScreenHeight/16,width:ScreenHeight/16}}
-                      source={require('../../images/Assets/DOT.png')}
-                    />
-                </View>
-                <View style={{justifyContent:'center',flex:1,}}>
-                  <View style={{flexDirection:'row'}}>
-                    <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
-                    <View style={{marginLeft:ScreenWidth/60,height:ScreenHeight/98,width:ScreenHeight/98,borderRadius:ScreenHeight/196,backgroundColor:this.state.color}}/>
+          </Modal>
+          <View style={{flex:1,backgroundColor:'white',}}>
+              {/* 标题栏 */}
+              <View style={{height:(Platform.OS === 'android')?ScreenHeight/9:ScreenHeight/14,backgroundColor:'#776f71',flexDirection:'row',alignItems:'flex-end'}}>
+                  <View style={{marginLeft:ScreenWidth/26.79,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}></View>
+                  <View style={{height:ScreenHeight/10.6/1.6,flex:1,justifyContent:'flex-end',alignItems:'center'}}>
+                      {/* logo */}
+                      <Image
+                          style={{marginRight:ScreenHeight/20*4.73/4,marginBottom:ScreenHeight/75,height:ScreenHeight/20,width:ScreenHeight/20*4.73,resizeMode:'contain'}}
+                          source={require('../../images/Assets/logo.png')}
+                      />
                   </View>
-                  <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
-                </View>
-                <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
-                  <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{formatBalance(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].balance)}</Text>
-                </View>
-            </View>
-          </TouchableOpacity>
-        </ScrollView>
-       </View>
-      </Drawer> 
+                  {/* 右菜单 */}
+                  <TouchableOpacity
+                      onPress={()=>{
+                          this.show();
+                      }}
+                  >
+                      <Image
+                          style={{marginRight:ScreenWidth/26.79,marginBottom:ScreenHeight/75,height:ScreenHeight/33.35,width:ScreenHeight/33.35}}
+                          source={require('../../images/Assets/rightMenu.png')}
+                      />
+                  </TouchableOpacity>
+              </View>
+              <ScrollView
+                  refreshControl={<RefreshControl
+                      refreshing={this.state.isrefresh}
+                      onRefresh={this.refresh}/>}
+              >
+                  <View style={{height:ScreenHeight/3.5,backgroundColor:'#FF4081C7',alignItems:'center'}}>
+                      <View style={{marginTop:ScreenHeight/55,width:ScreenWidth,height:ScreenHeight/3.81/2.5,alignItems:'center',justifyContent:'center'}}>
+                          {/* 头像 */}
+                          <Identicon
+                              value={this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                              size={ScreenHeight/14}
+                              theme={'polkadot'}
+                          />
+
+                      </View>
+                      <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center'}}>
+                          {/* 用户名 */}
+                          <Text style={{fontWeight:"200",fontSize:ScreenHeight/45,color:'white'}}>
+                              {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].account}
+                          </Text>
+                      </View>
+                      <View style={{height:ScreenHeight/3.81/6,width:ScreenWidth,alignItems:'center',justifyContent:'center',flexDirection:'row'}}>
+                          {/* 地址 */}
+                          <Text
+                              style={{fontWeight:"200",width:ScreenWidth*0.5,fontSize:ScreenHeight/45,color:'white'}}
+                              ellipsizeMode={"middle"}
+                              numberOfLines={1}
+                          >
+                              {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.isfirst==0?0:this.props.rootStore.stateStore.Account].address}
+                          </Text>
+                          {/* 二维码 */}
+                          <TouchableOpacity
+                              onPress={this.QR_Code}
+                          >
+                              <Image
+                                  style={{marginLeft:ScreenWidth/53.57,height:ScreenHeight/45,width:ScreenHeight/45,opacity:0.8}}
+                                  source={require('../../images/Assets/QrButton.png')}
+                              />
+                          </TouchableOpacity>
+                      </View>
+                      <View style={{flex:1}}></View>
+                      <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-between',height:ScreenHeight/3.81/3.8,width:ScreenWidth}}>
+                          <Text style={{fontWeight:'bold',marginLeft:ScreenWidth/40,color:'white',fontSize:ScreenWidth/25}}>Assets</Text>
+                          {/* 添加币种 */}
+                          <TouchableOpacity
+                              onPress={()=>{this.setState({s:2})}}
+                          >
+                              <Image
+                                  style={{marginRight:ScreenWidth/20,height:ScreenHeight/30,width:ScreenHeight/30,opacity:0.9}}
+                                  //Need Open
+                                  // source={require('../../images/Assets/addAssets.png')}
+                              />
+                          </TouchableOpacity>
+                      </View>
+                  </View>
+                  {/* 各种币具体信息 */}
+                  <TouchableOpacity
+                      onPress={this.Coin_details}
+                  >
+                      <View style={{flexDirection:'row',height:ScreenHeight/10,backgroundColor:'white',borderBottomColor:'#F5F5F5',borderBottomWidth:2}}>
+                          <View style={{justifyContent:'center',alignItems:'center',width:ScreenWidth/6,height:ScreenHeight/10}}>
+                              <Image
+                                  style={{borderRadius:ScreenHeight/32,height:ScreenHeight/16,width:ScreenHeight/16}}
+                                  source={require('../../images/Assets/DOT.png')}
+                              />
+                          </View>
+                          <View style={{justifyContent:'center',flex:1,}}>
+                              <View style={{flexDirection:'row'}}>
+                                  <Text style={{fontSize:ScreenWidth/23.44,color:'black'}}>DOT</Text>
+                                  <View style={{marginLeft:ScreenWidth/60,height:ScreenHeight/98,width:ScreenHeight/98,borderRadius:ScreenHeight/196,backgroundColor:this.state.color}}/>
+                              </View>
+                              <Text style={{marginTop:ScreenHeight/130,color:'#666666',fontSize:ScreenWidth/26.79}}>Alexander TestNet</Text>
+                          </View>
+                          <View style={{height:ScreenHeight/10,justifyContent:'center',alignItems:'center'}}>
+                              <Text style={{fontSize:ScreenWidth/23.44,marginRight:ScreenWidth/28.85,color:'black'}}>{formatBalance(this.props.rootStore.stateStore.balances[this.props.rootStore.stateStore.balanceIndex].balance)}</Text>
+                          </View>
+                      </View>
+                  </TouchableOpacity>
+              </ScrollView>
+          </View>
       </SafeAreaView>   
       );
   }
