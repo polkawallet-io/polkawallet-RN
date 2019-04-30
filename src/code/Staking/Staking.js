@@ -379,7 +379,7 @@ export default class IntegralMall extends Component {
   }
   Loadmore(){
     
-      let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
+      let REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
       let map = {
         method:'POST'
       }
@@ -789,7 +789,7 @@ export default class IntegralMall extends Component {
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
                             onPress={()=>{
                               //获取选中账户staking折线图数据
-                              let REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+                              let REQUEST_URL ='https://api.polkawallet.io:8080/staking_chart_alexander'
                               let map = {
                                     method:'POST'
                                   }
@@ -875,7 +875,7 @@ export default class IntegralMall extends Component {
                           <TouchableOpacity style={{alignItems:'center',flexDirection:'row',height:ScreenHeight/13,borderBottomWidth:1,borderColor:'grey'}} key={index}
                             onPress={()=>{
                               //获取选中账户staking折线图数据
-                              let REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+                              let REQUEST_URL ='https://api.polkawallet.io:8080/staking_chart_alexander'
                               let map = {
                                     method:'POST'
                                   }

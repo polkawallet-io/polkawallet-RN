@@ -219,7 +219,7 @@ export default class Polkawallet extends Component {
         unit: props.get('tokenSymbol')
       });     
       //获取本地账户staking折线图数据
-      REQUEST_URL ='http://107.173.250.124:8080/staking_chart_alexander'
+      REQUEST_URL ='https://api.polkawallet.io:8080/staking_chart_alexander'
       map = {
             method:'POST'
           }

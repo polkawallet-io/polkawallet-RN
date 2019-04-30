@@ -139,7 +139,7 @@ import { set } from 'mobx';
                                 [
                                   {text: 'OK', onPress: () => {
                                         //清除缓存
-                                        let REQUEST_URL = 'http://107.173.250.124:8080/tx_list_for_redis'
+                                        let REQUEST_URL = 'https://api.polkawallet.io:8080/tx_list_for_redis'
                                         let map = {
                                             method:'POST'
                                             }
@@ -152,7 +152,7 @@ import { set } from 'mobx';
                                             map.body = '{"user_address":"'+this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address+'","pageNum":"1","pageSize":"10"}';
                                             fetch(REQUEST_URL,map).then().catch()
                                         //获取网络订单
-                                        REQUEST_URL = 'http://107.173.250.124:8080/tx_list'
+                                        REQUEST_URL = 'https://api.polkawallet.io:8080/tx_list'
                                         map = {
                                             method:'POST'
                                             }
