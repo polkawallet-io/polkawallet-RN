@@ -74,7 +74,7 @@ export default class IntegralMall extends Component {
     alert('Copy success')
   }
   Loadmore(){
-    let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
+    let REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
     let map = {
       method:'POST'
     }
@@ -102,7 +102,7 @@ export default class IntegralMall extends Component {
   componentWillMount(){
       (async()=>{
         //获取选中账户的Staking Records
-        let REQUEST_URL = 'http://107.173.250.124:8080/staking_list_alexander'
+        let REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
         let map = {
               method:'POST'
             }
