@@ -81,7 +81,7 @@ In order to give users a more humane and more convenient experience, as the entr
 (then have the Chinese New Year, 14 days holiday)
 - [x] Functional & logic implementation  (plan: 2019.02. 27 done)[actual: 02.22 done] 
 - [x] Release Beta version (plan: 2019.02.28 release)[actual: 02.23 done] 
-- [ ] Optimization and development
+- [x] Optimization and development
 - [ ] Integrate Parity Signer to Polkawallet
 - [ ] New and more functions, including finance, cross-chain ecosystem
 
