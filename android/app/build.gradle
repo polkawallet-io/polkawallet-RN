@@ -103,6 +103,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [
+                JPUSH_APPKEY: "6f7aadcc0ccf0f3db8467c38",
+                APP_CHANNEL : "default"
+        ]
+
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -154,6 +159,10 @@ configurations.all {
 }
 
 dependencies {
+    implementation project(':jcore-react-native')
+    implementation project(':jpush-react-native')
+    implementation project(':react-native-qr-scanner')
+    implementation project(':react-native-i18n')
     compile project(':react-native-update')
     compile project(':react-native-udp')
     compile project(':react-native-tcp')

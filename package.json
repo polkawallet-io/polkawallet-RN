@@ -1,11 +1,26 @@
 {
   "name": "Polkawallet",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "postinstall": "sh postinstall.sh",
-    "test": "jest"
+    "test": "jest",
+    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/app/src/main/assets/index.android.map --assets-dest android/app/src/main/res/",
+    "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest release_ios/",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "adb": "adb connect 127.0.0.1:21503",
+    "lint": "eslint --ext .js ./src --fix",
+    "precommit": "pretty-quick --staged",
+    "prettier": "prettier --write src/**/*.js"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   },
   "resolutions": {
     "babel-core": "^7.0.0-bridge.0"
@@ -14,25 +29,27 @@
     "@babel/plugin-proposal-decorators": "^7.2.3",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/runtime": "^7.2.0",
-    "@polkadot/api": "^0.76.1",
+    "@polkadot/api": "^0.79.0-beta.31",
     "@tradle/react-native-http": "^2.0.1",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.1",
     "dns.js": "^1.0.1",
     "https-browserify": "0.0.1",
+    "jcore-react-native": "^1.3.2",
+    "jpush-react-native": "^2.5.3",
     "jsc-android": "236355.x.x",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "native-echarts": "^0.5.0",
     "node-libs-react-native": "^1.0.3",
-    "polkadot-identicon-react-native": "0.0.3",
     "punycode": "^1.4.1",
-    "react": "16.6.3",
-    "react-native": "0.57.8",
+    "react": "^16.8.6",
+    "react-native": "0.59.9",
     "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
     "react-native-crypto": "^2.1.2",
     "react-native-drawer": "^2.5.1",
     "react-native-gesture-password": "^0.3.6",
+    "react-native-i18n": "^2.0.15",
     "react-native-level-fs": "^3.0.1",
     "react-native-os": "^1.2.2",
     "react-native-qr-scanner": "^1.3.2",
@@ -40,10 +57,10 @@
     "react-native-randombytes": "^3.5.1",
     "react-native-secure-storage": "^0.1.2",
     "react-native-sensitive-info": "^5.2.7",
-    "react-native-svg": "^8.0.10",
+    "react-native-svg": "^8.0.11",
     "react-native-tcp": "^3.3.0",
     "react-native-udp": "^2.3.1",
-    "react-native-update": "^5.1.4",
+    "react-native-update": "^5.1.8",
     "react-native-websocket": "^1.0.2",
     "react-navigation": "^2.18.3",
     "readable-stream": "^1.0.33",
@@ -59,17 +76,60 @@
     "vm-browserify": "0.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "babel-jest": "23.6.0",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-preset-react-native-stage-0": "^1.0.1",
-    "jest": "23.6.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
+    "husky": "^2.4.1",
+    "jest": "^23.6.0",
+    "lint-staged": "^8.2.1",
     "metro-react-native-babel-preset": "0.51.1",
+    "polkadot-identicon-react-native": "0.0.5",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
     "react-test-renderer": "16.6.3",
+    "regenerator-runtime": "^0.13.2",
     "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/index.tsx",
+      "!src/setupTests.ts",
+      "!src/components/**/index.{ts,tsx}",
+      "!src/**/*.stories.{ts,tsx}",
+      "!src/**/*.style.ts",
+      "!src/styles/**/*"
+    ],
+    "coverageDirectory": "./coverage/",
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   },
   "react-native": {
     "zlib": "browserify-zlib",
@@ -122,5 +182,10 @@
     "tty": "tty-browserify",
     "vm": "vm-browserify",
     "tls": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

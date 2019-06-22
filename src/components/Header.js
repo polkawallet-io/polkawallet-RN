@@ -1,0 +1,66 @@
+import React, { Component } from 'react'
+import { Image, View, TouchableOpacity, Text } from 'react-native'
+import { ScreenWidth } from '../util/Common'
+
+export default class Header extends Component {
+  back() {
+    this.props.navigation.goBack()
+  }
+
+  render() {
+    const { title, rightIcon, rightPress, backPress } = this.props
+    const theme = this.props.theme || 'light'
+    return (
+      <View
+        style={{
+          width: ScreenWidth,
+          paddingRight: 20,
+          height: 44,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={backPress ? backPress() : this.back.bind(this)}
+          style={{ paddingLeft: 20, height: 44, width: 61 }}
+        >
+          {/* <View> */}
+          <Image
+            source={
+              theme == 'light'
+                ? require('../assets/images/Assets/sweep_code_return.png')
+                : theme == 'dark' && require('../assets/images/public/About_return.png')
+            }
+            style={{ width: theme == 'light' ? 11 : 16, marginTop: 15, height: 16 }}
+          />
+          {/* </View> */}
+        </TouchableOpacity>
+        <Text
+          style={{
+            color: theme == 'light' ? '#FFF' : theme == 'dark' && '#3E2D32',
+            fontSize: 18,
+            marginLeft: -25,
+            fontWeight: '700'
+          }}
+        >
+          {title}
+        </Text>
+        {rightIcon ? (
+          <TouchableOpacity
+            onPress={() => {
+              rightPress()
+            }}
+          >
+            <Image source={rightIcon} style={{ width: 20, height: 20 }} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity>
+            <Image style={{ width: 20, height: 20 }} />
+          </TouchableOpacity>
+        )}
+      </View>
+    )
+  }
+}
