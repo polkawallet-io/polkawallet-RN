@@ -29,6 +29,7 @@
     "@babel/plugin-proposal-decorators": "^7.2.3",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/runtime": "^7.2.0",
+    "@junctiontv/react-native-on-screen-keyboard": "^1.0.4",
     "@polkadot/api": "^0.79.0-beta.31",
     "@tradle/react-native-http": "^2.0.1",
     "browserify-zlib": "^0.1.4",

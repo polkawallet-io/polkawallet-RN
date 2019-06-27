@@ -1,15 +1,17 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ *  This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-21 21:33:46
  */
+/* eslint no-return-assign: 2 */
+
 import React, { Component } from 'react'
 import {
   StyleSheet,
@@ -17,10 +19,12 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   TextInput,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  Keyboard
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot/util'
@@ -30,11 +34,14 @@ import Keyring from '@polkadot/keyring'
 import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
 import { observer, inject } from 'mobx-react'
+import OnScreenKeyboard from '@junctiontv/react-native-on-screen-keyboard'
 import { ScreenWidth, ScreenHeight } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
 import RNPicker from '../../../components/RNPicker'
+
+import MyView from './MyView'
 
 const keyring = new Keyring()
 
@@ -59,7 +66,8 @@ class CreateAccount extends Component {
       islookpwd: false,
       ispwd: 0,
       ispwd2: 0,
-      balance: 0
+      balance: 0,
+      keyboardVisible: false
     }
     this.Save_Account = this.Save_Account.bind(this)
     this.onChangekey = this.onChangekey.bind(this)
@@ -68,6 +76,33 @@ class CreateAccount extends Component {
     this.Modify_way = this.Modify_way.bind(this)
     this.Reset = this.Reset.bind(this)
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
+
+    this.handleInput = this.handleInput.bind(this)
+    this.onFocusSpecialComponent = this.onFocusSpecialComponent.bind(this)
+    this.onBlurSpecialComponent = this.onBlurSpecialComponent.bind(this)
+    this.KeypairInput = this.PasswordInput = this.PasswordConfirmInput = null
+
+    this._processingFocus = false
+  }
+
+  onFocusSpecialComponent() {
+    if (this._processingFocus) return
+    this._processingFocus = true
+    this.setState({ keyboardVisible: true })
+    Keyboard.dismiss()
+    // this.setFocus()
+    this._processingFocus = false
+  }
+
+  onBlurSpecialComponent() {
+    if (this._processingFocus) return
+    this._processingFocus = true
+    this.setState({ keyboardVisible: false })
+    this._processingFocus = false
+  }
+
+  handleInput(input) {
+    this.setState({ name: 'abc' })
   }
 
   // 页面加载
@@ -516,17 +551,40 @@ class CreateAccount extends Component {
               onChangeText={this.onChangekey}
             />
             {this.state.way != 'Keystore' && (
-              <View style={{ marginTop: 30 }}>
-                <Text style={{ fontSize: 16, color: '#3E2D32' }}>{i18n.t('Assets.NameTheAccount')}</Text>
-                <TextInput
-                  style={[styles.textInputStyle, { fontSize: 16 }]}
-                  placeholder=""
-                  placeholderTextColor="#666666"
-                  autoCorrect={false}
-                  underlineColorAndroid="#ffffff00"
-                  onChangeText={this.onChangename}
-                />
-              </View>
+              <TouchableWithoutFeedback>
+                <View>
+                  <View style={{ marginTop: 30 }}>
+                    <Text style={{ fontSize: 16, color: '#3E2D32' }}>{i18n.t('Assets.NameTheAccount')}</Text>
+                    <TextInput
+                      style={[styles.textInputStyle, { fontSize: 16 }]}
+                      placeholder=""
+                      placeholderTextColor="#666666"
+                      autoCorrect={false}
+                      underlineColorAndroid="#ffffff00"
+                      ref={ref => (this.KeypairInput = ref)}
+                      value={this.state.name}
+                      onFocus={this.onFocusSpecialComponent}
+                      // onBlur={this.onBlurSpecialComponent}
+                      onChangeText={name => this.setState({ name })}
+                    />
+                  </View>
+                  <MyView style={{ marginTop: 10 }} hide={!this.state.keyboardVisible}>
+                    <OnScreenKeyboard
+                      title="SomeTitle"
+                      textInput={this.KeypairInput}
+                      onInput={name => this.setState(name)}
+                      inputType="textPassword"
+                      keyboardContainerStyle={{ width: '100%', float: 'left' }}
+                      keyboardTitleStyle={{ display: 'none' }}
+                      keyboardButtonContainerStyle={styles.keyboardButtonContainer}
+                      keyboardButtonTextStyle={styles.keyboardButtonText}
+                      keyboardButtonTextPressStyle={styles.keyboardButtonTextPress}
+                      keyboardButtonStyle={styles.keyboardButton}
+                      keyboardButtonPressStyle={styles.keyboardButtonPress}
+                    />
+                  </MyView>
+                </View>
+              </TouchableWithoutFeedback>
             )}
             {/* pass */}
             <View style={{ marginTop: 30 }}>
