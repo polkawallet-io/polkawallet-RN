@@ -77,12 +77,16 @@ class CreateAccount extends Component {
     this.Reset = this.Reset.bind(this)
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
 
-    this.handleInput = this.handleInput.bind(this)
     this.onFocusSpecialComponent = this.onFocusSpecialComponent.bind(this)
     this.onBlurSpecialComponent = this.onBlurSpecialComponent.bind(this)
+    this.onScreenInput = this.onScreenInput.bind(this)
     this.KeypairInput = this.PasswordInput = this.PasswordConfirmInput = null
 
     this._processingFocus = false
+  }
+
+  onScreenInput(name) {
+    this.setState({ name })
   }
 
   onFocusSpecialComponent() {
@@ -99,10 +103,6 @@ class CreateAccount extends Component {
     this._processingFocus = true
     this.setState({ keyboardVisible: false })
     this._processingFocus = false
-  }
-
-  handleInput(input) {
-    this.setState({ name: 'abc' })
   }
 
   // 页面加载
@@ -565,24 +565,19 @@ class CreateAccount extends Component {
                       value={this.state.name}
                       onFocus={this.onFocusSpecialComponent}
                       // onBlur={this.onBlurSpecialComponent}
-                      onChangeText={name => this.setState({ name })}
+                      onChangeText={this.onChangename}
                     />
                   </View>
-                  <MyView style={{ marginTop: 10 }} hide={!this.state.keyboardVisible}>
-                    <OnScreenKeyboard
-                      title="SomeTitle"
-                      textInput={this.KeypairInput}
-                      onInput={name => this.setState(name)}
-                      inputType="textPassword"
-                      keyboardContainerStyle={{ width: '100%', float: 'left' }}
-                      keyboardTitleStyle={{ display: 'none' }}
-                      keyboardButtonContainerStyle={styles.keyboardButtonContainer}
-                      keyboardButtonTextStyle={styles.keyboardButtonText}
-                      keyboardButtonTextPressStyle={styles.keyboardButtonTextPress}
-                      keyboardButtonStyle={styles.keyboardButton}
-                      keyboardButtonPressStyle={styles.keyboardButtonPress}
-                    />
-                  </MyView>
+                  <View>
+                    <MyView style={styles.bottom} hide={!this.state.keyboardVisible}>
+                      <OnScreenKeyboard
+                        title=""
+                        textInput={{ current: this.KeypairInput }}
+                        onInput={this.onScreenInput}
+                        inputType="textPassword"
+                      />
+                    </MyView>
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             )}
@@ -765,6 +760,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: ScreenHeight / 50,
     color: '#4169E1'
+  },
+  bottom: {
+    marginTop: 10
   }
 })
 export default CreateAccount
