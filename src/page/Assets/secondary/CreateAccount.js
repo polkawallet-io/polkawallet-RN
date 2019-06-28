@@ -20,7 +20,6 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  TextInput,
   Alert,
   StatusBar,
   SafeAreaView
@@ -507,7 +506,7 @@ class CreateAccount extends Component {
                   data={pickerData}
                 />
               </View>
-              <TextInput
+              <CustomKeyboard.CustomTextInput
                 style={[
                   styles.textInputStyle,
                   {
@@ -518,6 +517,7 @@ class CreateAccount extends Component {
                   }
                 ]}
                 autoCorrect={false}
+                customKeyboardType="safeKeyBoard"
                 value={this.state.key}
                 placeholderTextColor="black"
                 underlineColorAndroid="#ffffff00"
