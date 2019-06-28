@@ -88,6 +88,13 @@ class CreateAccount extends Component {
         key,
         address: this.pair.address()
       })
+      // should manually update state via timeout due to
+      // @gre workaround https://github.com/facebook/react-native/issues/8624
+      setTimeout(() => {
+        this.onChangekey(this.state.key)
+        this.onChangename(this.state.name)
+        this.onChangepassword(this.state.password)
+      }, 500)
       const props = await polkadotAPI.properties()
       formatBalance.setDefaults({
         decimals: props.get('tokenDecimals'),
