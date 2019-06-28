@@ -85,7 +85,7 @@ class CreateAccount extends Component {
       let key = mnemonicGenerate()
       this.pair = keyring.addFromMnemonic(key)
       this.setState({
-        key: key,
+        key,
         address: this.pair.address()
       })
       const props = await polkadotAPI.properties()
@@ -120,7 +120,7 @@ class CreateAccount extends Component {
     }
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
-      key: key,
+      key,
       address: this.pair.address()
     })
   }
