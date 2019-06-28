@@ -550,12 +550,13 @@ class CreateAccount extends Component {
               {/* pass  */}
               <View style={{ marginTop: 30 }}>
                 <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.Password')}</Text>
-                <TextInput
+                <CustomKeyboard.CustomTextInput
                   style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
                   placeholder={i18n.t('Assets.EnterPassword')}
                   placeholderTextColor="#666666"
                   underlineColorAndroid="#ffffff00"
                   autoCorrect={false}
+                  customKeyboardType="safeKeyBoard"
                   secureTextEntry={true}
                   onChangeText={this.onChangepassword}
                 />
@@ -563,12 +564,13 @@ class CreateAccount extends Component {
               {/* repeatPass 2 */}
               <View style={{ marginTop: 30 }}>
                 <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.EnterPassword_d')}</Text>
-                <TextInput
+                <CustomKeyboard.CustomTextInput
                   style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
                   placeholder={i18n.t('Assets.EnterPassword_d')}
                   placeholderTextColor="#666666"
                   underlineColorAndroid="#ffffff00"
                   autoCorrect={false}
+                  customKeyboardType="safeKeyBoard"
                   secureTextEntry={true}
                   onChangeText={this.onChangpasswordErepeat}
                 />
