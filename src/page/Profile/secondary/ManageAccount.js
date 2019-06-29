@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ *  This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -19,7 +19,6 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
-  TextInput,
   Clipboard,
   Platform,
   StatusBar,
@@ -28,6 +27,7 @@ import {
 import Identicon from 'polkadot-identicon-react-native'
 import SInfo from 'react-native-sensitive-info'
 import { observer, inject } from 'mobx-react'
+import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd } from '../../../util/Common'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
@@ -313,8 +313,9 @@ class ManageAccount extends Component {
             <View style={styles.modal}>
               <View style={styles.chooseview}>
                 <Text style={styles.prompt}>{i18n.t('Profile.unlockPassword')}</Text>
-                <TextInput
+                <CustomKeyboard.CustomTextInput
                   style={[styles.textInputStyle, { borderColor: this.state.password == '' ? 'red' : '#4169E1' }]}
+                  customKeyboardType="safeKeyBoard"
                   autoCapitalize="none"
                   placeholder={i18n.t('Profile.unlockPassword')}
                   placeholderTextColor="#DC143CA5"

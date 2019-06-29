@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ *  This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -24,6 +24,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd, formatData } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
@@ -209,7 +210,7 @@ class NayorAye extends Component {
                   alignItems: 'center'
                 }}
               >
-                <TextInput
+                <CustomKeyboard.CustomTextInput
                   style={[
                     styles.textInputStyle,
                     {
@@ -219,6 +220,7 @@ class NayorAye extends Component {
                       backgroundColor: '#F9F9F9'
                     }
                   ]}
+                  customKeyboardType="safeKeyBoard"
                   placeholder=""
                   placeholderTextColor="#666666"
                   underlineColorAndroid="#ffffff00"

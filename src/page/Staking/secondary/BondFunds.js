@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ *  This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 22:22:06
@@ -24,6 +24,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { getUnit, ScreenWidth, ScreenHeight, formatData, checkPwd } from '../../../util/Common'
 import Header from '../../../components/Header'
 
@@ -401,7 +402,7 @@ class BondFunds extends Component {
               {i18n.t('TAB.unlockPassword')}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextInput
+              <CustomKeyboard.CustomTextInput
                 style={{
                   width: ScreenWidth - 40,
                   fontSize: 14,
@@ -412,6 +413,7 @@ class BondFunds extends Component {
                   borderWidth: 1,
                   borderRadius: 6
                 }}
+                customKeyboardType="safeKeyBoard"
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
