@@ -69,7 +69,7 @@ export default {
 
   CurrentPassword: 'Current password',
   NewPassword: 'New password',
-  RepratPassword: 'Reprat password',
+  RepeatPassword: 'Repeat password',
   differentPassword: 'The two passwords are different',
   Modify: 'Modify the success',
   PasswordMistake: 'Password mistake',
