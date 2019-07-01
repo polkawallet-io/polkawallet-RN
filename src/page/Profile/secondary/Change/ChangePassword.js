@@ -36,7 +36,7 @@ class ChangePassword extends Component {
     this.state = {
       Current_password: '',
       New_password: '',
-      Reprat_password: '',
+      Repeat_password: '',
       ispwd1: 0,
       ispwd2: 0,
       ispwd3: 0
@@ -44,7 +44,7 @@ class ChangePassword extends Component {
     this.back = this.back.bind(this)
     this.Current_password = this.Current_password.bind(this)
     this.New_password = this.New_password.bind(this)
-    this.Reprat_password = this.Reprat_password.bind(this)
+    this.Repeat_password = this.Repeat_password.bind(this)
     this.Change = this.Change.bind(this)
   }
 
@@ -76,20 +76,20 @@ class ChangePassword extends Component {
     })
   }
 
-  Reprat_password(Reprat_password) {
-    if (Reprat_password != this.state.New_password) {
+  Repeat_password(Repeat_password) {
+    if (Repeat_password != this.state.New_password) {
       this.setState({ ispwd3: 0 })
     }
-    if (Reprat_password == this.state.New_password) {
+    if (Repeat_password == this.state.New_password) {
       this.setState({ ispwd3: 1 })
     }
     this.setState({
-      Reprat_password: Reprat_password
+      Repeat_password: Repeat_password
     })
   }
 
   Change() {
-    if (this.state.New_password != this.state.Reprat_password) {
+    if (this.state.New_password != this.state.Repeat_password) {
       Alert.alert('', 'The two passwords are different')
     } else {
       const _this = this
@@ -131,7 +131,7 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const msg = [i18n.t('Profile.CurrentPassword'), i18n.t('Profile.NewPassword'), i18n.t('Profile.RepratPassword')]
+    const msg = [i18n.t('Profile.CurrentPassword'), i18n.t('Profile.NewPassword'), i18n.t('Profile.RepeatPassword')]
     return (
       <SafeAreaView
         style={{
@@ -173,13 +173,13 @@ class ChangePassword extends Component {
                           ? i18n.t('Profile.CurrentPassword')
                           : index == 1
                           ? i18n.t('Profile.NewPassword')
-                          : i18n.t('Profile.RepratPassword')
+                          : i18n.t('Profile.RepeatPassword')
                       }
                       secureTextEntry={true}
                       autoCorrect={false}
                       underlineColorAndroid="#ffffff00"
                       onChangeText={
-                        index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Reprat_password
+                        index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Repeat_password
                       }
                     />
                   </View>

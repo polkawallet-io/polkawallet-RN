@@ -67,7 +67,7 @@ export default {
 
   // CurrentPassword: '当前密码',
   NewPassword: '新密码',
-  RepratPassword: '确认密码',
+  RepeatPassword: '确认密码',
   differentPassword: '两次密码输入不一致',
   Modify: '修改成功！',
   PasswordMistake: '密码错误',
