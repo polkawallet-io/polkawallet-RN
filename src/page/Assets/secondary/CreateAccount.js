@@ -22,7 +22,8 @@ import {
   TouchableWithoutFeedback,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  Keyboard
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot/util'
@@ -76,6 +77,25 @@ class CreateAccount extends Component {
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
 
     CustomKeyboard.keyBoardAPI('safeKeyBoard')(CustomKeyboard.SafeKeyBoardView)
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove()
+    this.keyboardDidHideListener.remove()
+  }
+
+  _keyboardDidShow() {
+    Keyboard.dismiss()
+    return false
+  }
+
+  _keyboardDidHide() {
+    console.warn('Keyboard hidden')
   }
 
   // 页面加载
