@@ -25,7 +25,7 @@ console.ignoredYellowBox = [
   'Invalid props.style key'
 ]
 
-console.disableYellowBox = false
+console.disableYellowBox = true
 ;(async () => {
   const provider = new WsProvider(AppState.stateStore.ENDPOINT)
   const api = await Api.create(provider)
