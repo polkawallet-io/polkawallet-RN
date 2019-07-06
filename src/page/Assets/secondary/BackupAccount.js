@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -25,7 +25,7 @@ import {
 } from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
@@ -44,8 +44,9 @@ class BackupAccount extends Component {
     this.Continue = this.Continue.bind(this)
   }
 
-  // 点击取消
-  // Click cancel
+  /**
+   * @description 点击取消|Click cancel
+   */
   Cancel() {
     // 创建查询每个账户的进程
     // Create a process to query each account
@@ -70,8 +71,9 @@ class BackupAccount extends Component {
     this.props.navigation.navigate('Create_Account')
   }
 
-  // 点击确认
-  // Click Continue
+  /**
+   * @description 点击确认|Click Continue
+   */
   Continue() {
     // 创建查询每个账户的进程
     // Create a process to query each account
@@ -100,8 +102,9 @@ class BackupAccount extends Component {
     this.props.navigation.dispatch(resetAction)
   }
 
-  // 拷贝
-  // Click Copy
+  /**
+   * @description 拷贝|Click Copy
+   */
   async copy() {
     Alert.alert('', i18n.t('TAB.CopySuccess'))
     Clipboard.setString(this.state.text)
@@ -139,7 +142,12 @@ class BackupAccount extends Component {
                 {this.state.text}
               </Text>
               {/* copy */}
-              <TouchableOpacity onPress={this.copy} style={{ width: 30 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  doubleClick(this.copy)
+                }}
+                style={{ width: 30 }}
+              >
                 <Image source={require('../../../assets/images/public/copy.png')} />
               </TouchableOpacity>
             </View>

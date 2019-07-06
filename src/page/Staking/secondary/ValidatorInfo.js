@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -21,7 +21,8 @@ import {
   StatusBar,
   Clipboard,
   SafeAreaView,
-  Alert
+  Alert,
+  InteractionManager
 } from 'react-native'
 import Echarts from 'native-echarts'
 import Identicon from 'polkadot-identicon-react-native'
@@ -29,7 +30,7 @@ import { formatBalance } from '@polkadot/util'
 import moment from 'moment/moment'
 import { observer, inject } from 'mobx-react'
 import Header from '../../../components/Header'
-import { formatData, ScreenWidth, ScreenHeight, axios } from '../../../util/Common'
+import { formatData, ScreenWidth, ScreenHeight, axios, doubleClick } from '../../../util/Common'
 import i18n from '../../../locales/i18n'
 import polkadotAPI from '../../../util/polkadotAPI'
 
@@ -48,6 +49,7 @@ class ValidatorInfo extends Component {
       StakingRecords: {},
       pageNum: 1,
       inNominators: false,
+      showBtn: false,
       StakingOption: {
         title: {
           text: i18n.t('Staking.StakingOption'),
@@ -93,32 +95,39 @@ class ValidatorInfo extends Component {
     this.Loadmore = this.Loadmore.bind(this)
   }
 
-  // 返回
-  // Click back
+  /**
+   * @description 返回|Click back
+   */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 进入Nominate页面
-  // Enter the Nominate page
+  /**
+   * @description 进入Nominate页面|Enter the Nominate page
+   */
   nominate() {
     this.props.rootStore.stateStore.tonominate = 1
     this.props.navigation.navigate('Nominate', { address: this.state.address })
   }
 
-  // 进入Unnominate页面
-  // Enter the Unnominate page
+  /**
+   * @description 进入Unnominate页面|Enter the Unnominate page
+   */
   Unnominate() {
     this.props.navigation.navigate('Unnominate')
   }
 
+  /**
+   * @description 返回
+   */
   async copy() {
     Clipboard.setString(this.state.address)
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
 
-  // 加载更多
-  // Load for more info
+  /**
+   * @description 加载更多|Load for more info
+   */
   Loadmore() {
     const REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
     const params = `{"user_address":"${this.state.address}","pageNum":"${this.state.pageNum}","pageSize":"10"}`
@@ -136,30 +145,71 @@ class ValidatorInfo extends Component {
     })
   }
 
-  componentWillMount() {
-    ;(async () => {
-      // 获取选中账户的Staking Records
-      // Get Staking Records for the selected account
-      const REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
-      const params = `{"user_address":"${this.state.address}","pageNum":"1","pageSize":"10"}`
-      axios(REQUEST_URL, params)
-        .then(result => {
-          this.setState({
-            StakingNextPage: result.staking_list_alexander.hasNextPage,
-            StakingRecords: result
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      ;(async () => {
+        // 获取选中账户的Staking Records
+        // Get Staking Records for the selected account
+        const REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
+        const params = `{"user_address":"${this.state.address}","pageNum":"1","pageSize":"10"}`
+        axios(REQUEST_URL, params)
+          .then(result => {
+            this.setState({
+              StakingNextPage: result.staking_list_alexander.hasNextPage,
+              StakingRecords: result
+            })
           })
+          .catch()
+        const info = await polkadotAPI.accountInfo(this.state.address)
+        const nominators = formatData(info).stakers.others
+        this.setState({
+          nominators,
+          validatorBalances: formatData(info).stakers.own || formatData(info).stakingLedger.active
         })
-        .catch()
-      const info = await polkadotAPI.accountInfo(this.state.address)
-      const nominators = formatData(info).stakers.others
-      this.setState({
-        nominators,
-        validatorBalances: formatData(info).stakers.own || formatData(info).stakingLedger.active
-      })
-    })()
-    this.getStakingOption(this.props.navigation.state.params.address)
+        let showBtn = false
+        let address = await polkadotAPI.bonded(
+          this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+        )
+        address = String(address)
+        let controller = ''
+        if (!address) {
+          controller = await polkadotAPI.ledger(
+            this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+          )
+          controller = String(controller)
+          if (controller && controller != null && controller != 'null') {
+            showBtn = true
+            this.setState({
+              showBtn: true
+            })
+          }
+        }
+        let tag = false
+        console.log(nominators)
+        if (showBtn) {
+          for (let i = 0; i < nominators.length; i++) {
+            if (formatData(nominators[i]).who == JSON.parse(controller).stash) {
+              tag = true
+            }
+          }
+        }
+        this.setState(
+          {
+            inNominators: tag
+          },
+          () => {
+            console.log(this.state.inNominators)
+          }
+        )
+      })()
+      this.getStakingOption(this.props.navigation.state.params.address)
+    })
   }
 
+  /**
+   * @description 获取选中账户staking折线图数据|Get the data of staking chart of the selected account
+   * @param {String} address 地址|Address
+   */
   getStakingOption(address) {
     ;(async () => {
       // 获取选中账户staking折线图数据
@@ -278,7 +328,11 @@ class ValidatorInfo extends Component {
                 }}
               >
                 {/* 头像 | Identicon */}
-                <TouchableOpacity onPress={this.copy}>
+                <TouchableOpacity
+                  onPress={() => {
+                    doubleClick(this.copy)
+                  }}
+                >
                   <Identicon size={46} theme="polkadot" value={this.state.address} />
                 </TouchableOpacity>
               </View>
@@ -302,40 +356,42 @@ class ValidatorInfo extends Component {
                 {`  ${formatBalance(String(Number(this.state.validatorBalances)))}`}
               </Text>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: ScreenWidth - 40
-                }}
-              >
-                <TouchableOpacity
-                  onPress={this.state.inNominators ? this.Unnominate : this.nominate}
+              {this.state.showBtn && (
+                <View
                   style={{
                     flexDirection: 'row',
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderRadius: 6,
-                    backgroundColor: this.state.inNominators ? '#FF4081C7' : '#76CE29',
-                    height: 40,
-                    width: ScreenWidth * 0.5
+                    width: ScreenWidth - 40
                   }}
                 >
-                  <Image source={require('../../../assets/images/staking/staking_nomin.png')} />
-                  <Text
+                  <TouchableOpacity
+                    onPress={this.state.inNominators ? this.Unnominate : this.nominate}
                     style={{
-                      marginLeft: 12,
-                      fontWeight: 'bold',
-                      fontSize: 18,
-                      color: '#FFFFFF'
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 6,
+                      backgroundColor: this.state.inNominators ? '#FF4081C7' : '#76CE29',
+                      height: 40,
+                      width: ScreenWidth * 0.5
                     }}
                   >
-                    {this.state.inNominators ? i18n.t('Staking.Unnominate') : i18n.t('Staking.Nominate')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Image source={require('../../../assets/images/staking/staking_nomin.png')} />
+                    <Text
+                      style={{
+                        marginLeft: 12,
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        color: '#FFFFFF'
+                      }}
+                    >
+                      {this.state.inNominators ? i18n.t('Staking.Unnominate') : i18n.t('Staking.Nominate')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
             <View
               style={{
@@ -486,41 +542,43 @@ class ValidatorInfo extends Component {
                   backgroundColor: '#fff'
                 }}
               >
-                {this.state.StakingRecords.staking_list_alexander.list.map((item, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      paddingHorizontal: 20,
-                      flexDirection: 'row',
-                      width: ScreenWidth * 0.89,
-                      height: 60,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#F0F0F0'
-                    }}
-                  >
-                    <Image
-                      source={
-                        item.st_type == 'slashed'
-                          ? require('../../../assets/images/public/icon2.png')
-                          : require('../../../assets/images/public/icon1.png')
-                      }
-                      style={{ width: 28, height: 28, marginRight: 12 }}
-                    />
-                    <View style={{ flex: 1 }}>
-                      <Text>
-                        {i18n.t('TAB.Staking')}
-                        {` ${item.st_type}`}
+                {this.state.StakingRecords.staking_list_alexander &&
+                  this.state.StakingRecords.staking_list_alexander.list &&
+                  this.state.StakingRecords.staking_list_alexander.list.map((item, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        paddingHorizontal: 20,
+                        flexDirection: 'row',
+                        width: ScreenWidth * 0.89,
+                        height: 60,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#F0F0F0'
+                      }}
+                    >
+                      <Image
+                        source={
+                          item.st_type == 'slashed'
+                            ? require('../../../assets/images/public/icon2.png')
+                            : require('../../../assets/images/public/icon1.png')
+                        }
+                        style={{ width: 28, height: 28, marginRight: 12 }}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text>
+                          {i18n.t('TAB.Staking')}
+                          {` ${item.st_type}`}
+                        </Text>
+                        <Text>{moment(item.st_timestamp).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                      </View>
+                      <Text style={{ justifyContent: 'flex-end' }}>
+                        {item.st_type == 'slashed' ? '- ' : '+ '}
+                        {formatBalance(String(item.st_balance))}
                       </Text>
-                      <Text>{moment(item.st_timestamp).format('DD/MM/YYYY HH:mm:ss')}</Text>
                     </View>
-                    <Text style={{ justifyContent: 'flex-end' }}>
-                      {item.st_type == 'slashed' ? '- ' : '+ '}
-                      {formatBalance(String(item.st_balance))}
-                    </Text>
-                  </View>
-                ))}
+                  ))}
                 {this.state.StakingRecords.staking_list_alexander.list &&
                 this.state.StakingRecords.staking_list_alexander.list.length > 0 ? (
                   this.state.StakingNextPage ? (

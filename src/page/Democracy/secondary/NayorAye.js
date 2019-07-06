@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -24,7 +24,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd, formatData } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, formatData, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
@@ -50,22 +50,35 @@ class NayorAye extends Component {
     this.Vote = this.Vote.bind(this)
   }
 
+  /**
+   * @description 切换密码的可见性|Toggle password visibility
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
+  /**
+   * @description 密码更改|Password change
+   * @param {String} Changepassword  更改的密码|Changed password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
+  /**
+   * @description 点击取消|Click the cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
+  /**
+   * @description 点击Vote|Click the vote
+   */
   Vote() {
     this.setState({
       onlyone: 1,
@@ -96,7 +109,7 @@ class NayorAye extends Component {
                 { cancelable: false }
               )
             }
-          }, 30000)
+          }, 15000)
           let transfer
           try {
             transfer = await polkadotAPI.vote(Number(_this.state.index), _this.state.choose == 'Aye' ? true : false)
@@ -272,7 +285,9 @@ class NayorAye extends Component {
               height: 49,
               width: (ScreenWidth - 50) / 2
             }}
-            onPress={this.Vote}
+            onPress={() => {
+              doubleClick(this.Vote)
+            }}
           >
             <Text style={styles.choessText}>Vote</Text>
           </TouchableOpacity>

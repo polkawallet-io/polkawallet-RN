@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -23,7 +23,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd } from '../../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../../util/Common'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import i18n from '../../../../locales/i18n'
 
@@ -43,22 +43,36 @@ class ChangeName extends Component {
     this.Current_password = this.Current_password.bind(this)
   }
 
+  /**
+   * @description 点击返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Manage_Account')
   }
 
+  /**
+   * @description 当前密码修改|Change of current password
+   * @param {String} Current_password 当前密码|Current password
+   */
   Current_password(Current_password) {
     this.setState({
       Current_password: Current_password
     })
   }
 
+  /**
+   * @description 名称的修改|Change of name
+   * @param {String} New_name 名称|name
+   */
   Change_Name(New_name) {
     this.setState({
       New_name: New_name
     })
   }
 
+  /**
+   * @description 提交修改|Submit the change
+   */
   Change() {
     if (!this.state.Current_password) {
       Alert.alert('', i18n.t('Profile.entPwd'))
@@ -158,7 +172,12 @@ class ChangeName extends Component {
               />
             </View>
           </RNKeyboardAvoidView>
-          <TouchableOpacity style={styles.Change} onPress={this.Change}>
+          <TouchableOpacity
+            style={styles.Change}
+            onPress={() => {
+              doubleClick(this.Change)
+            }}
+          >
             <Image source={require('../../../../assets/images/public/Change_button.png')} />
           </TouchableOpacity>
         </View>

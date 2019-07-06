@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-21 21:14:28
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -25,7 +25,9 @@ import {
   Platform,
   ImageBackground,
   StyleSheet,
-  Modal
+  Modal,
+  Linking,
+  InteractionManager
 } from 'react-native'
 import {
   isFirstTime,
@@ -87,16 +89,23 @@ class Assets extends Component {
     })
   }
 
-  // 跳转二维码页面
-  // Jump to Qr_code page
+  /**
+   * @description 跳转二维码页面|Jump to Qr_code page
+   */
   QR_Code() {
     this.props.navigation.navigate('QR_Code')
   }
 
+  /**
+   * @description 跳转交易页面|Jump to Coin_details page
+   */
   Coin_details() {
     this.props.navigation.navigate('Coin_details')
   }
 
+  /**
+   * @description 检查创建的API是否还存在|Check that the created API still exists
+   */
   checkApi() {
     ;(async () => {
       new DataRepository()
@@ -116,8 +125,9 @@ class Assets extends Component {
     })()
   }
 
-  // 初始加载函数
-  // Londing function
+  /**
+   * @description 初始加载函数|Londing function
+   */
   Loading() {
     SInfo.getAllItems({
       sharedPreferencesName: 'Polkawallet',
@@ -180,7 +190,7 @@ class Assets extends Component {
             if (map.errorCode === 0) {
               // console.warn('Set tags succeed, tags: ' + map.tags)
             } else {
-              console.warn('Set tags failed, error code: ' + map.errorCode)
+              // console.warn('Set tags failed, error code: ' + map.errorCode)
             }
           })
         } else {
@@ -227,7 +237,7 @@ class Assets extends Component {
             if (map.errorCode === 0) {
               // console.warn('Set tags succeed, tags: ' + map.tags)
             } else {
-              console.warn('Set tags failed, error code: ' + map.errorCode)
+              // console.warn('Set tags failed, error code: ' + map.errorCode)
             }
           })
         }
@@ -308,8 +318,9 @@ class Assets extends Component {
     }, 100)
   }
 
-  // 刷新
-  // refresh
+  /**
+   * @description 刷新|refresh
+   */
   refresh() {
     this.setState({
       isrefresh: true
@@ -323,7 +334,16 @@ class Assets extends Component {
     }, 2000)
   }
 
+  /**
+   * @description APP 前后台切换|APP front and background switching
+   * @param {String} appState 切换状态|Switch state
+   */
   handleAppStateChange(appState) {
+    if (appState == 'background') {
+      this.props.rootStore.stateStore.api = {}
+    } else if (appState == 'active') {
+      this.checkApi()
+    }
     if (appState == 'background' && this.props.rootStore.stateStore.GestureState == 2) {
       const resetAction = StackActions.reset({
         index: 0,
@@ -333,6 +353,10 @@ class Assets extends Component {
     }
   }
 
+  /**
+   * @description 更新app|Update the app
+   * @param {*} info 更新信息|update information
+   */
   doUpdate(info) {
     downloadUpdate(info)
       .then(hash => {
@@ -353,10 +377,13 @@ class Assets extends Component {
         ])
       })
       .catch(() => {
-        Alert.alert('', i18n.t('Profile.UpdateFailed'))
+        // Alert.alert('', i18n.t('Profile.UpdateFailed'))
       })
   }
 
+  /**
+   * @description 检查更新|Check the update
+   */
   checkUpdate = () => {
     const { appKey } = _updateConfig[Platform.OS]
     checkUpdate(appKey)
@@ -364,9 +391,13 @@ class Assets extends Component {
         if (info.expired) {
           Alert.alert('', i18n.t('Profile.toAppStore'), [
             {
-              text: 'OK',
+              test: 'No',
+              style: 'cancel'
+            },
+            {
+              text: 'Yes',
               onPress: () => {
-                // info.downloadUrl && Linking.openURL(info.downloadUrl)
+                Linking.openURL('https://polkawallet.io/#download')
               }
             }
           ])
@@ -388,12 +419,13 @@ class Assets extends Component {
         }
       })
       .catch(() => {
-        Alert.alert('', i18n.t('Profile.UpdateFailed'))
+        // Alert.alert('', i18n.t('Profile.UpdateFailed'))
       })
   }
 
-  // 侧边栏Modal显示
-  // Modal display in the sidebar
+  /**
+   * @description 侧边栏Modal显示|Modal display in the sidebar
+   */
   show() {
     this.setState({
       is: true
@@ -401,26 +433,32 @@ class Assets extends Component {
     this.animatedValue.setValue(0)
     Animated.timing(this.animatedValue, {
       toValue: 1,
-      duration: 600
+      duration: 500,
+      useNativeDriver: true
     }).start()
   }
 
-  // 侧边栏Modal隐藏
-  // Modal hidden sidebar
+  /**
+   * @description 侧边栏Modal隐藏|Modal hidden sidebar
+   */
   hide() {
     Animated.timing(this.animatedValue, {
       toValue: 0,
-      duration: 600
+      duration: 500,
+      useNativeDriver: true
     }).start()
     setTimeout(
       function() {
         this.changeAccount()
         this.setState({ is: false })
       }.bind(this),
-      600
+      500
     )
   }
 
+  /**
+   * @description 切换账户|Switch account
+   */
   changeAccount() {
     this.props.rootStore.stateStore.balances.map((item, index) => {
       if (item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address) {
@@ -430,22 +468,24 @@ class Assets extends Component {
   }
 
   componentDidMount() {
-    // 通过addListener开启监听，可以使用上面的四个属性
-    // With addListener to enable listening, use the four properties above
-    this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
-      if (Platform.OS == 'android') {
-        StatusBar.setBackgroundColor('#F14B79')
-      }
-      StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
-      this.setState({})
-      this.checkApi()
-      this.Loading()
-      this.changeAccount()
+    InteractionManager.runAfterInteractions(() => {
+      // 通过addListener开启监听，可以使用上面的四个属性
+      // With addListener to enable listening, use the four properties above
+      this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
+        if (Platform.OS == 'android') {
+          StatusBar.setBackgroundColor('#F14B79')
+        }
+        StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
+        this.setState({})
+        this.checkApi()
+        this.Loading()
+        this.changeAccount()
+      })
+      // 通知推送初始化
+      // Notification push initialization
+      JPushModule.initPush()
+      JPushModule.addReceiveNotificationListener(this.receiveNotificationListener)
     })
-    // 通知推送初始化
-    // Notification push initialization
-    JPushModule.initPush()
-    JPushModule.addReceiveNotificationListener(this.receiveNotificationListener)
   }
 
   componentWillUnmount() {
@@ -455,41 +495,43 @@ class Assets extends Component {
   }
 
   componentWillMount() {
-    this.checkApi()
-    if (isFirstTime) {
-      markSuccess()
-    }
-
-    if (Platform.OS == 'android') {
-      StatusBar.setBackgroundColor('#F14B79')
-    }
-    StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
-    AppState.addEventListener('change', this.handleAppStateChange)
-    // 判断用户是否设置手势密码
-    // Determines whether the user has set a gesture password
-    AsyncStorage.getItem('Gesture').then(result => {
-      if (result == null) {
-        // 没有设置
-        // Not set gesture password
-        // this.checkUpdate ();
-        this.props.rootStore.stateStore.GestureState = 0
-      } else {
-        // 设置了手势密码
-        // The gesture password has been set
-        if (this.props.rootStore.stateStore.GestureState != 2) {
-          this.props.rootStore.stateStore.Gesture = result
-          this.props.rootStore.stateStore.GestureState = 2
-          const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Gesture' })]
-          })
-          this.props.navigation.dispatch(resetAction)
-        } else {
-          // this.checkUpdate ();
-        }
+    InteractionManager.runAfterInteractions(() => {
+      this.checkApi()
+      if (isFirstTime) {
+        markSuccess()
       }
+
+      if (Platform.OS == 'android') {
+        StatusBar.setBackgroundColor('#F14B79')
+      }
+      StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
+      AppState.addEventListener('change', this.handleAppStateChange)
+      // 判断用户是否设置手势密码
+      // Determines whether the user has set a gesture password
+      AsyncStorage.getItem('Gesture').then(result => {
+        if (result == null) {
+          // 没有设置
+          // Not set gesture password
+          this.checkUpdate()
+          this.props.rootStore.stateStore.GestureState = 0
+        } else {
+          // 设置了手势密码
+          // The gesture password has been set
+          if (this.props.rootStore.stateStore.GestureState != 2) {
+            this.props.rootStore.stateStore.Gesture = result
+            this.props.rootStore.stateStore.GestureState = 2
+            const resetAction = StackActions.reset({
+              index: 0,
+              actions: [NavigationActions.navigate({ routeName: 'Gesture' })]
+            })
+            this.props.navigation.dispatch(resetAction)
+          } else {
+            this.checkUpdate()
+          }
+        }
+      })
+      this.Loading()
     })
-    this.Loading()
   }
 
   render() {
@@ -697,7 +739,7 @@ class Assets extends Component {
                     height: ScreenHeight
                   }}
                 />
-                <Animated.View style={{ paddingLeft: this.movingMargin }}>
+                <Animated.View>
                   <Right_menu p={this.props} t={this} />
                 </Animated.View>
               </View>

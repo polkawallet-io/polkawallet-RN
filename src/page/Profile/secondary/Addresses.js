@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -21,7 +21,8 @@ import {
   AsyncStorage,
   StatusBar,
   Platform,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import { observer, inject } from 'mobx-react'
@@ -43,26 +44,39 @@ class Addresses extends Component {
     this.add_address = this.add_address.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
+  /**
+   * @description 切换 Add_address 页面|Switch to the Add_address page
+   */
   add_address() {
     this.props.navigation.navigate('Add_address')
   }
 
   componentDidMount() {
     // 通过addListener开启监听，可以使用上面的四个属性
+    // With addListener to enable listening, can use the four properties above
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
-      this.onDidFocus()
+      InteractionManager.runAfterInteractions(() => {
+        this.onDidFocus()
+      })
     })
   }
 
   componentWillUnmount() {
     // 在页面消失的时候，取消监听
+    // Unlisten when the page disappears
     this._didBlurSubscription && this._didBlurSubscription.remove()
   }
 
+  /**
+   * @description 页面获得焦点|Page gets focus
+   */
   onDidFocus() {
     this.props.rootStore.stateStore.Addresses = []
     AsyncStorage.getItem('Addresses').then(result => {
@@ -77,7 +91,14 @@ class Addresses extends Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#F14B79' }}>
-        <View style={{ flex: 1, backgroundColor: '#fff', paddingBottom: 40, marginBottom: -40 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#fff',
+            paddingBottom: 40,
+            marginBottom: -40
+          }}
+        >
           <StatusBar
             hidden={false}
             backgroundColor="#F14B79" // 状态栏背景颜色 | Status bar background color
@@ -112,9 +133,9 @@ class Addresses extends Component {
                     }
                   }}
                 >
-                  {/* 头像 */}
+                  {/* 头像 | Identicon */}
                   <Identicon style={styles.image} value={item.Address} size={36} theme="polkadot" />
-                  {/* 信息 */}
+                  {/* 信息 | info */}
                   <View style={styles.text}>
                     <Text style={styles.text1}>{item.Name}</Text>
                     <Text style={styles.text3} ellipsizeMode="middle" numberOfLines={1}>
@@ -124,7 +145,7 @@ class Addresses extends Component {
                       {i18n.t('Profile.Memo')}:{item.Memo}
                     </Text>
                   </View>
-                  {/* 查看详细信息 */}
+                  {/* 查看详细信息 | View details */}
                   <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
                 </TouchableOpacity>
               )

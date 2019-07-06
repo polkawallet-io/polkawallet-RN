@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-19 21:24:18
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -23,14 +23,15 @@ import {
   Platform,
   ImageBackground,
   StatusBar,
-  Alert
+  Alert,
+  InteractionManager
 } from 'react-native'
 import moment from 'moment/moment'
 import Identicon from 'polkadot-identicon-react-native'
 import { formatBalance } from '@polkadot/util'
 import Echarts from 'native-echarts'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, formatData, axios } from '../../util/Common'
+import { ScreenWidth, ScreenHeight, formatData, axios, doubleClick } from '../../util/Common'
 import polkadotAPI from '../../util/polkadotAPI'
 import i18n from '../../locales/i18n'
 
@@ -131,10 +132,13 @@ class Staking extends Component {
     }
   }
 
+  /**
+   * @description 页面初始化 加载所需数据|The page initializes the required data
+   */
   initPage() {
     ;(async () => {
       const _this = this
-      // 查询all
+      // Query all
       let validatorCount
       let sessionLength
       let eraLength
@@ -177,6 +181,9 @@ class Staking extends Component {
     })()
   }
 
+  /**
+   * @description 切换 account Actions 加载信息
+   */
   loadAccountActions() {
     ;(async () => {
       this.loadSlashRecords()
@@ -365,15 +372,24 @@ class Staking extends Component {
     })()
   }
 
-  // Click account actions
+  /**
+   * @description 点击切换 account Actions
+   */
   AccountActions() {
-    this.setState({
-      curTab: 2
-    })
-    this.loadAccountActions()
+    this.setState(
+      {
+        curTab: 2
+      },
+      () => {
+        this.loadAccountActions()
+      }
+    )
   }
 
-  // Load the Slash Records
+  /**
+   * @description 加载SlashRecords数据
+   * @param {Number} pageNum 页数
+   */
   loadSlashRecords(pageNum = 1) {
     const _this = this
     const REQUEST_URL = 'https://api.polkawallet.io:8080/staking_list_alexander'
@@ -399,7 +415,9 @@ class Staking extends Component {
       .catch()
   }
 
-  // 分页加载 Slash Records
+  /**
+   * @description 分页加载 Slash Records|Paging load slash Records
+   */
   Loadmore() {
     this.setState(
       {
@@ -411,8 +429,10 @@ class Staking extends Component {
     )
   }
 
-  // 获取当前账户折线图数据
-  // Get the current account chart data
+  /**
+   * @description 获取当前账户折线图数据|Get the current account chart data
+   * @param {String} address 地址|Address
+   */
   getStakingOption(address) {
     const REQUEST_URL = 'https://api.polkawallet.io:8080/staking_chart_alexander'
     const params = `{"user_address":"${String(address)}","UTCdate":"${moment(new Date().getTime()).format(
@@ -482,7 +502,10 @@ class Staking extends Component {
       .catch()
   }
 
-  // 刷新
+  /**
+   * @description 刷新|refresh
+   * @param {*} type 当前在那个tab|Currently on the tab
+   */
   refresh(type) {
     this.setState({
       isrefresh: true
@@ -568,13 +591,14 @@ class Staking extends Component {
             lockedes: []
           },
 
-          controllersAccount: '', // 控制账户信息
-          accountChangeTag: false, // 账户相关的按钮是否可以点击
+          controllersAccount: '', // 控制账户信息 | Control account information
+          accountChangeTag: false, // 账户相关的按钮是否可以点击 | Whether the operation buttons can be clicked
+          // showBtnType: 0: Not show, 1: Unbond + AddBond, 2: Unbond, 3: Unnominate, 4: Unvalidate, 5: nominate + validate, 6: bond
           showBtnType: 0, // 0 不展示 1.解绑 + 追加绑定  2.解绑   3. 取消提名   4.取消验证   5.提名 + 验证  6.绑定
           titlebottomAA: 1, // Slash Records 、Nominating、MyNominators  tab切换的tab值
           staking_list_alexander: [], // Slash Records
-          pageNum: 1, // Slash Records 的页数
-          hasNextPage: false, // Slash Records 是否有下一页
+          pageNum: 1, // Slash Records 的页数 | Slash Records pages Number
+          hasNextPage: false, // Slash Records 是否有下一页| Is there a next page of  Slash Records?
           nominating: [], // nominating 的合集
           nominatingBalance: [], // nominating 所有账户余额的集合
           myNominators: [] // myNominators 的合集
@@ -589,32 +613,53 @@ class Staking extends Component {
     }
   }
 
-  // 跳转个人信息界面
+  /**
+   * @description 跳转个人信息界面|Jump to the personal information interface
+   * @param {String} address 地址|Address
+   */
   toValidator_Info(address) {
     this.props.navigation.navigate('Validator_Info', { address: String(address) })
   }
 
+  /**
+   * @description 跳转 stake 页面|Jump to the stake page
+   */
   stake() {
     this.props.navigation.navigate('Stake')
   }
 
+  /**
+   * @description 跳转 Unstake 页面|Jump to the Unstake page
+   */
   Unstake() {
     this.props.navigation.navigate('Unstake')
   }
 
+  /**
+   * @description 跳转 Unnominate 页面|Jump to the Unnominate page
+   */
   Unnominate() {
     this.props.navigation.navigate('Unnominate')
   }
 
+  /**
+   * @description 跳转 Nominate 页面|Jump to the Nominate page
+   */
   nominate() {
     this.props.rootStore.stateStore.tonominate = 0
     this.props.navigation.navigate('Nominate', { address: '' })
   }
 
+  /**
+   * @description 跳转 BondAdditional 页面|Jump to the BondAdditional page
+   */
   BondAdditional() {
     this.props.navigation.navigate('BondAdditional')
   }
 
+  /**
+   * @description 选择操作|Select operation
+   */
   selectJumpPage() {
     Alert.alert(
       '',
@@ -634,9 +679,7 @@ class Staking extends Component {
         },
         {
           text: i18n.t('TAB.Cancel'),
-          onPress: () => {
-            console.log('Cancel Pressed')
-          },
+          onPress: () => {},
           style: 'cancel'
         }
       ],
@@ -644,18 +687,30 @@ class Staking extends Component {
     )
   }
 
+  /**
+   * @description 跳转 SetSessionKey 页面|Jump to the SetSeesionkey
+   */
   setSessionKey() {
     this.props.navigation.navigate('SetSessionKey')
   }
 
+  /**
+   * @description 跳转 Unbond 页面|Jump to the Unbond page
+   */
   Unbond() {
     this.props.navigation.navigate('Unbond')
   }
 
+  /**
+   * @description 跳转 BondFunds 页面|Jump to the BondFunds
+   */
   BondFunds() {
     this.props.navigation.navigate('BondFunds')
   }
 
+  /**
+   * @description 下边tab切换|The TAB to switch
+   */
   changeSOIndex() {
     const _this = this
     this.setState({
@@ -697,32 +752,29 @@ class Staking extends Component {
     }
   }
 
+  /**
+   * @description 跳转 Stake 页面|Jump to Stake page
+   */
   Validate() {
     this.props.navigation.navigate('Stake')
   }
 
+  /**
+   * @description 跳转 Unstake 页面|Jump to the Unstake page
+   */
   Unvalidate() {
     this.props.navigation.navigate('Unstake')
   }
 
+  /**
+   * @description 跳转 Nominate 页面|Jump to the Nominate page
+   */
   Nominate() {
     this.props.rootStore.stateStore.tonominate = 0
     this.props.navigation.navigate('Nominate', { address: '' })
   }
 
   componentWillMount() {
-    if (Platform.OS == 'android') {
-      StatusBar.setBackgroundColor('#F14B79')
-      StatusBar.setBarStyle('light-content')
-    }
-    if (this.state.curTab == 1) {
-      this.initPage()
-    } else {
-      this.AccountActions()
-    }
-  }
-
-  componentDidMount() {
     // 通过addListener开启监听，didFocus RN 生命周期 页面获取焦点
     // Start listening through addListener, didFocus RN lifecycle, page gets focus
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', () => {
@@ -735,6 +787,20 @@ class Staking extends Component {
         StatusBar.setBackgroundColor('#F14B79')
       }
       StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
+    })
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      if (Platform.OS == 'android') {
+        StatusBar.setBackgroundColor('#F14B79')
+        StatusBar.setBarStyle('light-content')
+      }
+      if (this.state.curTab == 1) {
+        this.initPage()
+      } else {
+        this.AccountActions()
+      }
     })
   }
 
@@ -1104,7 +1170,11 @@ class Staking extends Component {
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 21 }}>
                       <View style={{ width: 54, alignSelf: 'flex-start', marginLeft: 32 }}>
                         {this.state.controllerAccountTag && (
-                          <TouchableOpacity onPress={this.selectJumpPage.bind(this)}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              doubleClick(this.selectJumpPage.bind(this))
+                            }}
+                          >
                             <Image
                               source={require('../../assets/images/public/set.png')}
                               style={{ tintColor: '#F14B79', width: 20, height: 20 }}

@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -13,7 +13,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, SafeAreaView, Modal } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import i18n from '../../../locales/i18n'
@@ -28,16 +28,18 @@ class MnemonicWord extends Component {
     }
   }
 
-  // 显示禁止截屏提示
-  // Display forbidden screen shot prompt
+  /**
+   * @description 显示禁止截屏提示|Display forbidden screen shot prompt
+   */
   showTip() {
     this.setState({
       TipTag: true
     })
   }
 
-  // 下一步
-  // The next step
+  /**
+   * @description 下一步|The next step
+   */
   nextStep() {
     this.setState(
       {
@@ -186,7 +188,9 @@ class MnemonicWord extends Component {
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
-                    onPress={this.nextStep.bind(this)}
+                    onPress={() => {
+                      doubleClick(this.nextStep.bind(this))
+                    }}
                   >
                     <Text style={{ color: '#F14B79', fontSize: 16 }}>{i18n.t('Assets.MWTip12')}</Text>
                   </TouchableOpacity>
@@ -201,7 +205,9 @@ class MnemonicWord extends Component {
             alignItems: 'center',
             marginBottom: 20
           }}
-          onPress={this.showTip.bind(this)}
+          onPress={() => {
+            doubleClick(this.showTip.bind(this))
+          }}
         >
           <Image source={require('../../../assets/images/Assets/Nextstep.png')} />
         </TouchableOpacity>

@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -23,7 +23,7 @@ import {
   Alert
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd } from '../../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../../util/Common'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import i18n from '../../../../locales/i18n'
 
@@ -36,7 +36,7 @@ class ChangePassword extends Component {
     this.state = {
       Current_password: '',
       New_password: '',
-      Reprat_password: '',
+      Repeat_password: '',
       ispwd1: 0,
       ispwd2: 0,
       ispwd3: 0
@@ -44,14 +44,21 @@ class ChangePassword extends Component {
     this.back = this.back.bind(this)
     this.Current_password = this.Current_password.bind(this)
     this.New_password = this.New_password.bind(this)
-    this.Reprat_password = this.Reprat_password.bind(this)
+    this.Repeat_password = this.Repeat_password.bind(this)
     this.Change = this.Change.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Manage_Account')
   }
 
+  /**
+   * @description 当前密码修改|Change of current password
+   * @param {String} Current_password  当前密码|Current password
+   */
   Current_password(Current_password) {
     if (Current_password != '') {
       this.setState({ ispwd1: 1 })
@@ -64,6 +71,10 @@ class ChangePassword extends Component {
     })
   }
 
+  /**
+   * @description 新密码修改|Change of new password
+   * @param {String} New_password 新密码|Now password
+   */
   New_password(New_password) {
     if (New_password != '') {
       this.setState({ ispwd2: 1 })
@@ -76,20 +87,27 @@ class ChangePassword extends Component {
     })
   }
 
-  Reprat_password(Reprat_password) {
-    if (Reprat_password != this.state.New_password) {
+  /**
+   * @description 重复密码修改|Change of repeat password
+   * @param {String} Repeat_password 重复新密码| The repeat password
+   */
+  Repeat_password(Repeat_password) {
+    if (Repeat_password != this.state.New_password) {
       this.setState({ ispwd3: 0 })
     }
-    if (Reprat_password == this.state.New_password) {
+    if (Repeat_password == this.state.New_password) {
       this.setState({ ispwd3: 1 })
     }
     this.setState({
-      Reprat_password: Reprat_password
+      Repeat_password: Repeat_password
     })
   }
 
+  /**
+   * @description 密码修改的最后提交|Submit the password
+   */
   Change() {
-    if (this.state.New_password != this.state.Reprat_password) {
+    if (this.state.New_password != this.state.Repeat_password) {
       Alert.alert('', 'The two passwords are different')
     } else {
       const _this = this
@@ -131,7 +149,7 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const msg = [i18n.t('Profile.CurrentPassword'), i18n.t('Profile.NewPassword'), i18n.t('Profile.RepratPassword')]
+    const msg = [i18n.t('Profile.CurrentPassword'), i18n.t('Profile.NewPassword'), i18n.t('Profile.RepeatPassword')]
     return (
       <SafeAreaView
         style={{
@@ -173,13 +191,13 @@ class ChangePassword extends Component {
                           ? i18n.t('Profile.CurrentPassword')
                           : index == 1
                           ? i18n.t('Profile.NewPassword')
-                          : i18n.t('Profile.RepratPassword')
+                          : i18n.t('Profile.RepeatPassword')
                       }
                       secureTextEntry={true}
                       autoCorrect={false}
                       underlineColorAndroid="#ffffff00"
                       onChangeText={
-                        index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Reprat_password
+                        index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Repeat_password
                       }
                     />
                   </View>
@@ -187,7 +205,12 @@ class ChangePassword extends Component {
               })}
             </View>
           </RNKeyboardAvoidView>
-          <TouchableOpacity style={styles.Change} onPress={this.Change}>
+          <TouchableOpacity
+            style={styles.Change}
+            onPress={() => {
+              doubleClick(this.Change)
+            }}
+          >
             <Image source={require('../../../../assets/images/public/Change_button.png')} />
           </TouchableOpacity>
         </View>

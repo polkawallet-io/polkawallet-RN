@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 22:22:06
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -50,37 +50,45 @@ class SetSessionKey extends Component {
     this.Sign_and_Submit = this.Sign_and_Submit.bind(this)
   }
 
-  // 更改密码
-  // Change password
+  /**
+   * @description 更改密码|Change password
+   * @param {String} Changepassword 密码|password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // 展示密码
-  // Show password
+  /**
+   * @description 展示密码|Show password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // SessionKey 改变
+  /**
+   * @description SessionKey change
+   * @param {String} SessionKey
+   */
   onChangeValue(SessionKey) {
     this.setState({
       SessionKey: SessionKey
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 点击提交
-  // Submit
+  /**
+   * @description 点击提交|Submit
+   */
   Sign_and_Submit() {
     if (this.state.SessionKey && this.state.password) {
       this.setState({
@@ -119,7 +127,7 @@ class SetSessionKey extends Component {
                   { cancelable: false }
                 )
               }
-            }, 30000)
+            }, 15000)
             let transfer
             try {
               transfer = await polkadotAPI.setKey(SessionKey)

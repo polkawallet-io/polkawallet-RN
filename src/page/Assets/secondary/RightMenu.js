@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -30,8 +30,9 @@ class RightMenu extends Component {
     this.camera = this.camera.bind(this)
   }
 
-  // 跳转 扫描界面
-  // Jump to camera scan page
+  /**
+   * @description 跳转 扫描界面|Jump to camera scan page
+   */
   camera() {
     this.props.t.setState({
       is: false
@@ -40,8 +41,9 @@ class RightMenu extends Component {
     this.props.p.navigation.navigate('Camera')
   }
 
-  // 跳转 创建用户界面
-  // Jump to Create_Account page
+  /**
+   * @description 跳转 创建用户界面|Jump to Create_Account page
+   */
   Create_Account() {
     this.props.t.setState({
       is: false
@@ -49,8 +51,9 @@ class RightMenu extends Component {
     this.props.p.navigation.navigate('Create_Account')
   }
 
-  // 切换用户
-  // Switch account
+  /**
+   * @description 切换用户|Switch account
+   */
   Switch_Account() {
     this.props.rootStore.stateStore.balances.map((item, index) => {
       if (item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address) {

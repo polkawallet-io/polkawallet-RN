@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 22:22:06
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -21,7 +21,8 @@ import {
   Modal,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import { ScreenWidth, ScreenHeight, formatData, checkPwd } from '../../../util/Common'
@@ -51,51 +52,61 @@ class Nominate extends Component {
     this.Nominate = this.Nominate.bind(this)
   }
 
-  // 密码展示
-  // Display password
+  /**
+   * @description 密码展示|Display password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 改变地址
-  // Change address
+  /**
+   * @description 改变地址|Change address
+   * @param {String} ChangeAddress 地址
+   */
   onChangeAddress(ChangeAddress) {
     this.setState({
       address: String(ChangeAddress)
     })
   }
 
-  //  密码修改
-  // Change password
+  /**
+   * @description 密码修改|Change password
+   * @param {String} Changepassword 密码
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 页面初始化
-  // Page initialization
-  componentWillMount() {
-    ;(async () => {
-      const accountNonce = await polkadotAPI.accountNonce(
-        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-      )
-      this.setState({
-        accountNonce: JSON.stringify(accountNonce)
-      })
-    })()
+  /**
+   * @description 页面初始化|Page initialization
+   */
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      ;(async () => {
+        const accountNonce = await polkadotAPI.accountNonce(
+          this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+        )
+        this.setState({
+          accountNonce: JSON.stringify(accountNonce)
+        })
+      })()
+    })
   }
 
-  // 提交
-  // Submit
+  /**
+   * @description 提交|Submit
+   */
   Nominate() {
     this.setState({
       onlyone: 1,
@@ -139,7 +150,7 @@ class Nominate extends Component {
                 { cancelable: false }
               )
             }
-          }, 30000)
+          }, 15000)
           let transfer
           try {
             transfer = await polkadotAPI.nominate(target)
@@ -237,10 +248,11 @@ class Nominate extends Component {
                   borderWidth: 1,
                   borderRadius: 6
                 }}
+                value={this.state.address}
                 placeholderTextColor="#666666"
                 underlineColorAndroid="#ffffff00"
                 placeholder={this.props.rootStore.stateStore.tonominate == 0 ? '' : this.state.address}
-                editable={this.props.rootStore.stateStore.tonominate == 0 ? true : false}
+                // editable={this.props.rootStore.stateStore.tonominate == 0 ? true : false}
                 onChangeText={this.onChangeAddress}
               />
             </View>

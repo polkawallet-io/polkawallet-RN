@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -14,7 +14,6 @@ import React, { Component } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import Active from '../../components/Active'
-import History from './secondary/History'
 import { ScreenWidth } from '../../util/Common'
 import i18n from '../../locales/i18n'
 
@@ -63,7 +62,11 @@ class Referendums extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        {this.state.activeTap == 1 ? <Active p={this.props.p} /> : <History />}
+        {this.state.activeTap == 1 ? (
+          <Active num={this.props.num} p={this.props.p} />
+        ) : (
+          <Active num={this.props.num} p={this.props.p} />
+        )}
       </View>
     )
   }

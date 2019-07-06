@@ -1,17 +1,18 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import { Text, View, Image } from 'react-native'
+import { formatBalance } from '@polkadot/util'
 import { ScreenWidth, ScreenHeight } from '../util/Common'
 import i18n from '../locales/i18n'
 
@@ -32,15 +33,31 @@ export default class ProposalsRow extends Component {
         }}
       >
         <View style={{ width: ScreenWidth - 81 }}>
-          <View style={{ width: ScreenWidth - 81, flexDirection: 'row', marginTop: 22 }}>
+          <View
+            style={{
+              width: ScreenWidth - 81,
+              flexDirection: 'row',
+              marginTop: 22
+            }}
+          >
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 14, color: '#222222', fontWeight: 'bold' }}>
                 {`${Actives_Title[index].section}.${Actives_Title[index].method}`}
               </Text>
-              <View style={{ flexDirection: 'row', marginVertical: 13, alignItems: 'center' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginVertical: 13,
+                  alignItems: 'center'
+                }}
+              >
                 <Image
                   source={require('../assets/images/staking/Demccrscy_time_icon.png')}
-                  style={{ height: ScreenHeight / 50, width: ScreenHeight / 50, resizeMode: 'contain' }}
+                  style={{
+                    height: ScreenHeight / 50,
+                    width: ScreenHeight / 50,
+                    resizeMode: 'contain'
+                  }}
                 />
                 <Text style={{ color: '#90BD5B', fontSize: 14, marginLeft: 6 }}>{launchCountdown + 9 * index}</Text>
                 <Text style={{ color: '#90BD5B', fontSize: 14 }}> {i18n.t('Democracy.blocksLaunch')}</Text>
@@ -61,9 +78,13 @@ export default class ProposalsRow extends Component {
                     <Text
                       ellipsizeMode="middle"
                       numberOfLines={1}
-                      style={{ paddingHorizontal: 7, color: '#666666', fontSize: 13 }}
+                      style={{
+                        paddingHorizontal: 7,
+                        color: '#666666',
+                        fontSize: 13
+                      }}
                     >
-                      {String(Actives_Nofixedvalue[index][indexNo])}
+                      {String(Actives_Nofixedvalue[index][indexNo]) || ''}
                     </Text>
                   </View>
                 </View>
@@ -101,9 +122,13 @@ export default class ProposalsRow extends Component {
                   <Text
                     ellipsizeMode="middle"
                     numberOfLines={1}
-                    style={{ color: '#666666', fontSize: 13, paddingHorizontal: 7 }}
+                    style={{
+                      color: '#666666',
+                      fontSize: 13,
+                      paddingHorizontal: 7
+                    }}
                   >
-                    {String(item[2])}
+                    {String(item[2] || 0)}
                   </Text>
                 </View>
               </View>
@@ -128,12 +153,12 @@ export default class ProposalsRow extends Component {
                       fontSize: ScreenWidth / 30
                     }}
                   >
-                    {String(balances[index])}
+                    {String(formatBalance(balances[index] || 0))}
                   </Text>
                 </View>
               </View>
             </View>
-            <View style={{ width: 87 }}></View>
+            <View style={{ width: 87 }} />
           </View>
         </View>
       </View>

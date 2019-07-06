@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-21 22:01:34
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -29,7 +29,7 @@ import { checkUpdate, downloadUpdate, switchVersion, switchVersionLater } from '
 import { NavigationActions, StackActions } from 'react-navigation'
 import { observer, inject } from 'mobx-react'
 import _updateConfig from '../../../../update.json'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header.js'
 import i18n from '../../../locales/i18n'
 import DataRepository from '../../../util/DataRepository'
@@ -50,20 +50,23 @@ class Settings extends Component {
     this.Check_Update = this.Check_Update.bind(this)
   }
 
-  // 返回
-  // Click back
+  /**
+   * @description 返回|Click back
+   */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 切换到设置节点页面
-  // Switch to Set_Node page
+  /**
+   * @description 切换到设置节点页面|Switch to Set_Node page
+   */
   Set_Node() {
     this.props.navigation.navigate('Set_Node')
   }
 
-  // 更新APP
-  // Update App
+  /**
+   * @description 更新APP|Update App
+   */
   doUpdate = info => {
     downloadUpdate(info)
       .then(hash => {
@@ -88,14 +91,18 @@ class Settings extends Component {
       })
   }
 
-  // 检查是否有更新
-  // Check Update of App
+  /**
+   * @description 检查是否有更新|Check Update of App
+   */
   Check_Update() {
     checkUpdate(appKey)
       .then(info => {
         if (info.expired) {
           Alert.alert('', i18n.t('Profile.toAppStore'), [
-            { test: 'No' },
+            {
+              test: 'No',
+              style: 'cancel'
+            },
             {
               text: 'Yes',
               onPress: () => {
@@ -126,8 +133,10 @@ class Settings extends Component {
       })
   }
 
-  // 设置手势密码
-  // Set gesture password
+  /**
+   * @description 设置手势密码|Set gesture password
+   * @param {*} e
+   */
   Gesture(e) {
     this.setState({ Gesture: e })
     if (e) {
@@ -161,6 +170,9 @@ class Settings extends Component {
     }
   }
 
+  /**
+   * @description 更换语言|Change language
+   */
   changeLanguage() {
     Alert.alert(
       '',
@@ -216,7 +228,7 @@ class Settings extends Component {
                   this.Set_Node()
                 }
                 if (index == 1) {
-                  this.Check_Update()
+                  doubleClick(this.Check_Update())
                 }
               }}
             >
@@ -226,7 +238,12 @@ class Settings extends Component {
             </TouchableOpacity>
           )
         })}
-        <TouchableOpacity style={styles.msgView} onPress={this.changeLanguage.bind(this)}>
+        <TouchableOpacity
+          style={styles.msgView}
+          onPress={() => {
+            doubleClick(this.changeLanguage.bind(this))
+          }}
+        >
           <Text style={styles.msgText}>{i18n.t('TAB.ChangeLanguages')}</Text>
           <View style={{ flex: 1 }} />
           <Image style={styles.msgImage} source={require('../../../assets/images/public/addresses_nav_go.png')} />

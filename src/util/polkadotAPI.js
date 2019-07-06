@@ -1,19 +1,24 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-20 20:42:10
+ * @Date: 2019-06-18 21:08:00
  */
 import Api from '@polkadot/api/promise'
 import WsProvider from '@polkadot/rpc-provider/ws'
 import AppState from '../mobx/mobx'
 
+/**
+ * @description 判断是否为空对象 | Empty object judgment
+ * @param {Object} obj 对象 | Object
+ * @returns {Boolean} true 空对象 false 非空对象 | True: empty object, false: non-empty object
+ */
 function judgeObj(obj) {
   let attr
   for (attr in obj) {
@@ -239,12 +244,12 @@ const polkadotAPI = {
       })
     }
   },
-  depositOf: () =>
+  depositOf: index =>
     new Promise(function(resolve, reject) {
       try {
         ;(async () => {
           const api = await getAppApi()
-          const _data = await api.query.democracy.depositOf()
+          const _data = await api.query.democracy.depositOf(index)
           resolve(_data)
         })()
       } catch (error) {
@@ -498,6 +503,19 @@ const polkadotAPI = {
         ;(async () => {
           const api = await getAppApi()
           const _data = await api.query.staking.ledger(address)
+          resolve(_data)
+        })()
+      } catch (error) {
+        reject(error)
+      }
+    }),
+
+  blockHash: value =>
+    new Promise(function(resolve, reject) {
+      try {
+        ;(async () => {
+          const api = await getAppApi()
+          const _data = await api.query.system.blockHash(value)
           resolve(_data)
         })()
       } catch (error) {

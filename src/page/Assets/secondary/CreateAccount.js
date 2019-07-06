@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-21 21:33:46
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -20,7 +20,8 @@ import {
   TextInput,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot/util'
@@ -30,7 +31,7 @@ import Keyring from '@polkadot/keyring'
 import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
@@ -70,26 +71,31 @@ class CreateAccount extends Component {
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
   }
 
-  // 页面加载
-  // Page load
-  componentWillMount() {
-    ;(async () => {
-      let key = mnemonicGenerate()
-      this.pair = keyring.addFromMnemonic(key)
-      this.setState({
-        key: key,
-        address: this.pair.address()
-      })
-      const props = await polkadotAPI.properties()
-      formatBalance.setDefaults({
-        decimals: props.get('tokenDecimals'),
-        unit: props.get('tokenSymbol')
-      })
-    })()
+  /**
+   * @description 页面初始化加载|Page init load
+   */
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      ;(async () => {
+        let key = mnemonicGenerate()
+        this.pair = keyring.addFromMnemonic(key)
+        this.setState({
+          key: key,
+          address: this.pair.address()
+        })
+        const props = await polkadotAPI.properties()
+        formatBalance.setDefaults({
+          decimals: props.get('tokenDecimals'),
+          unit: props.get('tokenSymbol')
+        })
+      })()
+    })
   }
 
-  // 切换单位
-  // Switching unit
+  /**
+   * @description 切换单位|Switching unit
+   * @param {String} way_change 单位|unit
+   */
   Modify_way(way_change) {
     this.setState({
       isModel: false,
@@ -117,8 +123,10 @@ class CreateAccount extends Component {
     })
   }
 
-  // key 输入框发生改变
-  // The key input box has changed
+  /**
+   * @description key 输入框发生改变|The key input box has changed
+   * @param {String} Changekey 改变的key值|The changed value of key
+   */
   onChangekey(Changekey) {
     let tag = true
     let address = ''
@@ -196,16 +204,20 @@ class CreateAccount extends Component {
     }
   }
 
-  // 姓名更改
-  // The name has been changed
+  /**
+   * @description 姓名更改|The name has been changed
+   * @param {String} Changename 更改的名称| The changed name
+   */
   onChangename(Changename) {
     this.setState({
       name: Changename
     })
   }
 
-  // 密码更改
-  // The password has been changed
+  /**
+   * @description 密码更改|The password has been changed
+   * @param {String} Changepassword 更改的密码|The changed password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
@@ -218,8 +230,10 @@ class CreateAccount extends Component {
     }
   }
 
-  // 第二次重复密码更改
-  // The repeat password has been changed
+  /**
+   * @description 第二次重复密码更改|The repeat password has been changed
+   * @param {String} Changepassword 更改的密码|The changed password
+   */
   onChangpasswordErepeat(Changepassword) {
     this.setState({
       passwordErepeat: Changepassword
@@ -232,8 +246,9 @@ class CreateAccount extends Component {
     }
   }
 
-  // 点击重置
-  // Click Reset
+  /**
+   * @description 点击重置|Click Reset
+   */
   Reset() {
     let key
     if (this.state.way == 'Keystore') {
@@ -257,8 +272,9 @@ class CreateAccount extends Component {
     })
   }
 
-  // 点击保存
-  // Click Save
+  /**
+   * @description 点击保存|Click Save
+   */
   Save_Account() {
     if (this.state.name == '' && this.state.way != 'Keystore') {
       return Alert.alert('', i18n.t('Assets.EnterName'))
@@ -583,7 +599,9 @@ class CreateAccount extends Component {
                   height: ScreenHeight / 20,
                   width: (ScreenWidth - 50) / 2
                 }}
-                onPress={this.Reset}
+                onPress={() => {
+                  doubleClick(this.Reset)
+                }}
               >
                 <Text
                   style={{
@@ -606,7 +624,9 @@ class CreateAccount extends Component {
                   height: ScreenHeight / 20,
                   width: (ScreenWidth - 50) / 2
                 }}
-                onPress={this.Save_Account}
+                onPress={() => {
+                  doubleClick(this.Save_Account)
+                }}
               >
                 <Text
                   style={{

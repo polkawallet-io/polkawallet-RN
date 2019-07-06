@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-22 09:42:30
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { PureComponent } from 'react'
 import {
@@ -46,12 +46,16 @@ class Transfer_details extends PureComponent {
     this.copyFrom = this.copyFrom.bind(this)
   }
 
-  // 点击返回
+  /**
+   * @description 点击返回 | Click the back
+   */
   back() {
     this.props.navigation.navigate('Coin_details')
   }
 
-  // 拷贝
+  /**
+   * @description 拷贝 | Click the copy of "To address"
+   */
   async copyTo() {
     Clipboard.setString(
       this.state.data.tx_type == 'Send'
@@ -61,7 +65,9 @@ class Transfer_details extends PureComponent {
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
 
-  // 拷贝 form
+  /**
+   * @description 拷贝 from | Click the copy of "From address"
+   */
   async copyFrom() {
     Clipboard.setString(
       this.state.data.tx_type == 'Send'
@@ -71,7 +77,9 @@ class Transfer_details extends PureComponent {
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
 
-  // 打开区块浏览器
+  /**
+   * @description 打开区块浏览器 | Open the block explorer
+   */
   open = () => {
     Linking.openURL(this.state.url + String(this.state.data.tx_blocknumber))
   }

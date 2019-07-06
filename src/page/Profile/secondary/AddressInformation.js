@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -24,7 +24,7 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
@@ -40,24 +40,28 @@ class AddressInformation extends Component {
       index: this.props.navigation.state.params.index
     }
     this.back = this.back.bind(this)
-    this.save = this.save.bind(this)
     this.copy = this.copy.bind(this)
     this.delete = this.delete.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Addresses')
   }
 
-  save() {
-    return null
-  }
-
+  /**
+   * @description 复制|Click the copy
+   */
   copy() {
     Clipboard.setString(this.props.rootStore.stateStore.Addresses[this.state.index].Address)
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
 
+  /**
+   * @description 删除|Click the delete
+   */
   delete() {
     Alert.alert(
       '',
@@ -65,7 +69,7 @@ class AddressInformation extends Component {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {},
           style: 'cancel'
         },
         {
@@ -139,7 +143,11 @@ class AddressInformation extends Component {
                     )}
                   </View>
                   {index == 2 && (
-                    <TouchableOpacity onPress={this.copy}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        doubleClick(this.copy)
+                      }}
+                    >
                       <Image
                         // style={styles.inputimage}
                         style={{ width: 20, height: 22 }}
@@ -153,7 +161,11 @@ class AddressInformation extends Component {
           })}
         </RNKeyboardAvoidView>
         <View style={styles.delete}>
-          <TouchableOpacity onPress={this.delete}>
+          <TouchableOpacity
+            onPress={() => {
+              doubleClick(this.delete)
+            }}
+          >
             <Text style={{ fontSize: ScreenHeight / 50, color: 'red' }}>{i18n.t('Profile.DeleteAddress')}</Text>
           </TouchableOpacity>
         </View>

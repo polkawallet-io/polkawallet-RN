@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -31,6 +31,10 @@ class Gesture extends Component {
     this.onEnd = this.onEnd.bind(this)
   }
 
+  /**
+   * @description 滑动结束|End of the slide
+   * @param {String} password 密码|password
+   */
   onEnd(password) {
     // 第一次设置密码
     // First time to set the gesture password
@@ -98,6 +102,9 @@ class Gesture extends Component {
     }
   }
 
+  /**
+   * @description 开始滑动|Start to slide
+   */
   onStart() {
     this.setState({
       status: 'normal',
@@ -105,6 +112,9 @@ class Gesture extends Component {
     })
   }
 
+  /**
+   * @description 重置密码|Reset password
+   */
   onReset() {
     this.setState({
       status: 'normal',

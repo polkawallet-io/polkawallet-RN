@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -13,6 +13,7 @@
 import React, { Component } from 'react'
 import { Platform, Picker, Text, ActionSheetIOS, TouchableOpacity, Image } from 'react-native'
 import i18n from '../locales/i18n'
+import { doubleClick } from '../util/Common'
 
 const defaultData = [
   {
@@ -73,6 +74,10 @@ const defaultData = [
   }
 ]
 export default class RNPicker extends Component {
+  /**
+   * @description IOS ActionSheet
+   * @param {Array} data 要展示的选项 | The options to show.
+   */
   sheet(data) {
     let paramas = []
     const _this = this
@@ -105,7 +110,9 @@ export default class RNPicker extends Component {
     })
     return Platform.OS == 'ios' ? (
       <TouchableOpacity
-        onPress={this.sheet.bind(this, data)}
+        onPress={() => {
+          doubleClick(this.sheet.bind(this, data))
+        }}
         style={[
           style,
           {
