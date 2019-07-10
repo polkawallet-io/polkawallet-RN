@@ -27,7 +27,7 @@ export default {
   Threshold: 'Threshold',
   Aye: 'Aye',
   Nay: 'Nay',
-  // secondary/NayorAye.js
+  // secondary/Vote.js
   VoteSuccess: 'Vote success',
   VoteFailed: 'Vote Failed',
   Voting: 'Voting',

@@ -68,14 +68,16 @@ export default class Header extends Component {
         </Text>
         {rightIcon ? (
           <TouchableOpacity
+            style={{ padding: 10 }}
             onPress={() => {
               rightPress()
             }}
+            activeOpacity={0.7}
           >
             <Image source={rightIcon} style={{ width: 20, height: 20 }} />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10 }} activeOpacity={0.7}>
             <Image style={{ width: 20, height: 20 }} />
           </TouchableOpacity>
         )}

@@ -139,6 +139,7 @@ class QRCodeView extends Component {
                 onPress={() => {
                   doubleClick(this.copy)
                 }}
+                activeOpacity={0.7}
               >
                 <View
                   style={{

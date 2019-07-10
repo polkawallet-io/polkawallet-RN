@@ -173,7 +173,11 @@ class AddAddress extends Component {
                         }
                       />
                       {index == 2 && (
-                        <TouchableOpacity onPress={this.camrea}>
+                        <TouchableOpacity
+                          style={{ padding: 20, marginLeft: -30 }}
+                          activeOpacity={0.7}
+                          onPress={this.camrea}
+                        >
                           <Image
                             style={{ width: 20, height: 20 }}
                             source={require('../../../assets/images/public/addaddresses_code.png')}
@@ -192,6 +196,7 @@ class AddAddress extends Component {
           onPress={() => {
             doubleClick(this.save)
           }}
+          activeOpacity={0.7}
         >
           <Image source={require('../../../assets/images/public/addaddresses_save.png')} />
         </TouchableOpacity>

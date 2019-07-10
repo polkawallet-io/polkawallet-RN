@@ -113,6 +113,7 @@ export default class RNPicker extends Component {
         onPress={() => {
           doubleClick(this.sheet.bind(this, data))
         }}
+        activeOpacity={0.7}
         style={[
           style,
           {

@@ -80,6 +80,7 @@ class Scanner extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#0000004D' }}>
         <TouchableOpacity
+          activeOpacity={0.7}
           style={{ flex: 1, alignItems: 'center' }}
           onPress={() => this.setState({ flashMode: !this.state.flashMode })}
         >

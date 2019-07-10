@@ -131,8 +131,12 @@ class ChangeName extends Component {
             backgroundColor="#FFF" // 状态栏背景颜色 | Status bar background color
             barStyle="dark-content" // 状态栏样式（黑字）| Status bar style (black)
           />
-          <View style={{ height: 44 }}>
-            <TouchableOpacity onPress={this.back} style={{ paddingTop: 12 }}>
+          <View>
+            <TouchableOpacity
+              onPress={this.back}
+              activeOpacity={0.7}
+              style={{ height: 44, width: 61, justifyContent: 'center' }}
+            >
               <Image
                 // style={styles.image_title}
                 source={require('../../../../assets/images/public/About_return.png')}
@@ -177,6 +181,7 @@ class ChangeName extends Component {
             onPress={() => {
               doubleClick(this.Change)
             }}
+            activeOpacity={0.7}
           >
             <Image source={require('../../../../assets/images/public/Change_button.png')} />
           </TouchableOpacity>

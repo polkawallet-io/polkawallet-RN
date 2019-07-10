@@ -243,7 +243,7 @@ class Transfer extends Component {
                   this.ChangeAddress(changeText)
                 }}
               />
-              <TouchableOpacity onPress={this.addresses} style={{ marginLeft: -44 }}>
+              <TouchableOpacity onPress={this.addresses} activeOpacity={0.7} style={{ marginLeft: -54, padding: 10 }}>
                 <Image style={styles.image} source={require('../../../../assets/images/public/Pro_Addre.png')} />
               </TouchableOpacity>
             </View>
@@ -330,6 +330,7 @@ class Transfer extends Component {
           onPress={() => {
             doubleClick(this.Make_transfer)
           }}
+          activeOpacity={0.7}
         >
           <Text style={{ fontSize: 16, color: '#FFF' }}>{i18n.t('Assets.MakeTransfer')}</Text>
         </TouchableOpacity>

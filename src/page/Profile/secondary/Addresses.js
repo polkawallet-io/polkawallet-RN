@@ -121,6 +121,7 @@ class Addresses extends Component {
                 <TouchableOpacity
                   style={styles.view}
                   key={index}
+                  activeOpacity={0.7}
                   onPress={() => {
                     if (this.props.rootStore.stateStore.transfer_address == 0) {
                       this.props.navigation.navigate('Address_information', {

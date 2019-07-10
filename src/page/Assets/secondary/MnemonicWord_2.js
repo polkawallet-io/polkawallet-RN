@@ -112,6 +112,7 @@ class MnemonicWord extends Component {
             alignItems: 'center',
             marginBottom: 20
           }}
+          activeOpacity={0.7}
           onPress={() => {
             doubleClick(this.Next.bind(this))
           }}

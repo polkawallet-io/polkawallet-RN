@@ -332,6 +332,7 @@ class ValidatorInfo extends Component {
                   onPress={() => {
                     doubleClick(this.copy)
                   }}
+                  activeOpacity={0.7}
                 >
                   <Identicon size={46} theme="polkadot" value={this.state.address} />
                 </TouchableOpacity>
@@ -377,6 +378,7 @@ class ValidatorInfo extends Component {
                       height: 40,
                       width: ScreenWidth * 0.5
                     }}
+                    activeOpacity={0.7}
                   >
                     <Image source={require('../../../assets/images/staking/staking_nomin.png')} />
                     <Text
@@ -408,6 +410,7 @@ class ValidatorInfo extends Component {
                     titlebottomAA: 1
                   })
                 }}
+                activeOpacity={0.7}
               >
                 <View
                   style={{
@@ -442,6 +445,7 @@ class ValidatorInfo extends Component {
                     titlebottomAA: 2
                   })
                 }}
+                activeOpacity={0.7}
               >
                 <View
                   style={{
@@ -590,6 +594,7 @@ class ValidatorInfo extends Component {
                         justifyContent: 'center',
                         alignItems: 'center'
                       }}
+                      activeOpacity={0.7}
                     >
                       <Text
                         style={{

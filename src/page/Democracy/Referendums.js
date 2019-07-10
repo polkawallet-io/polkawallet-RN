@@ -45,6 +45,7 @@ class Referendums extends Component {
                 activeTap: 1
               })
             }}
+            activeOpacity={0.7}
           >
             <View style={{ paddingHorizontal: 20 }}>
               <Text

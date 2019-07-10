@@ -147,6 +147,7 @@ class AddressInformation extends Component {
                       onPress={() => {
                         doubleClick(this.copy)
                       }}
+                      activeOpacity={0.7}
                     >
                       <Image
                         // style={styles.inputimage}
@@ -165,6 +166,7 @@ class AddressInformation extends Component {
             onPress={() => {
               doubleClick(this.delete)
             }}
+            activeOpacity={0.7}
           >
             <Text style={{ fontSize: ScreenHeight / 50, color: 'red' }}>{i18n.t('Profile.DeleteAddress')}</Text>
           </TouchableOpacity>

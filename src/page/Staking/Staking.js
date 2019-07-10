@@ -843,6 +843,7 @@ class Staking extends Component {
                         curTab: 1
                       })
                     }}
+                    activeOpacity={0.7}
                     style={{ justifyContent: 'center', alignItems: 'center', width: ScreenWidth * 0.5 }}
                   >
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: ScreenWidth * 0.5 }}>
@@ -862,6 +863,7 @@ class Staking extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={this.AccountActions.bind(this)}
+                    activeOpacity={0.7}
                     style={{ justifyContent: 'center', alignItems: 'center', width: ScreenWidth * 0.5 }}
                   >
                     <View style={{ justifyContent: 'center', alignItems: 'center', width: ScreenWidth * 0.5 }}>
@@ -972,6 +974,7 @@ class Staking extends Component {
                           titlebottomSO: 1
                         })
                       }}
+                      activeOpacity={0.7}
                     >
                       <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
                         <Text
@@ -994,7 +997,7 @@ class Staking extends Component {
                         />
                       </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.changeSOIndex.bind(this)}>
+                    <TouchableOpacity onPress={this.changeSOIndex.bind(this)} activeOpacity={0.7}>
                       <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}>
                         <Text
                           style={{
@@ -1037,6 +1040,7 @@ class Staking extends Component {
                         this.state.validators.map((item, index) => (
                           <TouchableOpacity
                             key={index}
+                            activeOpacity={0.7}
                             onPress={this.toValidator_Info.bind(this, formatData(item).stashId)}
                             style={{
                               paddingHorizontal: 20,
@@ -1080,6 +1084,7 @@ class Staking extends Component {
                       this.state.nextUp.map((item, index) => (
                         <TouchableOpacity
                           key={index}
+                          activeOpacity={0.7}
                           onPress={this.toValidator_Info.bind(this, item)}
                           style={{
                             paddingHorizontal: 20,
@@ -1171,6 +1176,7 @@ class Staking extends Component {
                       <View style={{ width: 54, alignSelf: 'flex-start', marginLeft: 32 }}>
                         {this.state.controllerAccountTag && (
                           <TouchableOpacity
+                            activeOpacity={0.7}
                             onPress={() => {
                               doubleClick(this.selectJumpPage.bind(this))
                             }}
@@ -1328,6 +1334,7 @@ class Staking extends Component {
                             backgroundColor: '#7AD52A',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Text style={{ color: '#FFF' }}>{i18n.t('Staking.BondAdditional')}</Text>
                         </TouchableOpacity>
@@ -1352,6 +1359,7 @@ class Staking extends Component {
                             backgroundColor: '#DDDDDD',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Text style={{ color: '#FFF' }}>{i18n.t('Staking.BondAdditional')}</Text>
                         </TouchableOpacity>
@@ -1377,6 +1385,7 @@ class Staking extends Component {
                             backgroundColor: '#F14B79',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Image source={require('../../assets/images/staking/staking_nomin.png')} />
                           <Text style={{ marginLeft: 12, color: '#FFF' }}>{i18n.t('Staking.Unnominate')}</Text>
@@ -1403,6 +1412,7 @@ class Staking extends Component {
                             backgroundColor: '#F14B79',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Image source={require('../../assets/images/staking/staking_stake_icon.png')} />
                           <Text style={{ marginLeft: 12, color: '#FFF' }}>{i18n.t('Staking.Unvalidate')}</Text>
@@ -1428,6 +1438,7 @@ class Staking extends Component {
                             backgroundColor: '#76CE29',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Image source={require('../../assets/images/staking/staking_stake_icon.png')} />
                           <Text style={{ marginLeft: 12, color: '#FFF' }}>{i18n.t('Staking.Validate')}</Text>
@@ -1444,6 +1455,7 @@ class Staking extends Component {
                             backgroundColor: '#F14B79',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Image source={require('../../assets/images/staking/staking_nomin.png')} />
                           <Text style={{ marginLeft: 12, color: '#FFF' }}>{i18n.t('Staking.Nominate')}</Text>
@@ -1471,6 +1483,7 @@ class Staking extends Component {
                             backgroundColor: '#7AD52A',
                             justifyContent: 'center'
                           }}
+                          activeOpacity={0.7}
                         >
                           <Text style={{ color: '#FFF' }}>{i18n.t('Staking.BondFunds')}</Text>
                         </TouchableOpacity>
@@ -1492,6 +1505,7 @@ class Staking extends Component {
                           titlebottomAA: 1
                         })
                       }}
+                      activeOpacity={0.7}
                       style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
                     >
                       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -1521,6 +1535,7 @@ class Staking extends Component {
                           titlebottomAA: 2
                         })
                       }}
+                      activeOpacity={0.7}
                       style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
                     >
                       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -1550,6 +1565,7 @@ class Staking extends Component {
                           titlebottomAA: 3
                         })
                       }}
+                      activeOpacity={0.7}
                       style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
                     >
                       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -1625,6 +1641,7 @@ class Staking extends Component {
                       ) : this.state.hasNextPage ? (
                         <TouchableOpacity
                           onPress={this.Loadmore.bind(this)}
+                          activeOpacity={0.7}
                           style={{ justifyContent: 'center', alignItems: 'center', height: ScreenHeight / 10 }}
                         >
                           <Text style={{ color: '#A9A9A9', fontSize: ScreenHeight / 52 }}>
@@ -1668,6 +1685,7 @@ class Staking extends Component {
                               borderBottomWidth: 0,
                               borderBottomColor: '#F0F0F0'
                             }}
+                            activeOpacity={0.7}
                           >
                             <Identicon size={25} theme="polkadot" value={String(v)} />
                             <View style={{ flex: 1 }}>
@@ -1727,6 +1745,7 @@ class Staking extends Component {
                         this.state.myNominators.map((item, index) => (
                           <TouchableOpacity
                             key={index}
+                            activeOpacity={0.7}
                             style={{
                               paddingHorizontal: 20,
                               flexDirection: 'row',

@@ -171,11 +171,12 @@ class Profile extends Component {
               </View>
               <TouchableOpacity
                 onPress={this.GoAddresses.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image
@@ -191,11 +192,12 @@ class Profile extends Component {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={this.Settings.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image
@@ -209,14 +211,14 @@ class Profile extends Component {
                   source={require('../../assets/images/public/addresses_nav_go.png')}
                 />
               </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={this.About.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image

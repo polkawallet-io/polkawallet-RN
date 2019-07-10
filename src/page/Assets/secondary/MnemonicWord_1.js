@@ -172,6 +172,7 @@ class MnemonicWord extends Component {
                         TipTag: false
                       })
                     }}
+                    activeOpacity={0.7}
                     style={{
                       flex: 1,
                       borderRightWidth: 0.5,
@@ -188,6 +189,7 @@ class MnemonicWord extends Component {
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
+                    activeOpacity={0.7}
                     onPress={() => {
                       doubleClick(this.nextStep.bind(this))
                     }}
@@ -205,6 +207,7 @@ class MnemonicWord extends Component {
             alignItems: 'center',
             marginBottom: 20
           }}
+          activeOpacity={0.7}
           onPress={() => {
             doubleClick(this.showTip.bind(this))
           }}

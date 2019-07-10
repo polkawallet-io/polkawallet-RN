@@ -223,6 +223,7 @@ class Settings extends Component {
             <TouchableOpacity
               style={styles.msgView}
               key={index}
+              activeOpacity={0.7}
               onPress={() => {
                 if (index == 0) {
                   this.Set_Node()
@@ -240,6 +241,7 @@ class Settings extends Component {
         })}
         <TouchableOpacity
           style={styles.msgView}
+          activeOpacity={0.7}
           onPress={() => {
             doubleClick(this.changeLanguage.bind(this))
           }}

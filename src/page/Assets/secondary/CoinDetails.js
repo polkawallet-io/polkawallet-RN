@@ -330,6 +330,7 @@ class CoinDetails extends Component {
                 return (
                   <TouchableOpacity
                     key={index}
+                    activeOpacity={0.7}
                     style={{
                       width: ScreenWidth / 3,
                       justifyContent: 'center',
@@ -392,6 +393,7 @@ class CoinDetails extends Component {
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}
+                  activeOpacity={0.7}
                   onPress={this.Loadmore}
                 >
                   <Text style={{ color: '#AAAAAA', fontSize: ScreenHeight / 45 }}>{i18n.t('TAB.loadMore')}</Text>
@@ -424,6 +426,7 @@ class CoinDetails extends Component {
                 height: 48,
                 flexDirection: 'row'
               }}
+              activeOpacity={0.7}
               onPress={this.Send}
             >
               <Image style={styles.SorR_Image} source={require('../../../assets/images/public/assets_btc_send.png')} />
@@ -439,6 +442,7 @@ class CoinDetails extends Component {
                 height: 48,
                 flexDirection: 'row'
               }}
+              activeOpacity={0.7}
               onPress={this.Receive}
             >
               <Image

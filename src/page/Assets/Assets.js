@@ -562,7 +562,11 @@ class Assets extends Component {
                   <Image source={require('../../assets/images/Assets/logo.png')} />
                 </View>
                 <View style={{ marginTop: -2 }}>
-                  <TouchableOpacity activeOpacity={0.7} onPress={this.show.bind(this)}>
+                  <TouchableOpacity
+                    style={{ padding: 10, marginTop: -10 }}
+                    activeOpacity={0.7}
+                    onPress={this.show.bind(this)}
+                  >
                     <Image source={require('../../assets/images/Assets/Assets_title_line.png')} />
                   </TouchableOpacity>
                 </View>
@@ -630,7 +634,11 @@ class Assets extends Component {
                   </View>
                   {/* 二维码 | Qr code */}
                   <View>
-                    <TouchableOpacity activeOpacity={0.7} onPress={this.QR_Code}>
+                    <TouchableOpacity
+                      style={{ padding: 20, marginBottom: -20, marginRight: -20 }}
+                      activeOpacity={0.7}
+                      onPress={this.QR_Code}
+                    >
                       <Image source={require('../../assets/images/Assets/Assets_nav_code.png')} />
                     </TouchableOpacity>
                   </View>

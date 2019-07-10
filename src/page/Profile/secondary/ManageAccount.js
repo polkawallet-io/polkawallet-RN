@@ -301,7 +301,7 @@ class ManageAccount extends Component {
           </View>
           {/* Change Name */}
           <View style={{ alignItems: 'center', marginTop: 20 }}>
-            <TouchableOpacity style={styles.export} onPress={this.Change_Name}>
+            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Name}>
               <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangeName')}</Text>
               <View style={{ flex: 1 }} />
               <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
@@ -309,7 +309,7 @@ class ManageAccount extends Component {
           </View>
           {/* Change password */}
           <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.export} onPress={this.Change_Password}>
+            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Password}>
               <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangePassword')}</Text>
               <View style={{ flex: 1 }} />
               <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
@@ -319,6 +319,7 @@ class ManageAccount extends Component {
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity
               style={styles.export}
+              activeOpacity={0.7}
               onPress={() => {
                 doubleClick(this.ExportKey)
               }}
@@ -331,7 +332,7 @@ class ManageAccount extends Component {
           <View style={{ flex: 1 }} />
           {/* delete account */}
           <View>
-            <TouchableOpacity style={styles.delete} onPress={this.delete_account}>
+            <TouchableOpacity style={styles.delete} activeOpacity={0.7} onPress={this.delete_account}>
               <Text style={{ fontSize: 18, fontWeight: '500', color: '#F14B79' }}>
                 {i18n.t('Profile.DeleteAccount')}
               </Text>
@@ -361,11 +362,13 @@ class ManageAccount extends Component {
                   <TouchableOpacity
                     style={[styles.choose, { borderRightWidth: 1, borderRightColor: '#ECE2E5' }]}
                     onPress={this.cancel}
+                    activeOpacity={0.7}
                   >
                     <Text style={styles.textchoose}>cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.choose}
+                    activeOpacity={0.7}
                     onPress={() => {
                       this.state.password == ''
                         ? Alert.alert('', i18n.t('Profile.unlockPassword'))
@@ -398,12 +401,13 @@ class ManageAccount extends Component {
                 {/* <View style={{ flex: 1 }} /> */}
                 <View style={styles.yorn}>
                   <TouchableOpacity
+                    activeOpacity={0.7}
                     style={[styles.choose, { borderRightWidth: 1, borderRightColor: '#ECE2E5' }]}
                     onPress={this.Continue}
                   >
                     <Text style={styles.textchoose}>{i18n.t('TAB.Continue')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.choose} onPress={this.Copy}>
+                  <TouchableOpacity style={styles.choose} onPress={this.Copy} activeOpacity={0.7}>
                     <Text style={styles.textchoose}>{i18n.t('TAB.Copy')}</Text>
                   </TouchableOpacity>
                 </View>

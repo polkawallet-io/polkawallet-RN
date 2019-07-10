@@ -285,6 +285,7 @@ class MnemonicWord extends Component {
                   <TouchableOpacity
                     style={styles.textView}
                     key={i}
+                    activeOpacity={0.7}
                     onPress={() => {
                       doubleClick(this.removeWM.bind(this, v))
                     }}
@@ -317,6 +318,7 @@ class MnemonicWord extends Component {
                   <TouchableOpacity
                     style={styles.textView}
                     key={i}
+                    activeOpacity={0.7}
                     onPress={() => {
                       doubleClick(this.addWM.bind(this, v))
                     }}
@@ -354,6 +356,7 @@ class MnemonicWord extends Component {
             width: ScreenWidth - 40,
             marginLeft: 20
           }}
+          activeOpacity={0.7}
           onPress={() => {
             doubleClick(this.Next.bind(this))
           }}

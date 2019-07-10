@@ -389,7 +389,11 @@ class Stake extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../assets/images/public/eye.png')}
@@ -417,6 +421,7 @@ class Stake extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -433,6 +438,7 @@ class Stake extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
+                activeOpacity={0.7}
                 onPress={this.Sign_and_Submit}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('Staking.Validate')}</Text>

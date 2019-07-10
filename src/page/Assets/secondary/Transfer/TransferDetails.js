@@ -172,6 +172,7 @@ class Transfer_details extends PureComponent {
               onPress={() => {
                 this.copyTo()
               }}
+              activeOpacity={0.7}
             >
               <Image style={styles.list_image} source={require('../../../../assets/images/public/copy.png')} />
             </TouchableOpacity>
@@ -193,6 +194,7 @@ class Transfer_details extends PureComponent {
               onPress={() => {
                 this.copyFrom()
               }}
+              activeOpacity={0.7}
             >
               <Image style={styles.list_image} source={require('../../../../assets/images/public/copy.png')} />
             </TouchableOpacity>
@@ -298,12 +300,11 @@ const styles = StyleSheet.create({
     margin: ScreenHeight / 200
   },
   viewForText: {
-    marginTop: ScreenHeight / 50,
     fontSize: 16,
     justifyContent: 'center',
     alignItems: 'center',
     color: '#3E2D32',
-    marginBottom: 20
+    paddingVertical: 20
   }
 })
 export default Transfer_details

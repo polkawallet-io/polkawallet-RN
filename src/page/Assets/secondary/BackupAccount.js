@@ -146,6 +146,7 @@ class BackupAccount extends Component {
                 onPress={() => {
                   doubleClick(this.copy)
                 }}
+                activeOpacity={0.7}
                 style={{ width: 30 }}
               >
                 <Image source={require('../../../assets/images/public/copy.png')} />
@@ -162,11 +163,16 @@ class BackupAccount extends Component {
               marginBottom: 20
             }}
           >
-            <TouchableOpacity style={[styles.chooseView, { backgroundColor: '#F14B79' }]} onPress={this.Cancel}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[styles.chooseView, { backgroundColor: '#F14B79' }]}
+              onPress={this.Cancel}
+            >
               <Text style={[styles.chooseText, { marginLeft: 0 }]}>{i18n.t('TAB.Cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.chooseView, { backgroundColor: '#76CE29', marginLeft: 10 }]}
+              activeOpacity={0.7}
               onPress={this.Continue}
             >
               <Text style={styles.chooseText}>{i18n.t('TAB.Continue')}</Text>

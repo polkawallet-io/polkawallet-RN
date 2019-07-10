@@ -35,14 +35,13 @@ class Proposals extends Component {
       votingState: [],
       balances: []
     }
-    this.balances = this.balances.bind(this)
+    this.getProposals = this.getProposals.bind(this)
   }
 
   /**
    * @description 获取提案相关信息|Get information about the proposal
    */
-
-  balances() {
+  getProposals() {
     ;(async () => {
       let launchPeriod = await polkadotAPI.launchPeriod()
       await polkadotAPI.bestNumber(bestNumber => {
@@ -128,7 +127,7 @@ class Proposals extends Component {
         })
       })
       await polkadotAPI.publicProps(result => {
-        this.balances()
+        this.getProposals()
       })
     })()
     // })

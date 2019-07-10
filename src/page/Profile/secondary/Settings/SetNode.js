@@ -163,11 +163,13 @@ class SetNode extends Component {
             <View style={[{ flexDirection: 'row', width: ScreenWidth - 40 }]}>
               <TouchableOpacity
                 style={{
+                  width: ScreenWidth - 40,
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
                   height: 50
                 }}
+                activeOpacity={0.7}
                 onPress={this.state.isCustom ? this.Noclick : this.chooseNode}
               >
                 <TextInput
@@ -213,6 +215,7 @@ class SetNode extends Component {
         </RNKeyboardAvoidView>
         <TouchableOpacity
           style={styles.Touch}
+          activeOpacity={0.7}
           onPress={() => {
             this.state.isCustom ? this.setState({ chooseNode: this.state.node, isCustom: false }) : this.Set_Node()
           }}
@@ -257,13 +260,13 @@ const styles = StyleSheet.create({
   },
   textInputStyle: {
     paddingVertical: 0,
-    marginTop: ScreenHeight / 70,
-    height: 40,
+    marginTop: 20,
+    height: 50,
     width: ScreenWidth - 40,
     borderWidth: 1,
     borderColor: '#DCDCDC',
-    fontSize: ScreenWidth / 25,
-    borderRadius: ScreenHeight / 150,
+    fontSize: 18,
+    borderRadius: 5,
     paddingHorizontal: 20
   },
   Touch: {

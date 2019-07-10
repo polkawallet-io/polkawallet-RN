@@ -495,8 +495,9 @@ class Active extends Component {
                             height: 40,
                             width: (ScreenWidth - 87) / 2
                           }}
+                          activeOpacity={0.7}
                           onPress={() => {
-                            this.props.p.navigation.navigate('NayorAye', {
+                            this.props.p.navigation.navigate('Vote', {
                               choose: 'Nay',
                               index: item.index
                             })
@@ -515,8 +516,9 @@ class Active extends Component {
                             height: 40,
                             width: (ScreenWidth - 87) / 2
                           }}
+                          activeOpacity={0.7}
                           onPress={() => {
-                            this.props.p.navigation.navigate('NayorAye', {
+                            this.props.p.navigation.navigate('Vote', {
                               choose: 'Aye',
                               index: item.index
                             })

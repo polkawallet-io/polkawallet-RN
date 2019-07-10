@@ -22,6 +22,7 @@ export default class CoinRow extends Component {
     return (
       <TouchableOpacity
         key={index}
+        activeOpacity={0.7}
         onPress={() => {
           navigation.navigate('Transfer_details', { data: item })
         }}
