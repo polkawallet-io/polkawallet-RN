@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -23,12 +23,13 @@ import {
   Clipboard,
   Platform,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import SInfo from 'react-native-sensitive-info'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
 
@@ -54,36 +55,42 @@ class ManageAccount extends Component {
     this.Change_Name = this.Change_Name.bind(this)
   }
 
-  // 切换到更改账户
-  // Switch to Change_Name page
+  /**
+   * @description  切换到更改账户|Switch to Change_Name page
+   */
   Change_Name() {
     this.props.navigation.navigate('Change_Name')
   }
 
-  // 切换到更改密码
-  // Switch to Change_Password page
+  /**
+   * @description  切换到更改密码|Switch to Change_Password page
+   */
   Change_Password() {
     this.props.navigation.navigate('Change_Password')
   }
 
-  // 导出 key store
-  // Export key store
+  /**
+   * @description  导出 key store|Export key store
+   */
   ExportKey() {
     this.setState({
       isModal1: true
     })
   }
 
-  // 密码修改
-  // Change password
+  /**
+   * @description 密码修改|Change password
+   * @param {String} changepassword 密码|password
+   */
   onChangepassword(changepassword) {
     this.setState({
       password: changepassword
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   cancel() {
     this.setState({
       password: '',
@@ -91,8 +98,9 @@ class ManageAccount extends Component {
     })
   }
 
-  // 点击提交
-  // Submit
+  /**
+   * @description  点击提交|Submit
+   */
   ok() {
     checkPwd({
       address: this.state.address,
@@ -106,6 +114,9 @@ class ManageAccount extends Component {
     })
   }
 
+  /**
+   * @description 点击继续|Click the continue
+   */
   Continue() {
     this.setState({
       password: '',
@@ -113,13 +124,17 @@ class ManageAccount extends Component {
     })
   }
 
+  /**
+   * @description 复制|Click the copy
+   */
   async Copy() {
     Clipboard.setString(this.state.msg)
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
 
-  // 删除账户
-  // Delete account
+  /**
+   * @description 删除账户|Delete account
+   */
   delete_account() {
     Alert.alert(
       '',
@@ -127,7 +142,7 @@ class ManageAccount extends Component {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {},
           style: 'cancel'
         },
         {
@@ -221,13 +236,15 @@ class ManageAccount extends Component {
     )
   }
 
-  componentWillMount() {
-    SInfo.getItem(this.state.address, {
-      sharedPreferencesName: 'Polkawallet',
-      keychainService: 'PolkawalletKey'
-    }).then(result => {
-      this.setState({
-        msg: result
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      SInfo.getItem(this.state.address, {
+        sharedPreferencesName: 'Polkawallet',
+        keychainService: 'PolkawalletKey'
+      }).then(result => {
+        this.setState({
+          msg: result
+        })
       })
     })
   }
@@ -235,7 +252,14 @@ class ManageAccount extends Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#F14B79' }}>
-        <View style={{ flex: 1, backgroundColor: '#F6F6F6', paddingBottom: 40, marginBottom: -40 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#F6F6F6',
+            paddingBottom: 40,
+            marginBottom: -40
+          }}
+        >
           <StatusBar
             hidden={false}
             backgroundColor="#F14B79" // 状态栏背景颜色 | Status bar background color
@@ -277,7 +301,7 @@ class ManageAccount extends Component {
           </View>
           {/* Change Name */}
           <View style={{ alignItems: 'center', marginTop: 20 }}>
-            <TouchableOpacity style={styles.export} onPress={this.Change_Name}>
+            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Name}>
               <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangeName')}</Text>
               <View style={{ flex: 1 }} />
               <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
@@ -285,7 +309,7 @@ class ManageAccount extends Component {
           </View>
           {/* Change password */}
           <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.export} onPress={this.Change_Password}>
+            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Password}>
               <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangePassword')}</Text>
               <View style={{ flex: 1 }} />
               <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
@@ -293,7 +317,13 @@ class ManageAccount extends Component {
           </View>
           {/* Export Keystore */}
           <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.export} onPress={this.ExportKey}>
+            <TouchableOpacity
+              style={styles.export}
+              activeOpacity={0.7}
+              onPress={() => {
+                doubleClick(this.ExportKey)
+              }}
+            >
               <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ExportKeystore')}</Text>
               <View style={{ flex: 1 }} />
               <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
@@ -302,7 +332,7 @@ class ManageAccount extends Component {
           <View style={{ flex: 1 }} />
           {/* delete account */}
           <View>
-            <TouchableOpacity style={styles.delete} onPress={this.delete_account}>
+            <TouchableOpacity style={styles.delete} activeOpacity={0.7} onPress={this.delete_account}>
               <Text style={{ fontSize: 18, fontWeight: '500', color: '#F14B79' }}>
                 {i18n.t('Profile.DeleteAccount')}
               </Text>
@@ -314,7 +344,12 @@ class ManageAccount extends Component {
               <View style={styles.chooseview}>
                 <Text style={styles.prompt}>{i18n.t('Profile.unlockPassword')}</Text>
                 <TextInput
-                  style={[styles.textInputStyle, { borderColor: this.state.password == '' ? 'red' : '#4169E1' }]}
+                  style={[
+                    styles.textInputStyle,
+                    {
+                      borderColor: this.state.password == '' ? 'red' : '#4169E1'
+                    }
+                  ]}
                   autoCapitalize="none"
                   placeholder={i18n.t('Profile.unlockPassword')}
                   placeholderTextColor="#DC143CA5"
@@ -327,13 +362,17 @@ class ManageAccount extends Component {
                   <TouchableOpacity
                     style={[styles.choose, { borderRightWidth: 1, borderRightColor: '#ECE2E5' }]}
                     onPress={this.cancel}
+                    activeOpacity={0.7}
                   >
                     <Text style={styles.textchoose}>cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.choose}
+                    activeOpacity={0.7}
                     onPress={() => {
-                      this.state.password == '' ? Alert.alert('', i18n.t('Profile.unlockPassword')) : this.ok()
+                      this.state.password == ''
+                        ? Alert.alert('', i18n.t('Profile.unlockPassword'))
+                        : doubleClick(this.ok())
                     }}
                   >
                     <Text style={styles.textchoose}>ok</Text>
@@ -350,6 +389,7 @@ class ManageAccount extends Component {
                 <Text
                   style={{
                     marginTop: ScreenHeight / 30,
+                    padding: 10,
                     width: ScreenWidth * 0.7,
                     marginBottom: 20,
                     fontSize: 14
@@ -361,12 +401,13 @@ class ManageAccount extends Component {
                 {/* <View style={{ flex: 1 }} /> */}
                 <View style={styles.yorn}>
                   <TouchableOpacity
+                    activeOpacity={0.7}
                     style={[styles.choose, { borderRightWidth: 1, borderRightColor: '#ECE2E5' }]}
                     onPress={this.Continue}
                   >
                     <Text style={styles.textchoose}>{i18n.t('TAB.Continue')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.choose} onPress={this.Copy}>
+                  <TouchableOpacity style={styles.choose} onPress={this.Copy} activeOpacity={0.7}>
                     <Text style={styles.textchoose}>{i18n.t('TAB.Copy')}</Text>
                   </TouchableOpacity>
                 </View>
@@ -460,7 +501,7 @@ const styles = StyleSheet.create({
   chooseview: {
     alignItems: 'center',
     // height: ScreenHeight / 4,
-    width: 300,
+    width: ScreenWidth * 0.7,
     backgroundColor: 'white',
     justifyContent: 'center',
     borderRadius: 16
@@ -482,7 +523,7 @@ const styles = StyleSheet.create({
   },
   choose: {
     height: 49,
-    width: 150,
+    width: (ScreenWidth * 0.7) / 2,
     justifyContent: 'center',
     alignItems: 'center'
   },

@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -13,14 +13,14 @@
 import { AsyncStorage } from 'react-native'
 
 /**
- * 数据持久化类 | Data persistence class
+ * @description 数据持久化类 | Data persistence class
  */
 export default class DataRepository {
   /**
-   * 保存本地数据
+   * @description 保存本地数据 | Save local data
    * @param key key
    * @param items value
-   * @param callback  回调函数
+   * @param callback  回调函数 | callback
    */
   saveLocalRepository(key, items, callback) {
     if (!items || !key) return
@@ -29,7 +29,7 @@ export default class DataRepository {
   }
 
   /**
-   * 获取本地的数据
+   * @description 获取本地的数据 | Get local data
    * @param key
    * @returns {Promise}
    */
@@ -41,18 +41,16 @@ export default class DataRepository {
             resolve(JSON.parse(result))
           } catch (e) {
             reject(e)
-            console.log(e)
           }
         } else {
           reject(error)
-          console.log(error)
         }
       })
     })
   }
 
   /**
-   * 移除本地存的key
+   * @description 移除本地存的key | Removes locally stored key
    * @param key
    * @returns {*}
    */
@@ -63,7 +61,7 @@ export default class DataRepository {
   }
 
   /**
-   * 移除本地存的keys
+   * @description 移除本地存的keys | Removes locally stored keys
    * @param keys
    * @returns {*}
    */
@@ -74,7 +72,7 @@ export default class DataRepository {
   }
 
   /**
-   * 获取网络的数据
+   * @description 获取网络的数据 | Get network data
    * @param key
    * @returns {Promise}
    */

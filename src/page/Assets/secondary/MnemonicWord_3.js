@@ -1,31 +1,45 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, SafeAreaView, Alert } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+  SafeAreaView,
+  Alert,
+  InteractionManager
+} from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
-// 返回min和max之间的一个随机数，包括min和max
-// Returns a random number between min and Max, including min and Max
+/**
+ * @description 返回min和max之间的一个随机数，包括min和max|Returns a random number between min and Max, including min and Max
+ * @param {Num} min 最小值|The min value
+ * @param {Num} max 最大值|The max value
+ */
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min) // +1是保证可以取到上限值
 }
-// 洗牌函数
-// Shuffle function
+/**
+ * @description 洗牌函数|Shuffle function
+ * @param {Array} arr 要重组的数组|Array to be reorganized
+ */
 function shuffle(arr) {
   let _arr = arr.slice()
   for (let i = 0; i < _arr.length; i++) {
@@ -49,8 +63,9 @@ class MnemonicWord extends Component {
     }
   }
 
-  // 提交
-  // Submit
+  /**
+   * @description 提交|Submit
+   */
   Next() {
     if (this.state.selectWM.length == this.state.oldWM.length && this.state.selectTag) {
       // 创建查询每个账户的进程
@@ -83,8 +98,10 @@ class MnemonicWord extends Component {
     }
   }
 
-  // 根据数组获取完整的str
-  // Get the full str from the array
+  /**
+   * 根据数组获取完整的str|Get the full str from the array
+   * @param {Array} arr 要获取的数组|Array to get
+   */
   getEndArr(arr) {
     let str = ''
     for (let i = 0; i < arr.length; i++) {
@@ -93,16 +110,19 @@ class MnemonicWord extends Component {
     return str
   }
 
-  // 校验选择的正确性
-  // Verify the correctness of the selection
+  /**
+   * @description 校验选择的正确性|Verify the correctness of the selection
+   */
   checkArr() {
     this.setState({
       selectTag: this.getEndArr(this.state.selectWM) == this.state.oldWM.join('')
     })
   }
 
-  // 添加上方展示的Word Mnemonic
-  // Add Word Mnemonic shown above
+  /**
+   * @description 添加上方展示的Word Mnemonic|Add Word Mnemonic shown above
+   * @param {Object} one 添加项|Add item
+   */
   addWM(one) {
     this.changeWM(one)
     let selectWM = this.state.selectWM
@@ -123,8 +143,10 @@ class MnemonicWord extends Component {
     )
   }
 
-  // 删除上方展示的Word Mnemonic
-  // Remove Word Mnemonic shown above
+  /**
+   * @description 删除上方展示的Word Mnemonic|Remove Word Mnemonic shown above
+   * @param {Object} one 删除项|Remove item
+   */
   removeWM(one) {
     this.changeWM(one)
     let selectWM = this.state.selectWM
@@ -139,8 +161,10 @@ class MnemonicWord extends Component {
     })
   }
 
-  // 改变下方展示的Word Mnemonic
-  // Change the Word Mnemonic shown below
+  /**
+   * @description 改变下方展示的Word Mnemonic|Change the Word Mnemonic shown below
+   * @param {Object} one 改变项|Change item
+   */
   changeWM(one) {
     let WM = this.state.WM
     for (let i = 0; i < WM.length; i++) {
@@ -153,6 +177,9 @@ class MnemonicWord extends Component {
     })
   }
 
+  /**
+   * @description 选择空白的WM|Select the blank WM
+   */
   setWM() {
     let WM = String(this.props.navigation.state.params.key).split(' ')
     WM = shuffle(WM)
@@ -168,13 +195,15 @@ class MnemonicWord extends Component {
   }
 
   componentWillMount() {
-    this.setWM()
-  }
-
-  componentDidMount() {
     // 通过addListener开启监听，didFocus RN 生命周期 页面获取焦点
     // Start listening through addListener, didFocus RN lifecycle, page gets focus
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
+      this.setWM()
+    })
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
       this.setWM()
     })
   }
@@ -253,7 +282,14 @@ class MnemonicWord extends Component {
             >
               {this.state.selectWM.map((v, i) => {
                 return (
-                  <TouchableOpacity style={styles.textView} key={i} onPress={this.removeWM.bind(this, v)}>
+                  <TouchableOpacity
+                    style={styles.textView}
+                    key={i}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      doubleClick(this.removeWM.bind(this, v))
+                    }}
+                  >
                     <Text style={styles.text}>{v.text}</Text>
                   </TouchableOpacity>
                 )
@@ -279,7 +315,14 @@ class MnemonicWord extends Component {
             >
               {this.state.WM.map((v, i) => {
                 return v.tap ? (
-                  <TouchableOpacity style={styles.textView} key={i} onPress={this.addWM.bind(this, v)}>
+                  <TouchableOpacity
+                    style={styles.textView}
+                    key={i}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      doubleClick(this.addWM.bind(this, v))
+                    }}
+                  >
                     <Text style={styles.text}>{v.text}</Text>
                   </TouchableOpacity>
                 ) : (
@@ -313,7 +356,10 @@ class MnemonicWord extends Component {
             width: ScreenWidth - 40,
             marginLeft: 20
           }}
-          onPress={this.Next.bind(this)}
+          activeOpacity={0.7}
+          onPress={() => {
+            doubleClick(this.Next.bind(this))
+          }}
         >
           <Text style={{ color: '#FFF', fontSize: 20 }}>Complete</Text>
         </TouchableOpacity>

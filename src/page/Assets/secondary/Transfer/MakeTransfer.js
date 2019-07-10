@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-19 23:03:08
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -21,10 +21,11 @@ import {
   Modal,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd, formatData } from '../../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, formatData, doubleClick } from '../../../../util/Common'
 import Header from '../../../../components/Header'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../../util/polkadotAPI'
@@ -49,29 +50,36 @@ class Transfer extends Component {
     this.Sign_and_Submit = this.Sign_and_Submit.bind(this)
   }
 
-  // 密码展示
-  // Display password
+  /**
+   * @description 密码展示 | Display password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 密码更改
-  // Change password
+  /**
+   * @description 密码更改 | Change password
+   * @param {String} Changepasswore
+   */
   onChangepasswore(Changepasswore) {
     this.setState({
       password: Changepasswore
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消 | Click Cancel
+   */
   Cancel() {
     this.props.rootStore.stateStore.t_address = ''
     this.props.navigation.navigate('Transfer')
   }
 
+  /**
+   * @description 获取账户的Nonce
+   */
   getAccountNonce() {
     ;(async () => {
       const accountNonce = await polkadotAPI.accountNonce(
@@ -83,17 +91,22 @@ class Transfer extends Component {
     })()
   }
 
-  // 页面初始化
-  // Page initialization
+  /**
+   * @description 页面初始化 | Page initialization
+   */
   componentWillMount() {
-    this.getAccountNonce()
+    InteractionManager.runAfterInteractions(() => {
+      this.getAccountNonce()
+    })
   }
 
   componentDidMount() {
     // 通过addListener开启监听，didFocus RN 生命周期 页面获取焦点
     // Start listening through addListener, didFocus RN lifecycle, page gets focus
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', () => {
-      this.getAccountNonce()
+      InteractionManager.runAfterInteractions(() => {
+        this.getAccountNonce()
+      })
     })
   }
 
@@ -103,8 +116,9 @@ class Transfer extends Component {
     this._didBlurSubscription && this._didBlurSubscription.remove()
   }
 
-  // 点击提交
-  // Click Submit
+  /**
+   * @description 点击提交 | Click Submit
+   */
   Sign_and_Submit() {
     this.setState({
       onlyone: 1,
@@ -138,7 +152,7 @@ class Transfer extends Component {
                 { cancelable: false }
               )
             }
-          }, 30000)
+          }, 15000)
           const accountNonce = await polkadotAPI.accountNonce(loadPair.address())
           // Do the transfer and track the actual status
           let transfer
@@ -310,7 +324,11 @@ class Transfer extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepasswore}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../../assets/images/public/eye.png')}
@@ -338,6 +356,7 @@ class Transfer extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -354,7 +373,10 @@ class Transfer extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
-                onPress={this.Sign_and_Submit}
+                activeOpacity={0.7}
+                onPress={() => {
+                  doubleClick(this.Sign_and_Submit)
+                }}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>
                   {i18n.t('Assets.SignAndSubmit')}

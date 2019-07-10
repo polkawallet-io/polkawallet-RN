@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -24,15 +24,13 @@ class About extends Component {
     super(props)
     this.state = {}
     this.back = this.back.bind(this)
-    this.Set_Node = this.Set_Node.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
-  }
-
-  Set_Node() {
-    this.props.navigation.navigate('Set_Node')
   }
 
   render() {
@@ -53,17 +51,17 @@ class About extends Component {
         >
           <Header navigation={this.props.navigation} title={i18n.t('Profile.About')} theme="dark" />
         </View>
-        {/* 图标 */}
+        {/* 图标 | LOGO */}
         <Image style={styles.msgImage} source={require('../../../assets/images/public/About_logo.png')} />
-        {/* 简介 */}
+        {/* 简介 | Introduction */}
         <View style={styles.msgView}>
           <Text style={{ fontSize: 18, color: '#3E2D32', fontWeight: '700' }}>{i18n.t('Profile.PolkadotApp')}</Text>
         </View>
-        {/* 官网 */}
+        {/* 官网 | Website */}
         <View style={styles.msgView}>
           <Text style={{ fontSize: 15, color: '#3E2D32' }}>https://polkawallet.io</Text>
         </View>
-        {/* 版本 */}
+        {/* 版本 | Version */}
         <View style={{ flex: 1 }} />
         <View style={[styles.msgView, { marginBottom: ScreenHeight / 30 }]}>
           <Text style={{ fontSize: 15, color: '#AAAAAA' }}>{i18n.t('Profile.Version')}: 0.1.7</Text>

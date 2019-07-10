@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-20 21:01:02
+ * @Date: 2019-06-18 21:08:00
  */
 import SInfo from 'react-native-sensitive-info'
 import Keyring from '@polkadot/keyring'
@@ -21,8 +21,10 @@ export const ScreenWidth = Dimensions.get('window').width
 // Get page height
 export const ScreenHeight = Dimensions.get('window').height
 
-// 根据单位名称获取值
-// Gets the value based on the unit name
+/**
+ * @description 根据单位名称获取值|Gets the value based on the unit name
+ * @param {String} type 单位
+ */
 export function getUnit(type) {
   let unit = 1
   type = String(type)
@@ -73,7 +75,7 @@ export function getUnit(type) {
   return unit
 }
 /**
- * 校验密码 方法整合 | Verify password, method integration
+ * @description 校验密码 方法整合 | Verify password, method integration
  * @param {Object} params            传入的对象 | Incoming object
  * @param {String} params.address    地址 | Address
  * @param {String} params.password   密码 | Password
@@ -90,14 +92,15 @@ export function checkPwd(params) {
     try {
       loadPair.decodePkcs8(params.password)
     } catch (error) {
-      params.error && params.error()
       Alert.alert(
         '',
         i18n.t('TAB.PasswordMistake'),
         [
           {
             text: 'OK',
-            onPress: () => {}
+            onPress: () => {
+              params.error && params.error()
+            }
           }
         ],
         { cancelable: false }
@@ -107,13 +110,23 @@ export function checkPwd(params) {
   })
 }
 
-// 格式化api返回的对象
-// Format the object returned by the API
+/**
+ * @description 格式化api返回的对象 | Format the object returned by the API
+ * @param {Object} data 格式化的对象 | Formatting object
+ * @returns 格式化完的对象 | Formatted object
+ */
 export function formatData(data) {
   if (data) {
     return JSON.parse(JSON.stringify(data))
   }
 }
+/**
+ * @description 请求接口 方法整合 | Request interface method integration
+ * @param {String} url 请求的地址 | Requested url
+ * @param {String} params 请求的参数 | Requested parameters
+ * @param {String} type  请求的方式  默认 post | The mode of request defaults to post
+ * @param {Boolean} noJson 是否需要对数据进行处理 默认false(需要) | Need to process the data, default false
+ */
 export function axios(url, params, type = 'POST', noJson = false) {
   const map = {
     method: type
@@ -151,6 +164,11 @@ export function axios(url, params, type = 'POST', noJson = false) {
       })
   })
 }
+/**
+ * @description 增加网络类型 | Add network type
+ * @param {String} address 地址 | Address
+ * @param {String} networkType 网络类型 | Network type
+ */
 export function accountId(address, networkType = 'substrate') {
   if (typeof address !== 'string' || address.length === 0) {
     return ''
@@ -158,6 +176,10 @@ export function accountId(address, networkType = 'substrate') {
     return `${networkType}:${address}`
   }
 }
+/**
+ * @description 根据扫描结果判断 网络类型和地址 | Determine the network type and address based on the scan results
+ * @param {String} data 识别到的JSONString | JSONString recognized
+ */
 export function ScannerType(data) {
   if (typeof data !== 'string' || !data) {
     return ''
@@ -180,5 +202,23 @@ export function ScannerType(data) {
       type: type,
       data: QRData
     }
+  }
+}
+let isCalled = false
+let timer = null
+/**
+ * @description 连续点击判断 | Keep clicking to judge
+ * @param yourFunction 点击事件 | Click event
+ * @param interval 时间间隔，可省略，默认2000毫秒 | Time interval, can be omitted, default 2000 ms
+ *
+ */
+export function doubleClick(clickFun, interval = 2000) {
+  if (!isCalled) {
+    isCalled = true
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      isCalled = false
+    }, interval)
+    return clickFun()
   }
 }

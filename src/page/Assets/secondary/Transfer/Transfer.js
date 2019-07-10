@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-20 20:42:10
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -20,11 +20,12 @@ import {
   Image,
   StatusBar,
   SafeAreaView,
-  Alert
+  Alert,
+  InteractionManager
 } from 'react-native'
 import { formatBalance } from '@polkadot/util'
 import { observer, inject } from 'mobx-react'
-import { getUnit, ScreenWidth, ScreenHeight } from '../../../../util/Common'
+import { getUnit, ScreenWidth, ScreenHeight, doubleClick } from '../../../../util/Common'
 import Header from '../../../../components/Header'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../../util/polkadotAPI'
@@ -56,8 +57,9 @@ class Transfer extends Component {
     this.Modify_way = this.Modify_way.bind(this)
   }
 
-  // 点击返回
-  // Click back
+  /**
+   * @description 点击返回 | Click back
+   */
   back() {
     this.props.rootStore.stateStore.t_address = ''
     this.props.rootStore.stateStore.isaddresses = 0
@@ -70,8 +72,10 @@ class Transfer extends Component {
     }
   }
 
-  // 更改单位
-  // Switch units
+  /**
+   * @description 更改单位 | Switch units
+   * @param {String} way_change
+   */
   Modify_way(way_change) {
     this.setState({
       isModel: false,
@@ -82,22 +86,25 @@ class Transfer extends Component {
     })
   }
 
-  // 点击扫一扫
-  // Click Scan
+  /**
+   * @description 点击扫一扫|Click Scan
+   */
   camera() {
     this.props.rootStore.stateStore.tocamera = 1
     this.props.navigation.navigate('Camera')
   }
 
-  // 选择通讯录
-  // Switch Addresses
+  /**
+   * @description 选择通讯录|Switch Addresses
+   */
   addresses() {
     this.props.rootStore.stateStore.transfer_address = 1
     this.props.navigation.navigate('Addresses')
   }
 
-  // 点击转账
-  // Click Transfer
+  /**
+   * @description 点击转账|Click Transfer
+   */
   Make_transfer() {
     if (this.state.address == '') {
       Alert.alert('', i18n.t('Assets.PleaseEnterAddress'))
@@ -118,8 +125,10 @@ class Transfer extends Component {
     }
   }
 
-  // 输入转账地址 改变
-  // Change the transfer address
+  /**
+   * @description 输入转账地址改变|Change of transfer address
+   * @param {String} changeAddress
+   */
   ChangeAddress(changeAddress) {
     if (changeAddress != '') {
       this.props.rootStore.stateStore.isaddresses = 0
@@ -133,6 +142,10 @@ class Transfer extends Component {
     })
   }
 
+  /**
+   * @description 转账金额的更改 | Change of transfer balance
+   * @param {String} changeValue
+   */
   ChangeValue(changeValue) {
     this.setState({
       value: changeValue,
@@ -140,30 +153,35 @@ class Transfer extends Component {
     })
   }
 
-  // 页面初始化
-  // Page initialization
+  /**
+   * @description 页面初始化|Page initialization
+   */
   componentWillMount() {
-    ;(async () => {
-      this.props.rootStore.stateStore.tocamera = 1
-      polkadotAPI.freeBalance(
-        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,
-        balance => {
-          this.setState({
-            balance: balance
-          })
-        }
-      )
-      this.setState({ fees: await polkadotAPI.fees() })
-    })()
+    InteractionManager.runAfterInteractions(() => {
+      ;(async () => {
+        this.props.rootStore.stateStore.tocamera = 1
+        polkadotAPI.freeBalance(
+          this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,
+          balance => {
+            this.setState({
+              balance: balance
+            })
+          }
+        )
+        this.setState({ fees: await polkadotAPI.fees() })
+      })()
+    })
   }
 
   componentDidMount() {
     // 通过addListener开启监听，didFocus RN 生命周期 页面获取焦点
     // Start listening through addListener, didFocus RN lifecycle page gets focus
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
-      if (String(this.props.rootStore.stateStore.t_address)) {
-        this.ChangeAddress(String(this.props.rootStore.stateStore.t_address))
-      }
+      InteractionManager.runAfterInteractions(() => {
+        if (String(this.props.rootStore.stateStore.t_address)) {
+          this.ChangeAddress(String(this.props.rootStore.stateStore.t_address))
+        }
+      })
     })
   }
 
@@ -225,7 +243,7 @@ class Transfer extends Component {
                   this.ChangeAddress(changeText)
                 }}
               />
-              <TouchableOpacity onPress={this.addresses} style={{ marginLeft: -44 }}>
+              <TouchableOpacity onPress={this.addresses} activeOpacity={0.7} style={{ marginLeft: -54, padding: 10 }}>
                 <Image style={styles.image} source={require('../../../../assets/images/public/Pro_Addre.png')} />
               </TouchableOpacity>
             </View>
@@ -307,7 +325,13 @@ class Transfer extends Component {
           </View>
         </RNKeyboardAvoidView>
 
-        <TouchableOpacity style={styles.maket} onPress={this.Make_transfer}>
+        <TouchableOpacity
+          style={styles.maket}
+          onPress={() => {
+            doubleClick(this.Make_transfer)
+          }}
+          activeOpacity={0.7}
+        >
           <Text style={{ fontSize: 16, color: '#FFF' }}>{i18n.t('Assets.MakeTransfer')}</Text>
         </TouchableOpacity>
       </SafeAreaView>

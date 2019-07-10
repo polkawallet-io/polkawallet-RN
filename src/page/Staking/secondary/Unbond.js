@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 22:22:06
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -56,24 +56,29 @@ class Unbond extends Component {
     this.Modify_way = this.Modify_way.bind(this)
   }
 
-  // 更改密码
-  // Change password
+  /**
+   * @description 更改密码|Change password
+   * @param {String} Changepassword 密码|password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // 展示密码
-  // Show password
+  /**
+   * @description 展示密码|Show password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 更改单位
-  // Change units
+  /**
+   * @description 更改单位|Change units
+   * @param {String} way_change 单位|Units
+   */
   Modify_way(way_change) {
     this.setState({
       isWayModel: false,
@@ -83,21 +88,26 @@ class Unbond extends Component {
     })
   }
 
-  // bondedValue changed
+  /**
+   * @description bonded 更改 | bondedValue changed
+   * @param {*} bondedValue 更改的值
+   */
   onChangeValue(bondedValue) {
     this.setState({
       bondedValue: bondedValue
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 点击提交
-  // Submit
+  /**
+   * @description 点击提交|Submit
+   */
   Sign_and_Submit() {
     if (this.state.bondedValue && this.state.password) {
       this.setState({
@@ -146,7 +156,7 @@ class Unbond extends Component {
                   { cancelable: false }
                 )
               }
-            }, 30000)
+            }, 15000)
 
             transfer.signAndSend(loadPair, ({ status }) => {
               status = formatData(status)
@@ -336,7 +346,11 @@ class Unbond extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../assets/images/public/eye.png')}
@@ -364,6 +378,7 @@ class Unbond extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -380,6 +395,7 @@ class Unbond extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
+                activeOpacity={0.7}
                 onPress={this.Sign_and_Submit}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('Staking.UnBond')}</Text>

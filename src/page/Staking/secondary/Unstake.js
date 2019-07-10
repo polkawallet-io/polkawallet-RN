@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 22:22:06
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -51,38 +51,45 @@ class Unstake extends Component {
     this.Unstake = this.Unstake.bind(this)
   }
 
-  // 密码的展示
-  // Display password
+  /**
+   * @description 密码的展示|Display password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 通讯录选择
-  // Switch Addresses
+  /**
+   * @description 更改地址|change address
+   * @param {String} ChangeAddress 地址|Address
+   */
   onChangeAddress(ChangeAddress) {
     this.setState({
       address: ChangeAddress
     })
   }
 
-  // 密码更改
-  // Change password
+  /**
+   * @description 密码更改|Change password
+   * @param {String} Changepassword 密码|Password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 点击提交
-  // Submit
+  /**
+   * @description 点击提交|Submit
+   */
   Unstake() {
     this.setState({
       onlyone: 1,
@@ -113,7 +120,7 @@ class Unstake extends Component {
                 { cancelable: false }
               )
             }
-          }, 30000)
+          }, 15000)
           let transfer
           try {
             transfer = await polkadotAPI.chill()
@@ -229,7 +236,11 @@ class Unstake extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../assets/images/public/eye.png')}
@@ -257,6 +268,7 @@ class Unstake extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -273,6 +285,7 @@ class Unstake extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
+                activeOpacity={0.7}
                 onPress={this.Unstake}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('Staking.Unvalidate')}</Text>

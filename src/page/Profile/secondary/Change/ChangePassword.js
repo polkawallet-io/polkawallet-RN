@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -23,7 +23,7 @@ import {
   Alert
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, checkPwd } from '../../../../util/Common'
+import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../../util/Common'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import i18n from '../../../../locales/i18n'
 
@@ -48,10 +48,17 @@ class ChangePassword extends Component {
     this.Change = this.Change.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Manage_Account')
   }
 
+  /**
+   * @description 当前密码修改|Change of current password
+   * @param {String} Current_password  当前密码|Current password
+   */
   Current_password(Current_password) {
     if (Current_password != '') {
       this.setState({ ispwd1: 1 })
@@ -64,6 +71,10 @@ class ChangePassword extends Component {
     })
   }
 
+  /**
+   * @description 新密码修改|Change of new password
+   * @param {String} New_password 新密码|Now password
+   */
   New_password(New_password) {
     if (New_password != '') {
       this.setState({ ispwd2: 1 })
@@ -76,6 +87,10 @@ class ChangePassword extends Component {
     })
   }
 
+  /**
+   * @description 重复密码修改|Change of repeat password
+   * @param {String} Repeat_password 重复新密码| The repeat password
+   */
   Repeat_password(Repeat_password) {
     if (Repeat_password != this.state.New_password) {
       this.setState({ ispwd3: 0 })
@@ -88,6 +103,9 @@ class ChangePassword extends Component {
     })
   }
 
+  /**
+   * @description 密码修改的最后提交|Submit the password
+   */
   Change() {
     if (this.state.New_password != this.state.Repeat_password) {
       Alert.alert('', 'The two passwords are different')
@@ -146,8 +164,12 @@ class ChangePassword extends Component {
             backgroundColor="#FFF" // 状态栏背景颜色 | Status bar background color
             barStyle="dark-content" // 状态栏样式（黑字）| Status bar style (black)
           />
-          <View style={{ height: 44 }}>
-            <TouchableOpacity onPress={this.back} style={{ paddingTop: 12 }}>
+          <View>
+            <TouchableOpacity
+              onPress={this.back}
+              activeOpacity={0.7}
+              style={{ height: 44, width: 61, justifyContent: 'center' }}
+            >
               <Image source={require('../../../../assets/images/public/About_return.png')} />
             </TouchableOpacity>
           </View>
@@ -187,7 +209,13 @@ class ChangePassword extends Component {
               })}
             </View>
           </RNKeyboardAvoidView>
-          <TouchableOpacity style={styles.Change} onPress={this.Change}>
+          <TouchableOpacity
+            style={styles.Change}
+            onPress={() => {
+              doubleClick(this.Change)
+            }}
+            activeOpacity={0.7}
+          >
             <Image source={require('../../../../assets/images/public/Change_button.png')} />
           </TouchableOpacity>
         </View>

@@ -1,17 +1,27 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-19 21:24:18
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { Text, View, ScrollView, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from 'react-native'
+import {
+  Text,
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  InteractionManager
+} from 'react-native'
 
 import Identicon from 'polkadot-identicon-react-native'
 import { observer, inject } from 'mobx-react'
@@ -21,36 +31,37 @@ import i18n from '../../locales/i18n'
 @inject('rootStore')
 @observer
 class Profile extends Component {
-  // 切换到 Manage_Account 页面
-  // Switch to the Manage_Account page
+  /**
+   * @description 切换到 Manage_Account 页面|Switch to the Manage_Account page
+   */
   Manage_Account() {
     this.props.navigation.navigate('Manage_Account')
   }
 
-  // 切换到通讯录页面
-  // Switch to the address book page
+  /**
+   * @description 切换到通讯录页面|Switch to the address book page
+   */
   GoAddresses() {
     this.props.rootStore.stateStore.transfer_address = 0
     this.props.navigation.navigate('Addresses')
   }
 
-  // 切换到设置页面
-  // Switch to the settings page
+  /**
+   * @description 切换到设置页面|Switch to the settings page
+   */
   Settings() {
     this.props.navigation.navigate('Settings')
   }
 
-  // 切换到关于我们页面
-  // Switch to the About page
+  /**
+   * @description 切换到关于我们页面|Switch to the About page
+   */
   About() {
     this.props.navigation.navigate('About')
   }
 
   componentDidMount() {
-    // 通过addListener开启监听，可以使用上面的四个属性
-    // With addListener to enable listening, use the four properties above
-    this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
-      this.setState({})
+    InteractionManager.runAfterInteractions(() => {
       if (Platform.OS == 'android') {
         StatusBar.setBackgroundColor('#F14B79')
       }
@@ -65,15 +76,25 @@ class Profile extends Component {
   }
 
   componentWillMount() {
-    if (Platform.OS == 'android') {
-      StatusBar.setBackgroundColor('#F14B79')
-    }
-    StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
+    // 通过addListener开启监听，可以使用上面的四个属性
+    // With addListener to enable listening, use the four properties above
+    this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
+      this.setState({})
+      if (Platform.OS == 'android') {
+        StatusBar.setBackgroundColor('#F14B79')
+      }
+      StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
+    })
   }
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: Platform.OS == 'android' ? '#fff' : '#F14B79' }}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: Platform.OS == 'android' ? '#fff' : '#F14B79'
+        }}
+      >
         <StatusBar
           hidden={false}
           backgroundColor="#F14B79" // 状态栏背景颜色 | Status bar background color | Status bar background color
@@ -99,7 +120,7 @@ class Profile extends Component {
                   marginLeft: 21
                 }}
               >
-                {/* 头像 */}
+                {/* 头像 | Identicon */}
                 <Identicon
                   value={
                     this.props.rootStore.stateStore.Accounts[
@@ -109,7 +130,7 @@ class Profile extends Component {
                   size={56}
                   theme="polkadot"
                 />
-                {/* 用户名 */}
+                {/* 用户名 | User name */}
                 <Text style={{ fontSize: 18, color: 'white', marginLeft: 21 }}>
                   {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
                 </Text>
@@ -133,7 +154,7 @@ class Profile extends Component {
                 }}
               >
                 <TouchableOpacity onPress={this.Manage_Account.bind(this)}>
-                  {/* 更多 */}
+                  {/* 更多 | The more */}
                   <View
                     style={{
                       width: 150,
@@ -150,11 +171,12 @@ class Profile extends Component {
               </View>
               <TouchableOpacity
                 onPress={this.GoAddresses.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image
@@ -170,11 +192,12 @@ class Profile extends Component {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={this.Settings.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image
@@ -188,14 +211,14 @@ class Profile extends Component {
                   source={require('../../assets/images/public/addresses_nav_go.png')}
                 />
               </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={this.About.bind(this)}
+                activeOpacity={0.7}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  height: 20,
-                  marginBottom: 41
+                  justifyContent: 'center',
+                  height: 60
                 }}
               >
                 <Image

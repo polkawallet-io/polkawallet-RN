@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -42,6 +42,10 @@ class Active extends Component {
     this.AyeNumber = this.AyeNumber.bind(this)
   }
 
+  /**
+   * @description 根据投票信息获取 Nay balance | Get Nay balance based on the voting information.
+   * @param {Object} votingState 投票信息 | voting information.
+   */
   Nay(votingState) {
     let balance = 0
     for (let i = 0; i < votingState.msg.length; i++) {
@@ -52,6 +56,10 @@ class Active extends Component {
     return balance
   }
 
+  /**
+   * @description 根据投票信息获取 NayNumber | Get NayNumber based on the voting information.
+   * @param {Object} votingState 投票信息 | voting information.
+   */
   NayNumber(votingState) {
     let NayNumber = 0
     for (let i = 0; i < votingState.msg.length; i++) {
@@ -62,6 +70,10 @@ class Active extends Component {
     return NayNumber
   }
 
+  /**
+   * @description 根据投票信息获取 Aye balance | Get Aye balance based on the voting information.
+   * @param {Object} votingState 投票信息 | voting information.
+   */
   Aye(votingState) {
     let balance = 0
     for (let i = 0; i < votingState.msg.length; i++) {
@@ -72,6 +84,10 @@ class Active extends Component {
     return balance
   }
 
+  /**
+   * @description 根据投票信息获取AyeNumber | Get AyeNumber based on the voting information.
+   * @param {Object} votingState 投票信息 | voting information.
+   */
   AyeNumber(votingState) {
     let AyeNumber = 0
     for (let i = 0; i < votingState.msg.length; i++) {
@@ -82,6 +98,9 @@ class Active extends Component {
     return AyeNumber
   }
 
+  /**
+   * @description 获取所有的投票信息 | Get all the voting information.
+   */
   votingState() {
     ;(async () => {
       this.state.votingState = []
@@ -117,12 +136,14 @@ class Active extends Component {
     })()
   }
 
+  /**
+   * @description 初始化页面 加载相关数据 | Initializes page load related data.
+   */
   load() {
     ;(async () => {
       await polkadotAPI.bestNumber(bestNumber => {
         this.setState({ votingCountdown: bestNumber })
       })
-
       await polkadotAPI.referendums(result => {
         this.setState({
           referendums: [],
@@ -132,50 +153,36 @@ class Active extends Component {
           votingIndex: [],
           votingState: []
         })
-        let Actives_Title = [],
-          Actives_Nofixedvalue = [],
-          Actives_Nofixed = [],
-          referendums = [],
-          votingIndex = [],
-          votingState = []
         result.map((item, index) => {
           let info = item.unwrapOr(null)
+          try {
+            if (info.proposal.args.proposal) {
+              info = info.proposal.args
+            }
+          } catch (e) {}
           if (info) {
             let { meta, method, section } = Method.findFunction(info.proposal.callIndex)
             let have = 0
-            Actives_Title.push({ section: section, method: method })
-            Actives_Nofixedvalue.push(info.proposal.args)
-            Actives_Nofixed.push(meta.args)
-            referendums.push(info)
-            votingIndex.push(info.index)
-            for (let i = 0; i < votingState.length; i++) {
-              if (votingState[i].index == index) {
-                have = 1
-              }
-            }
+            this.state.Actives_Title.push({ section: section, method: method })
+            this.state.Actives_Nofixedvalue.push(info.proposal.args)
+            this.state.Actives_Nofixed.push(meta.args)
+            this.state.referendums.push(info)
+            this.state.votingIndex.push(info.index)
             if (have == 0) {
-              votingState.push({ index: info.index, msg: [] })
+              this.state.votingState.push({ index: info.index, msg: [] })
             }
-          }
-          this.setState({
-            Actives_Title,
-            Actives_Nofixedvalue,
-            Actives_Nofixed,
-            referendums,
-            votingIndex,
-            votingState
-          })(async () => {
             const index = info.index
-            await polkadotAPI.referendumVotesFor(index, result => {
+            polkadotAPI.referendumVotesFor(index, result => {
               this.props.rootStore.stateStore.have = 0
               for (let i = 0; i < this.state.votingState.length; i++) {
                 if (this.state.votingState[i].index == index) {
                   this.props.rootStore.stateStore.have = 1
                   this.state.votingState[i].msg = result
+                  this.setState({})
                 }
               }
             })
-          })()
+          }
         })
       })
     })()
@@ -185,6 +192,9 @@ class Active extends Component {
     this.load()
   }
 
+  /**
+   * @description 刷新 | Refresh.
+   */
   refresh() {
     this.setState({
       isrefresh: true
@@ -209,7 +219,7 @@ class Active extends Component {
             />
           }
         >
-          {this.state.referendums[0] == null ? (
+          {this.state.referendums[0] == null || this.props.num == 0 ? (
             <View
               style={{
                 marginTop: ScreenHeight / 20,
@@ -336,7 +346,8 @@ class Active extends Component {
                       }}
                     />
 
-                    {this.Aye(this.state.votingState[index]) == 0 ? (
+                    {this.Aye(this.state.votingState[index]) == 0 &&
+                    this.NayNumber(this.state.votingState[index]) == 0 ? (
                       <View />
                     ) : (
                       <View>
@@ -484,8 +495,9 @@ class Active extends Component {
                             height: 40,
                             width: (ScreenWidth - 87) / 2
                           }}
+                          activeOpacity={0.7}
                           onPress={() => {
-                            this.props.p.navigation.navigate('NayorAye', {
+                            this.props.p.navigation.navigate('Vote', {
                               choose: 'Nay',
                               index: item.index
                             })
@@ -504,8 +516,9 @@ class Active extends Component {
                             height: 40,
                             width: (ScreenWidth - 87) / 2
                           }}
+                          activeOpacity={0.7}
                           onPress={() => {
-                            this.props.p.navigation.navigate('NayorAye', {
+                            this.props.p.navigation.navigate('Vote', {
                               choose: 'Aye',
                               index: item.index
                             })

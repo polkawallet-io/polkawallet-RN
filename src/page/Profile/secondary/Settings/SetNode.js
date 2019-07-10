@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-22 00:21:58
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -20,7 +20,8 @@ import {
   TextInput,
   Alert,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import Api from '@polkadot/api/promise'
@@ -47,20 +48,33 @@ class SetNode extends Component {
     this.Noclick = this.Noclick.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.navigation.navigate('Settings')
   }
 
+  /**
+   * @description 更换节点|Change the node
+   * @param {String} onChangeNode 节点|Node
+   */
   onChangeNode(onChangeNode) {
     this.setState({
       node: onChangeNode
     })
   }
 
+  /**
+   * @description 空点击|Click on the empty
+   */
   Noclick() {
     return null
   }
 
+  /**
+   * @description 选择更换的节点|Select the replaced node
+   */
   chooseNode() {
     Alert.alert(
       '',
@@ -93,6 +107,9 @@ class SetNode extends Component {
     )
   }
 
+  /**
+   * @description 设置节点|Set node
+   */
   Set_Node() {
     Alert.alert(
       '',
@@ -116,8 +133,10 @@ class SetNode extends Component {
     )
   }
 
-  componentWillMount() {
-    this.setState({ chooseNode: this.props.rootStore.stateStore.ENDPOINT })
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ chooseNode: this.props.rootStore.stateStore.ENDPOINT })
+    })
   }
 
   render() {
@@ -144,11 +163,13 @@ class SetNode extends Component {
             <View style={[{ flexDirection: 'row', width: ScreenWidth - 40 }]}>
               <TouchableOpacity
                 style={{
+                  width: ScreenWidth - 40,
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
                   height: 50
                 }}
+                activeOpacity={0.7}
                 onPress={this.state.isCustom ? this.Noclick : this.chooseNode}
               >
                 <TextInput
@@ -194,6 +215,7 @@ class SetNode extends Component {
         </RNKeyboardAvoidView>
         <TouchableOpacity
           style={styles.Touch}
+          activeOpacity={0.7}
           onPress={() => {
             this.state.isCustom ? this.setState({ chooseNode: this.state.node, isCustom: false }) : this.Set_Node()
           }}
@@ -238,13 +260,13 @@ const styles = StyleSheet.create({
   },
   textInputStyle: {
     paddingVertical: 0,
-    marginTop: ScreenHeight / 70,
-    height: 40,
+    marginTop: 20,
+    height: 50,
     width: ScreenWidth - 40,
     borderWidth: 1,
     borderColor: '#DCDCDC',
-    fontSize: ScreenWidth / 25,
-    borderRadius: ScreenHeight / 150,
+    fontSize: 18,
+    borderRadius: 5,
     paddingHorizontal: 20
   },
   Touch: {

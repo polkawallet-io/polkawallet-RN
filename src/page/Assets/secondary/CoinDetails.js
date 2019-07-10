@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -21,7 +21,8 @@ import {
   RefreshControl,
   Platform,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
+  InteractionManager
 } from 'react-native'
 import Echarts from 'native-echarts'
 import moment from 'moment/moment'
@@ -92,14 +93,16 @@ class CoinDetails extends Component {
     this.Load = this.Load.bind(this)
   }
 
-  // 点击返回
-  // Click back
+  /**
+   * @description 点击返回|Click back
+   */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 加载信息
-  // Loding
+  /**
+   * @description 加载信息|Loding
+   */
   Load() {
     // 清除缓存
     // Clear the cache
@@ -116,7 +119,10 @@ class CoinDetails extends Component {
     this.GetStakingOption(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
   }
 
-  // 加载TXList
+  /**
+   * @description 加载交易列表|Load transaction list
+   * @param {Num} pageNum 加载的页数|Page number to load
+   */
   LoadTxList(pageNum = 1) {
     // 获取交易记录
     // Access to transaction records
@@ -136,7 +142,9 @@ class CoinDetails extends Component {
       .catch()
   }
 
-  // 刷新
+  /**
+   * @description 刷新|refresh
+   */
   refresh() {
     this.setState({
       isrefresh: true,
@@ -150,7 +158,9 @@ class CoinDetails extends Component {
     })
   }
 
-  // TXList 加载更多
+  /**
+   * @description 交易记录加载更多|Load more transaction record
+   */
   Loadmore() {
     this.setState(
       {
@@ -162,7 +172,10 @@ class CoinDetails extends Component {
     )
   }
 
-  GetStakingOption(address) {
+  /**
+   * @description 获取折线图数据|Gets chart data
+   */
+  GetStakingOption() {
     // 获取选中账户折线图数据
     // Gets the selected account chart data
     let REQUEST_URL = 'https://api.polkawallet.io:8080/tx_money_date'
@@ -238,14 +251,16 @@ class CoinDetails extends Component {
       .catch()
   }
 
-  // 点击send按钮
-  // Click Send
+  /**
+   * @description 点击send按钮 跳转页面|Click Send
+   */
   Send() {
     this.props.navigation.navigate('Transfer')
   }
 
-  // 点击Receive按钮
-  // Click Receive
+  /**
+   * @description 点击Receive按钮 跳转页面|Click Receive
+   */
   Receive() {
     this.props.navigation.navigate('QR_Code')
   }
@@ -254,7 +269,9 @@ class CoinDetails extends Component {
     // 通过addListener开启监听，didFocus RN 生命周期 页面获取焦点
     // Start listening through addListener, didFocus RN lifecycle, page gets focus
     this._didBlurSubscription = this.props.navigation.addListener('didFocus', payload => {
-      this.Load()
+      InteractionManager.runAfterInteractions(() => {
+        this.Load()
+      })
     })
   }
 
@@ -313,6 +330,7 @@ class CoinDetails extends Component {
                 return (
                   <TouchableOpacity
                     key={index}
+                    activeOpacity={0.7}
                     style={{
                       width: ScreenWidth / 3,
                       justifyContent: 'center',
@@ -375,6 +393,7 @@ class CoinDetails extends Component {
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}
+                  activeOpacity={0.7}
                   onPress={this.Loadmore}
                 >
                   <Text style={{ color: '#AAAAAA', fontSize: ScreenHeight / 45 }}>{i18n.t('TAB.loadMore')}</Text>
@@ -407,6 +426,7 @@ class CoinDetails extends Component {
                 height: 48,
                 flexDirection: 'row'
               }}
+              activeOpacity={0.7}
               onPress={this.Send}
             >
               <Image style={styles.SorR_Image} source={require('../../../assets/images/public/assets_btc_send.png')} />
@@ -422,6 +442,7 @@ class CoinDetails extends Component {
                 height: 48,
                 flexDirection: 'row'
               }}
+              activeOpacity={0.7}
               onPress={this.Receive}
             >
               <Image

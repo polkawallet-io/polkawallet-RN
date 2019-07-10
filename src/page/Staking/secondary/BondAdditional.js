@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-19 23:03:08
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -56,24 +56,29 @@ class BondAdditional extends Component {
     this.Modify_way = this.Modify_way.bind(this)
   }
 
-  // 更改密码
-  // Change password
+  /**
+   * @description 更改密码|Change password
+   * @param {String} Changepassword 密码
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // 展示密码
-  // Display password
+  /**
+   * @description 展示密码|Display password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 更改单位
-  // Switch units
+  /**
+   * @description 更改单位|Switch units
+   * @param {String} way_change 单位
+   */
   Modify_way(way_change) {
     this.setState({
       multiple: getUnit(way_change),
@@ -83,21 +88,26 @@ class BondAdditional extends Component {
     })
   }
 
-  // bondedValue changed
+  /**
+   * @description bondedValue 更改 |bondedValue changed
+   * @param {String | Number} bondedValue bondedValue值
+   */
   onChangeValue(bondedValue) {
     this.setState({
       bondedValue: String(bondedValue)
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 点击提交
-  // Click Sign_and_Submit
+  /**
+   * @description 点击提交|Click Sign_and_Submit
+   */
   Sign_and_Submit() {
     if (this.state.bondedValue && this.state.password) {
       const _this = this
@@ -134,7 +144,7 @@ class BondAdditional extends Component {
                   { cancelable: false }
                 )
               }
-            }, 30000)
+            }, 15000)
             let transfer
             try {
               let bondValue = Number(value) * Number(_this.state.multiple)
@@ -331,7 +341,11 @@ class BondAdditional extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../assets/images/public/eye.png')}
@@ -359,6 +373,7 @@ class BondAdditional extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -375,6 +390,7 @@ class BondAdditional extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
+                activeOpacity={0.7}
                 onPress={this.Sign_and_Submit}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('Staking.BondExtra')}</Text>

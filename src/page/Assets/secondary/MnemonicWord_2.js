@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -13,7 +13,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import i18n from '../../../locales/i18n'
@@ -21,8 +21,9 @@ import i18n from '../../../locales/i18n'
 @inject('rootStore')
 @observer
 class MnemonicWord extends Component {
-  // 下一步
-  // The next step
+  /**
+   * @description 下一步|The next step
+   */
   Next() {
     this.props.navigation.navigate('MnemonicWord_3', {
       key: this.props.navigation.state.params.key,
@@ -111,7 +112,10 @@ class MnemonicWord extends Component {
             alignItems: 'center',
             marginBottom: 20
           }}
-          onPress={this.Next.bind(this)}
+          activeOpacity={0.7}
+          onPress={() => {
+            doubleClick(this.Next.bind(this))
+          }}
         >
           <Image source={require('../../../assets/images/Assets/Nextstep.png')} />
         </TouchableOpacity>

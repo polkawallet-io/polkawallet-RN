@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 22:22:06
+ * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
 import {
@@ -57,16 +57,19 @@ class Stake extends Component {
     this.Modify_way = this.Modify_way.bind(this)
   }
 
-  // 展示密码
-  // Show password
+  /**
+   * @description 展示密码|Show password
+   */
   lookpwd() {
     this.setState({
       ispwd: !this.state.ispwd
     })
   }
 
-  // 更改单位
-  // Switch units
+  /**
+   * @description 更改单位|Switch units
+   * @param {String} way_change 单位|Units
+   */
   Modify_way(way_change) {
     this.setState({
       isWayModel: false,
@@ -76,36 +79,46 @@ class Stake extends Component {
     })
   }
 
-  // 更改密码
-  // Change password
+  /**
+   * @description 更改密码|Change password
+   * @param {String} Changepassword 密码|Password
+   */
   onChangepassword(Changepassword) {
     this.setState({
       password: Changepassword
     })
   }
 
-  // unstakeThreshold changed
+  /**
+   * @description unstakeThreshold更改|unstakeThreshold changed
+   * @param {String} unstakeThreshold The value of unstakeThreshold
+   */
   onChangeUnstakeThreshold(unstakeThreshold) {
     this.setState({
       unstakeThreshold
     })
   }
 
-  // validatorPayment changed
+  /**
+   * @description alidatorPayment 更改 | alidatorPayment changed
+   * @param {String} validatorPayment The value of validatorPayment
+   */
   onChangeValidatorPayment(validatorPayment) {
     this.setState({
       validatorPayment: validatorPayment
     })
   }
 
-  // 点击取消
-  // Click Cancel
+  /**
+   * @description 点击取消|Click Cancel
+   */
   Cancel() {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
-  // 提交
-  // Submit
+  /**
+   * @description 提交|Submit
+   */
   Sign_and_Submit() {
     if (this.state.unstakeThreshold && this.state.validatorPayment && this.state.password) {
       const _this = this
@@ -126,7 +139,6 @@ class Stake extends Component {
               unstakeThreshold: _this.state.unstakeThreshold,
               validatorPayment: Number(_this.state.validatorPayment) * Number(_this.state.multiple)
             }
-            console.log(preferences)
             setTimeout(() => {
               if (_this.state.type == 'pending...') {
                 Alert.alert(
@@ -146,7 +158,7 @@ class Stake extends Component {
                   { cancelable: false }
                 )
               }
-            }, 30000)
+            }, 15000)
             let transfer
             try {
               transfer = await polkadotAPI.validate(preferences)
@@ -160,7 +172,6 @@ class Stake extends Component {
             }
             transfer.signAndSend(loadPair, ({ status }) => {
               let state = formatData(status)
-              console.log(state)
               if (state.Finalized) {
                 _this.setState({
                   isModal: false,
@@ -191,7 +202,6 @@ class Stake extends Component {
           })()
         },
         error: () => {
-          console.log('error')
           _this.setState({
             onlyone: 0,
             isModal: false
@@ -379,7 +389,11 @@ class Stake extends Component {
                 secureTextEntry={this.state.ispwd}
                 onChangeText={this.onChangepassword}
               />
-              <TouchableOpacity onPress={this.lookpwd} style={{ width: 50, marginLeft: -50, height: 44 }}>
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
                 <Image
                   style={{ width: 21, marginTop: 12, marginLeft: 14 }}
                   source={require('../../../assets/images/public/eye.png')}
@@ -407,6 +421,7 @@ class Stake extends Component {
                 backgroundColor: '#FF4081',
                 height: 49
               }}
+              activeOpacity={0.7}
               onPress={this.Cancel}
             >
               <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('TAB.Cancel')}</Text>
@@ -423,6 +438,7 @@ class Stake extends Component {
                   marginLeft: 10,
                   height: 49
                 }}
+                activeOpacity={0.7}
                 onPress={this.Sign_and_Submit}
               >
                 <Text style={{ fontWeight: '500', fontSize: 16, color: 'white' }}>{i18n.t('Staking.Validate')}</Text>

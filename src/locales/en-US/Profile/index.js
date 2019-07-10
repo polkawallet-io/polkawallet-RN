@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-22 00:27:44
+ * @Date: 2019-06-18 21:08:00
  */
 export default {
   Setting: 'Setting',
@@ -71,7 +71,7 @@ export default {
   NewPassword: 'New password',
   RepeatPassword: 'Repeat password',
   differentPassword: 'The two passwords are different',
-  Modify: 'Modify the success',
+  Modify: 'Password changed successfully',
   PasswordMistake: 'Password mistake',
   ChangePassword: 'Change Password',
   Change: 'Change',

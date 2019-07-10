@@ -1,14 +1,14 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-21 22:42:42
+ * @Date: 2019-06-18 21:08:00
  */
 import { observable } from 'mobx'
 
@@ -23,7 +23,8 @@ class StateStore {
 
   // wss
   // @observable ENDPOINT = 'wss://poc3-rpc.polkadot.io/'
-  @observable ENDPOINT = 'ws://45.32.115.98:9944/'
+  // @observable ENDPOINT = 'ws://45.32.115.98:9944/'
+  @observable ENDPOINT = 'ws://140.82.35.183:9944/'
 
   // 是否是第一次登陆
   // first time to use

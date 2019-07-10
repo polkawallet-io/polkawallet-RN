@@ -1,11 +1,11 @@
 /*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED
+ * This file is part of Polkawallet.
+
+ It under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License.
+ You should have received a copy of the GNU General Public License
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>.
 
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
@@ -23,7 +23,7 @@ import {
   Alert
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
@@ -46,28 +46,46 @@ class AddAddress extends Component {
     this.camrea = this.camrea.bind(this)
   }
 
+  /**
+   * @description 返回|Click the back
+   */
   back() {
     this.props.rootStore.stateStore.iscamera = 0
     this.props.navigation.navigate('Addresses')
   }
 
+  /**
+   * @description 切换扫描页面|Switch scan page
+   */
   camrea() {
     this.props.rootStore.stateStore.tocamera = 2
     this.props.navigation.navigate('Camera')
   }
 
+  /**
+   * @description 更换名称|Change name
+   * @param {String} ChangeName 更换的名称|The name to change
+   */
   onChangeName(ChangeName) {
     this.setState({
       name: ChangeName
     })
   }
 
+  /**
+   * @description 更改备注|Change memo
+   * @param {String} ChangeMemo 更换的备注|The memo to change
+   */
   onChangeMemo(ChangeMemo) {
     this.setState({
       memo: ChangeMemo
     })
   }
 
+  /**
+   * @description 更改地址|Change address
+   * @param {String} ChangeAddress 地址|Address
+   */
   onChangeAddress(ChangeAddress) {
     if (this.props.rootStore.stateStore.iscamera == 1) {
       this.props.rootStore.stateStore.iscamera = 0
@@ -77,6 +95,9 @@ class AddAddress extends Component {
     })
   }
 
+  /**
+   * @description 最后点击保存|Click the save
+   */
   save() {
     if (!this.state.name || !this.state.memo || !this.state.address) {
       return Alert.alert('', i18n.t('TAB.enterInformation'))
@@ -152,7 +173,11 @@ class AddAddress extends Component {
                         }
                       />
                       {index == 2 && (
-                        <TouchableOpacity onPress={this.camrea}>
+                        <TouchableOpacity
+                          style={{ padding: 20, marginLeft: -30 }}
+                          activeOpacity={0.7}
+                          onPress={this.camrea}
+                        >
                           <Image
                             style={{ width: 20, height: 20 }}
                             source={require('../../../assets/images/public/addaddresses_code.png')}
@@ -166,7 +191,13 @@ class AddAddress extends Component {
             })}
           </View>
         </RNKeyboardAvoidView>
-        <TouchableOpacity style={styles.Change} onPress={this.save}>
+        <TouchableOpacity
+          style={styles.Change}
+          onPress={() => {
+            doubleClick(this.save)
+          }}
+          activeOpacity={0.7}
+        >
           <Image source={require('../../../assets/images/public/addaddresses_save.png')} />
         </TouchableOpacity>
       </SafeAreaView>
