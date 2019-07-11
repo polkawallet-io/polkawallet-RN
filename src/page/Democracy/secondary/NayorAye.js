@@ -158,90 +158,92 @@ class NayorAye extends Component {
         {/* 标题栏 | Title bar */}
 
         <Header navigation={this.props.navigation} title={i18n.t('Democracy.Voting')} theme="dark" />
-        <RNKeyboardAvoidView>
-          <View style={[styles.nominate_view, { justifyContent: 'space-between' }]}>
-            <View style={{ flex: 1 }}>
-              {/* index */}
-              <Text style={{ color: '#3E2D32', fontSize: 18, fontWeight: '500' }}>democrary.vote</Text>
-              <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 40 }}>
-                {i18n.t('Democracy.referendumIndex')}:
-              </Text>
-              <TextInput
-                style={[
-                  styles.textInputStyle,
-                  {
-                    marginTop: 21,
-                    width: ScreenWidth * 0.9,
-                    height: 49,
-                    fontSize: 13,
-                    backgroundColor: '#F9F9F9'
-                  }
-                ]}
-                placeholder={String(this.state.index)}
-                placeholderTextColor="#3E2D32"
-                underlineColorAndroid="#ffffff00"
-                editable={false}
-              />
-              {/* choose */}
-              <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 20 }}>{i18n.t('Democracy.vote')}:</Text>
-              <TextInput
-                style={[
-                  styles.textInputStyle,
-                  {
-                    marginTop: 21,
-                    width: ScreenWidth * 0.9,
-                    height: 49,
-                    fontSize: 13,
-                    backgroundColor: '#F9F9F9'
-                  }
-                ]}
-                placeholder={String(this.state.choose)}
-                placeholderTextColor="#3E2D32"
-                underlineColorAndroid="#ffffff00"
-                editable={false}
-              />
-              {/* password */}
-              <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 20 }}>{i18n.t('TAB.unlockPassword')}</Text>
-              <View
-                style={{
-                  width: ScreenWidth * 0.9,
-                  flexDirection: 'row',
-                  marginTop: 21,
-                  alignItems: 'center'
-                }}
-              >
-                <CustomKeyboard.CustomTextInput
+        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
+          <RNKeyboardAvoidView>
+            <View style={[styles.nominate_view, { justifyContent: 'space-between' }]}>
+              <View style={{ flex: 1 }}>
+                {/* index */}
+                <Text style={{ color: '#3E2D32', fontSize: 18, fontWeight: '500' }}>democrary.vote</Text>
+                <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 40 }}>
+                  {i18n.t('Democracy.referendumIndex')}:
+                </Text>
+                <TextInput
                   style={[
                     styles.textInputStyle,
                     {
+                      marginTop: 21,
                       width: ScreenWidth * 0.9,
                       height: 49,
                       fontSize: 13,
                       backgroundColor: '#F9F9F9'
                     }
                   ]}
-                  customKeyboardType="safeKeyBoard"
-                  placeholder=""
-                  placeholderTextColor="#666666"
+                  placeholder={String(this.state.index)}
+                  placeholderTextColor="#3E2D32"
                   underlineColorAndroid="#ffffff00"
-                  secureTextEntry={this.state.ispwd}
-                  onChangeText={this.onChangepassword}
+                  editable={false}
                 />
-                <TouchableOpacity
+                {/* choose */}
+                <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 20 }}>{i18n.t('Democracy.vote')}:</Text>
+                <TextInput
+                  style={[
+                    styles.textInputStyle,
+                    {
+                      marginTop: 21,
+                      width: ScreenWidth * 0.9,
+                      height: 49,
+                      fontSize: 13,
+                      backgroundColor: '#F9F9F9'
+                    }
+                  ]}
+                  placeholder={String(this.state.choose)}
+                  placeholderTextColor="#3E2D32"
+                  underlineColorAndroid="#ffffff00"
+                  editable={false}
+                />
+                {/* password */}
+                <Text style={{ fontSize: 18, color: '#3E2D32', marginTop: 20 }}>{i18n.t('TAB.unlockPassword')}</Text>
+                <View
                   style={{
-                    width: 32,
-                    justifyContent: 'center',
-                    height: 49,
-                    marginLeft: -40
+                    width: ScreenWidth * 0.9,
+                    flexDirection: 'row',
+                    marginTop: 21,
+                    alignItems: 'center'
                   }}
-                  onPress={this.lookpwd}
                 >
-                  <Image style={{ tintColor: '#AAAAAA' }} source={require('../../../assets/images/public/eye.png')} />
-                </TouchableOpacity>
+                  <CustomKeyboard.CustomTextInput
+                    style={[
+                      styles.textInputStyle,
+                      {
+                        width: ScreenWidth * 0.9,
+                        height: 49,
+                        fontSize: 13,
+                        backgroundColor: '#F9F9F9'
+                      }
+                    ]}
+                    customKeyboardType="safeKeyBoard"
+                    placeholder=""
+                    placeholderTextColor="#666666"
+                    underlineColorAndroid="#ffffff00"
+                    secureTextEntry={this.state.ispwd}
+                    onChangeText={this.onChangepassword}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      width: 32,
+                      justifyContent: 'center',
+                      height: 49,
+                      marginLeft: -40
+                    }}
+                    onPress={this.lookpwd}
+                  >
+                    <Image style={{ tintColor: '#AAAAAA' }} source={require('../../../assets/images/public/eye.png')} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </RNKeyboardAvoidView>
+          </RNKeyboardAvoidView>
+        </CustomKeyboard.AwareCusKeyBoardScrollView>
         {/* Cancel or nominate */}
         <View
           style={{

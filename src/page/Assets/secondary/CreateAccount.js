@@ -33,7 +33,6 @@ import Keyring from '@polkadot/keyring'
 import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
 import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
-
 import { observer, inject } from 'mobx-react'
 
 import { ScreenWidth, ScreenHeight } from '../../../util/Common'
@@ -475,8 +474,8 @@ class CreateAccount extends Component {
           </Text>
           <View />
         </View>
-        <RNKeyboardAvoidView>
-          <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
+        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
+          <RNKeyboardAvoidView>
             <View style={{ alignItems: 'center' }}>
               {/* 头像 | Identicon */}
               <View style={[styles.imageview]}>
@@ -668,8 +667,8 @@ class CreateAccount extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-          </CustomKeyboard.AwareCusKeyBoardScrollView>
-        </RNKeyboardAvoidView>
+          </RNKeyboardAvoidView>
+        </CustomKeyboard.AwareCusKeyBoardScrollView>
       </SafeAreaView>
     )
   }
