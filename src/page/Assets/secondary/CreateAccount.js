@@ -115,10 +115,10 @@ class CreateAccount extends Component {
           decimals: props.get('tokenDecimals'),
           unit: props.get('tokenSymbol')
         })
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
       })()
     })
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
   }
 
   /**
