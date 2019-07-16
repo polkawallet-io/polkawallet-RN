@@ -42,7 +42,6 @@ import Unstake from './src/page/Staking/secondary/Unstake'
 import Unnominate from './src/page/Staking/secondary/Unnominate'
 import Change_Password from './src/page/Profile/secondary/Change/ChangePassword'
 import Change_Name from './src/page/Profile/secondary/Change/ChangeName'
-import NayorAye from './src/page/Democracy/secondary/NayorAye'
 import Settings from './src/page/Profile/secondary/Settings'
 import Set_Node from './src/page/Profile/secondary/Settings/SetNode'
 import About from './src/page/Profile/secondary/About'
@@ -85,7 +84,6 @@ const Polkawallet_App = StackNavigator({
   Unnominate: { screen: Unnominate, navigationOptions: { header: null } },
   Change_Password: { screen: Change_Password, navigationOptions: { header: null } },
   Change_Name: { screen: Change_Name, navigationOptions: { header: null } },
-  NayorAye: { screen: NayorAye, navigationOptions: { header: null } },
   Settings: { screen: Settings, navigationOptions: { header: null } },
   Set_Node: { screen: Set_Node, navigationOptions: { header: null } },
   About: { screen: About, navigationOptions: { header: null } },

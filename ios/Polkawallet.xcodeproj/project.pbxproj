@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		000DFB7521F9C42700E6CD63 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 000DFB4821F9C42700E6CD63 /* main.jsbundle */; };
 		000DFB7621F9C42700E6CD63 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 000DFB7421F9C42700E6CD63 /* assets */; };
@@ -69,6 +68,7 @@
 		EA4F2C70FA9745B2AEB680D8 /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CAE28FA9ED644BB8A90B29C1 /* libRNRandomBytes.a */; };
 		EACC091644BE4B1AAA632D77 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA731E8B44F34977B0642957 /* SystemConfiguration.framework */; };
 		F7436684CD37428E96C9905E /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 118F184CEC284B5490A606B2 /* libRNSVG-tvOS.a */; };
+		97C1DFEF4C9D44E2BA75C6AA /* libCustomKeyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -531,6 +531,8 @@
 		D9BAB2C522B22B4F00F5A2AD /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F60DD03E7F094414B6A6D842 /* RNSensitiveInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSensitiveInfo.xcodeproj; path = "../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo.xcodeproj"; sourceTree = "<group>"; };
 		FE0A9E285E7D4EAB8F411C9F /* libRNSecureStorage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSecureStorage.a; sourceTree = "<group>"; };
+		BEA2E3122CD84B3E96E03DCB /* CustomKeyboard.xcodeproj */ = {isa = PBXFileReference; name = "CustomKeyboard.xcodeproj"; path = "../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */ = {isa = PBXFileReference; name = "libCustomKeyboard.a"; path = "libCustomKeyboard.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -584,6 +586,7 @@
 				4C33F509D1F4478C83DD451C /* UIKit.framework in Frameworks */,
 				2BC6C56F9AE24E468C87B336 /* libresolv.tbd in Frameworks */,
 				0A08CDE0D8D94FF895B95250 /* CoreGraphics.framework in Frameworks */,
+				97C1DFEF4C9D44E2BA75C6AA /* libCustomKeyboard.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +900,7 @@
 				1A53F47271264C80B62BE844 /* QrCode.xcodeproj */,
 				C84F6B4634E64B83B59F74C4 /* RCTJCoreModule.xcodeproj */,
 				4CC5655425B74A3DBA855EA9 /* RCTJPushModule.xcodeproj */,
+				BEA2E3122CD84B3E96E03DCB /* CustomKeyboard.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1739,12 +1743,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = PolkawalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1792,6 +1798,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = PolkawalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1855,6 +1862,7 @@
 					"eact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = Polkawallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1901,6 +1909,7 @@
 					"eact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = Polkawallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1944,11 +1953,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = "Polkawallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2005,11 +2016,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = "Polkawallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2065,11 +2078,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = "Polkawallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2125,11 +2140,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-qr-scanneriosQrCode",
 					"$(SRCROOT)/../node_modules/jcore-react-native/ios/RCTJCoreModule",
 					"$(SRCROOT)/../node_modules/jpush-react-native/ios/RCTJPushModule",
+					"$(SRCROOT)/../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard",
 				);
 				INFOPLIST_FILE = "Polkawallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

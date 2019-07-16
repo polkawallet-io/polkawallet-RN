@@ -159,6 +159,7 @@ configurations.all {
 }
 
 dependencies {
+    implementation project(':react-native-yusha-customkeyboard')
     implementation project(':jcore-react-native')
     implementation project(':jpush-react-native')
     implementation project(':react-native-qr-scanner')
