@@ -25,6 +25,7 @@ import {
   InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, formatData, checkPwd } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
@@ -221,82 +222,84 @@ class Nominate extends Component {
         >
           <Header title={i18n.t('Staking.Nominate')} theme="dark" navigation={this.props.navigation} />
         </View>
-        <RNKeyboardAvoidView>
-          <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
-            <Text
-              style={{
-                marginTop: 40,
-                color: '#3E2D32',
-                fontSize: 20,
-                marginBottom: 40,
-                fontWeight: '600'
-              }}
-            >
-              {i18n.t('Staking.NominateValidator')}
-            </Text>
-            <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.nominateAddress')}</Text>
-            <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.multipleAddresses')}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextInput
+        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
+          <RNKeyboardAvoidView>
+            <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
+              <Text
                 style={{
-                  width: ScreenWidth - 40,
-                  fontSize: 14,
+                  marginTop: 40,
                   color: '#3E2D32',
-                  height: 44,
-                  paddingHorizontal: 15,
-                  borderColor: '#CCCCCC',
-                  borderWidth: 1,
-                  borderRadius: 6
+                  fontSize: 20,
+                  marginBottom: 40,
+                  fontWeight: '600'
                 }}
-                value={this.state.address}
-                placeholderTextColor="#666666"
-                underlineColorAndroid="#ffffff00"
-                placeholder={this.props.rootStore.stateStore.tonominate == 0 ? '' : this.state.address}
-                // editable={this.props.rootStore.stateStore.tonominate == 0 ? true : false}
-                onChangeText={this.onChangeAddress}
-              />
-            </View>
-
-            <Text
-              style={{
-                color: '#3E2D32',
-                fontSize: 16,
-                marginBottom: 12,
-                marginTop: 20,
-                fontWeight: '600'
-              }}
-            >
-              {i18n.t('TAB.unlockPassword')}
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextInput
-                style={{
-                  width: ScreenWidth - 40,
-                  fontSize: 14,
-                  color: '#3E2D32',
-                  height: 44,
-                  paddingHorizontal: 15,
-                  borderColor: '#CCCCCC',
-                  borderWidth: 1,
-                  borderRadius: 6
-                }}
-                secureTextEntry={this.state.ispwd}
-                onChangeText={this.onChangepassword}
-              />
-              <TouchableOpacity
-                onPress={this.lookpwd}
-                activeOpacity={0.7}
-                style={{ width: 50, marginLeft: -50, height: 44 }}
               >
-                <Image
-                  style={{ width: 21, marginTop: 12, marginLeft: 14 }}
-                  source={require('../../../assets/images/public/eye.png')}
+                {i18n.t('Staking.NominateValidator')}
+              </Text>
+              <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.nominateAddress')}</Text>
+              <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.multipleAddresses')}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TextInput
+                  style={{
+                    width: ScreenWidth - 40,
+                    fontSize: 14,
+                    color: '#3E2D32',
+                    height: 44,
+                    paddingHorizontal: 15,
+                    borderColor: '#CCCCCC',
+                    borderWidth: 1,
+                    borderRadius: 6
+                  }}
+                  value={this.state.address}
+                  placeholderTextColor="#666666"
+                  underlineColorAndroid="#ffffff00"
+                  placeholder={this.props.rootStore.stateStore.tonominate == 0 ? '' : this.state.address}
+                  // editable={this.props.rootStore.stateStore.tonominate == 0 ? true : false}
+                  onChangeText={this.onChangeAddress}
                 />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </RNKeyboardAvoidView>
+              </View>
 
+              <Text
+                style={{
+                  color: '#3E2D32',
+                  fontSize: 16,
+                  marginBottom: 12,
+                  marginTop: 20,
+                  fontWeight: '600'
+                }}
+              >
+                {i18n.t('TAB.unlockPassword')}
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <CustomKeyboard.CustomTextInput
+                  style={{
+                    width: ScreenWidth - 40,
+                    fontSize: 14,
+                    color: '#3E2D32',
+                    height: 44,
+                    paddingHorizontal: 15,
+                    borderColor: '#CCCCCC',
+                    borderWidth: 1,
+                    borderRadius: 6
+                  }}
+                  customKeyboardType="safeKeyBoard"
+                  secureTextEntry={this.state.ispwd}
+                  onChangeText={this.onChangepassword}
+                />
+                <TouchableOpacity
+                  onPress={this.lookpwd}
+                  activeOpacity={0.7}
+                  style={{ width: 50, marginLeft: -50, height: 44 }}
+                >
+                  <Image
+                    style={{ width: 21, marginTop: 12, marginLeft: 14 }}
+                    source={require('../../../assets/images/public/eye.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </RNKeyboardAvoidView>
+        </CustomKeyboard.AwareCusKeyBoardScrollView>
         {/* Cancel or nominate */}
         <View style={{ justifyContent: 'center', marginBottom: 20 }}>
           <View

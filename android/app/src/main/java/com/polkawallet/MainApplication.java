@@ -3,6 +3,7 @@ package com.polkawallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.yusha.customKeyboard.RNCustomKeyboardPackage;
 import com.lewin.qrcode.QRScanReaderPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import cn.reactnative.modules.update.UpdatePackage;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCustomKeyboardPackage(),
             new QRScanReaderPackage(),
             new RNI18nPackage(),
             new UpdatePackage(),

@@ -11,19 +11,9 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  Image,
-  Modal,
-  Alert,
-  StatusBar,
-  SafeAreaView
-} from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Image, Modal, Alert, StatusBar, SafeAreaView } from 'react-native'
 import { observer, inject } from 'mobx-react'
+import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { formatData, ScreenWidth, ScreenHeight, checkPwd } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
@@ -193,62 +183,65 @@ class Unstake extends Component {
         >
           <Header title={i18n.t('Staking.Unvalidate')} theme="dark" navigation={this.props.navigation} />
         </View>
-        <RNKeyboardAvoidView>
-          <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
-            <Text
-              style={{
-                marginTop: 40,
-                color: '#3E2D32',
-                fontSize: 20,
-                marginBottom: 40,
-                fontWeight: '600'
-              }}
-            >
-              staking.chill
-            </Text>
-            <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.UnvalidateTip')}</Text>
-            <Text
-              style={{
-                color: '#3E2D32',
-                fontSize: 16,
-                marginBottom: 12,
-                marginTop: 20,
-                fontWeight: '600'
-              }}
-            >
-              {i18n.t('TAB.unlockPassword')}
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <TextInput
+        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
+          <RNKeyboardAvoidView>
+            <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
+              <Text
                 style={{
-                  width: ScreenWidth - 40,
-                  fontSize: 14,
+                  marginTop: 40,
                   color: '#3E2D32',
-                  height: 44,
-                  paddingHorizontal: 15,
-                  borderColor: '#CCCCCC',
-                  borderWidth: 1,
-                  borderRadius: 6
+                  fontSize: 20,
+                  marginBottom: 40,
+                  fontWeight: '600'
                 }}
-                placeholder=""
-                placeholderTextColor="#666666"
-                underlineColorAndroid="#ffffff00"
-                secureTextEntry={this.state.ispwd}
-                onChangeText={this.onChangepassword}
-              />
-              <TouchableOpacity
-                onPress={this.lookpwd}
-                activeOpacity={0.7}
-                style={{ width: 50, marginLeft: -50, height: 44 }}
               >
-                <Image
-                  style={{ width: 21, marginTop: 12, marginLeft: 14 }}
-                  source={require('../../../assets/images/public/eye.png')}
+                staking.chill
+              </Text>
+              <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('Staking.UnvalidateTip')}</Text>
+              <Text
+                style={{
+                  color: '#3E2D32',
+                  fontSize: 16,
+                  marginBottom: 12,
+                  marginTop: 20,
+                  fontWeight: '600'
+                }}
+              >
+                {i18n.t('TAB.unlockPassword')}
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <CustomKeyboard.CustomTextInput
+                  style={{
+                    width: ScreenWidth - 40,
+                    fontSize: 14,
+                    color: '#3E2D32',
+                    height: 44,
+                    paddingHorizontal: 15,
+                    borderColor: '#CCCCCC',
+                    borderWidth: 1,
+                    borderRadius: 6
+                  }}
+                  customKeyboardType="safeKeyBoard"
+                  placeholder=""
+                  placeholderTextColor="#666666"
+                  underlineColorAndroid="#ffffff00"
+                  secureTextEntry={this.state.ispwd}
+                  onChangeText={this.onChangepassword}
                 />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={this.lookpwd}
+                  activeOpacity={0.7}
+                  style={{ width: 50, marginLeft: -50, height: 44 }}
+                >
+                  <Image
+                    style={{ width: 21, marginTop: 12, marginLeft: 14 }}
+                    source={require('../../../assets/images/public/eye.png')}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </RNKeyboardAvoidView>
+          </RNKeyboardAvoidView>
+        </CustomKeyboard.AwareCusKeyBoardScrollView>
         {/* Cancel or UnBond */}
         <View style={{ justifyContent: 'center', marginBottom: 20 }}>
           <View
