@@ -12,6 +12,8 @@ if (typeof process === 'undefined') {
 }
 
 process.browser = false
+process.env.CRYPTO_ASM = true
+
 if (typeof Buffer === 'undefined') global.Buffer = require('buffer').Buffer
 
 // global.location = global.location || { port: 80 }

@@ -938,6 +938,11 @@
   resolved "https://registry.yarnpkg.com/@polkadot/wasm-crypto/-/wasm-crypto-0.10.1.tgz#284e57e102050cca1586b7b1f008f64224147eb4"
   integrity sha512-hI3OYftMGJkDetTe1DeU9aH4euk6WVmAMFszslNrCxHMFFkemEgACykwpyuOdCjv24VZP/cMsrVskKix1GzSYQ==
 
+"@polkadot/wasm-crypto@^0.13.0-beta.1":
+  version "0.13.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/wasm-crypto/-/wasm-crypto-0.13.0-beta.1.tgz#1584cffbb7c58a387002f16b2f451941da0895ec"
+  integrity sha512-Iv7pecXE6Jb2DPBCe1aqh76FgWVYI1r3qWrwHVXVogpnwg21+mZLkDIVqTRgqn5YLBYQzWnSP2SNeA8TGhVo1w==
+
 "@react-native-community/cli@^1.2.1":
   version "1.9.8"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli/-/cli-1.9.8.tgz#8488699f78b146cab2d7451951c4218671812cdc"
