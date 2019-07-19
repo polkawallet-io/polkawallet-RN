@@ -11,7 +11,7 @@ if (typeof process === 'undefined') {
   }
 }
 
-process.browser = false
+process.browser = true
 process.env.CRYPTO_ASM = true
 
 if (typeof Buffer === 'undefined') global.Buffer = require('buffer').Buffer
@@ -25,4 +25,4 @@ if (typeof localStorage !== 'undefined') {
 
 // If using the crypto shim, uncomment the following line to ensure
 // crypto is loaded first, so it can populate global.crypto
-// require('crypto')
+require('crypto')
