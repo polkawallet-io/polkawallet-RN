@@ -11,6 +11,7 @@
  * @Date: 2019-06-18 21:08:00
  */
 /** @format */
+import './shim'
 import 'node-libs-react-native/globals'
 import { AppRegistry } from 'react-native'
 import Api from '@polkadot/api/promise'
