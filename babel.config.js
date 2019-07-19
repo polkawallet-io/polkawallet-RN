@@ -1,5 +1,3 @@
-require('./shim')
-
 module.exports = {
   presets: ['module:metro-react-native-babel-preset'],
   plugins: [
@@ -34,7 +32,6 @@ module.exports = {
           _stream_readable: 'readable-stream/readable',
           _stream_transform: 'readable-stream/transform',
           _stream_writable: 'readable-stream/writable',
-          '@polkadot/wasm-crypto': '@polkadot/wasm-crypto/wasm_asm',
           vm: 'vm-browserify'
         },
         throwForNonStringLiteral: true
