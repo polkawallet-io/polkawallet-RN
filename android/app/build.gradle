@@ -102,7 +102,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "0.1.9"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "6f7aadcc0ccf0f3db8467c38",
                 APP_CHANNEL : "default"
@@ -112,7 +112,7 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         missingDimensionStrategy 'react-native-camera', 'mlkit'
-
+        multiDexEnabled = true
     }
     signingConfigs {
         release {
@@ -159,7 +159,11 @@ configurations.all {
 }
 
 dependencies {
-    implementation project(':react-native-yusha-customkeyboard')
+    implementation project(':react-native-touch-id')
+    implementation project(':react-native-local-barcode-recognizer')
+    implementation project(':react-native-image-picker')
+    implementation project(':rn-camera-roll')
+    implementation project(':react-native-view-shot')
     implementation project(':jcore-react-native')
     implementation project(':jpush-react-native')
     implementation project(':react-native-qr-scanner')

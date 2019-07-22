@@ -64,7 +64,7 @@ class About extends Component {
         {/* 版本 | Version */}
         <View style={{ flex: 1 }} />
         <View style={[styles.msgView, { marginBottom: ScreenHeight / 30 }]}>
-          <Text style={{ fontSize: 15, color: '#AAAAAA' }}>{i18n.t('Profile.Version')}: 0.1.7</Text>
+          <Text style={{ fontSize: 15, color: '#AAAAAA' }}>{i18n.t('Profile.Version')}: 0.1.9</Text>
         </View>
       </SafeAreaView>
     )

@@ -58,6 +58,7 @@ class MnemonicWord extends Component {
     this.state = {
       selectWM: [], // 展示选择的WM | Show the selected WM
       WM: [], // 展示的WM | The WM to show
+      // oldWM: String(this.props.navigation.state.params.key).split(' '), // 预留判断的 | Reserved for judgment
       oldWM: String(this.props.navigation.state.params.key).split(' '), // 预留判断的 | Reserved for judgment
       selectTag: false // 判断标识。false不匹配，true匹配 | Determine the identity. False does not match, true does
     }
@@ -124,7 +125,7 @@ class MnemonicWord extends Component {
    * @param {Object} one 添加项|Add item
    */
   addWM(one) {
-    this.changeWM(one)
+    this.changeWM(one, 'add')
     let selectWM = this.state.selectWM
     selectWM.push(one)
     this.setState(
@@ -148,11 +149,12 @@ class MnemonicWord extends Component {
    * @param {Object} one 删除项|Remove item
    */
   removeWM(one) {
-    this.changeWM(one)
+    this.changeWM(one, 'remove')
     let selectWM = this.state.selectWM
     for (let i = 0; i < selectWM.length; i++) {
       if (selectWM[i].text == one.text) {
         selectWM.splice(i, 1)
+        break
       }
     }
     this.setState({
@@ -165,13 +167,23 @@ class MnemonicWord extends Component {
    * @description 改变下方展示的Word Mnemonic|Change the Word Mnemonic shown below
    * @param {Object} one 改变项|Change item
    */
-  changeWM(one) {
+  changeWM(one, type) {
     let WM = this.state.WM
-    for (let i = 0; i < WM.length; i++) {
-      if (WM[i].text == one.text) {
-        WM[i].tap = !WM[i].tap
+    if (type == 'add') {
+      for (let i = 0; i < WM.length; i++) {
+        if (WM[i].text == one.text && one.tap == true) {
+          WM[i].tap = false
+        }
+      }
+    } else if (type == 'remove') {
+      for (let i = 0; i < WM.length; i++) {
+        if (WM[i].text == one.text && WM[i].tap == false) {
+          WM[i].tap = true
+          break
+        }
       }
     }
+
     this.setState({
       WM
     })
@@ -286,9 +298,7 @@ class MnemonicWord extends Component {
                     style={styles.textView}
                     key={i}
                     activeOpacity={0.7}
-                    onPress={() => {
-                      doubleClick(this.removeWM.bind(this, v))
-                    }}
+                    onPress={this.removeWM.bind(this, v)}
                   >
                     <Text style={styles.text}>{v.text}</Text>
                   </TouchableOpacity>
@@ -319,9 +329,7 @@ class MnemonicWord extends Component {
                     style={styles.textView}
                     key={i}
                     activeOpacity={0.7}
-                    onPress={() => {
-                      doubleClick(this.addWM.bind(this, v))
-                    }}
+                    onPress={this.addWM.bind(this, v)}
                   >
                     <Text style={styles.text}>{v.text}</Text>
                   </TouchableOpacity>

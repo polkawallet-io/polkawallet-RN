@@ -19,7 +19,6 @@ import {
   SafeAreaView,
   StatusBar,
   AsyncStorage,
-  AppState,
   Alert,
   Animated,
   Platform,
@@ -45,6 +44,7 @@ import Identicon from 'polkadot-identicon-react-native'
 import SInfo from 'react-native-sensitive-info'
 import { formatBalance } from '@polkadot/util'
 import { observer, inject } from 'mobx-react'
+import TouchID from 'react-native-touch-id'
 import Right_menu from './secondary/RightMenu'
 import { ScreenWidth, ScreenHeight, axios } from '../../util/Common'
 import _updateConfig from '../../../update.json'
@@ -52,13 +52,17 @@ import i18n from '../../locales/i18n'
 import polkadotAPI from '../../util/polkadotAPI.js'
 import Loading from '../../components/Loading'
 import LoadingUtil from '../../components/LoadingUtil'
-import DataRepository from '../../util/DataRepository'
 
 function judgeObj(obj) {
   for (let attr in obj) {
     return false
   }
   return true
+}
+const optionalConfigObject = {
+  title: i18n.t('Profile.Authentication'), // Android
+  color: '#e00606', // Android,
+  fallbackLabel: 'Show Passcode' // iOS (if empty, then label is hidden)
 }
 @inject('rootStore')
 @observer
@@ -79,9 +83,7 @@ class Assets extends Component {
     this.Loading = this.Loading.bind(this)
     this.checkApi = this.checkApi.bind(this)
     this.interval = null
-    this.handleAppStateChange = this.handleAppStateChange.bind(this)
     this.doUpdate = this.doUpdate.bind(this)
-
     this.animatedValue = new Animated.Value(0)
     this.movingMargin = this.animatedValue.interpolate({
       inputRange: [0, 1],
@@ -97,6 +99,17 @@ class Assets extends Component {
   }
 
   /**
+   * @description 获取Store
+   * @param {String} key
+   */
+  getStore = async key => {
+    try {
+      const value = await AsyncStorage.getItem(key)
+      return value
+    } catch (error) {}
+  }
+
+  /**
    * @description 跳转交易页面|Jump to Coin_details page
    */
   Coin_details() {
@@ -108,15 +121,11 @@ class Assets extends Component {
    */
   checkApi() {
     ;(async () => {
-      new DataRepository()
-        .fetchLocalRepository('localLanguage')
-        .then(res => {
-          i18n.locale = res
-        })
-        .catch(error => {
-          i18n.locale = 'en'
-        })
       if (judgeObj(this.props.rootStore.stateStore.API)) {
+        let ENDPOINT = await this.getStore('ENDPOINT')
+        if (ENDPOINT) {
+          this.props.rootStore.stateStore.ENDPOINT = ENDPOINT
+        }
         LoadingUtil.showLoading()
         const api = await Api.create(new WsProvider(this.props.rootStore.stateStore.ENDPOINT))
         this.props.rootStore.stateStore.API = api
@@ -335,25 +344,6 @@ class Assets extends Component {
   }
 
   /**
-   * @description APP 前后台切换|APP front and background switching
-   * @param {String} appState 切换状态|Switch state
-   */
-  handleAppStateChange(appState) {
-    if (appState == 'background') {
-      this.props.rootStore.stateStore.api = {}
-    } else if (appState == 'active') {
-      this.checkApi()
-    }
-    if (appState == 'background' && this.props.rootStore.stateStore.GestureState == 2) {
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Gesture' })]
-      })
-      this.props.navigation.dispatch(resetAction)
-    }
-  }
-
-  /**
    * @description 更新app|Update the app
    * @param {*} info 更新信息|update information
    */
@@ -377,7 +367,15 @@ class Assets extends Component {
         ])
       })
       .catch(() => {
-        // Alert.alert('', i18n.t('Profile.UpdateFailed'))
+        Alert.alert('', i18n.t('Profile.UpdateFailed') + '\n' + i18n.t('Profile.gotoAppStore'), [
+          {
+            text: 'Yes',
+            onPress: () => {
+              Linking.openURL('https://polkawallet.io/#download')
+            }
+          },
+          { text: 'No' }
+        ])
       })
   }
 
@@ -391,14 +389,14 @@ class Assets extends Component {
         if (info.expired) {
           Alert.alert('', i18n.t('Profile.toAppStore'), [
             {
-              test: 'No',
-              style: 'cancel'
-            },
-            {
               text: 'Yes',
               onPress: () => {
                 Linking.openURL('https://polkawallet.io/#download')
               }
+            },
+
+            {
+              test: 'No'
             }
           ])
         } else if (info.upToDate) {
@@ -409,11 +407,12 @@ class Assets extends Component {
             `${i18n.t('Profile.checkNewV') + info.name},${i18n.t('Profile.download')}\n${info.description}`,
             [
               {
-                text: 'OK',
+                text: 'YES',
                 onPress: () => {
                   this.doUpdate(info)
                 }
-              }
+              },
+              { text: 'No' }
             ]
           )
         }
@@ -481,10 +480,16 @@ class Assets extends Component {
         this.Loading()
         this.changeAccount()
       })
+
       // 通知推送初始化
       // Notification push initialization
-      JPushModule.initPush()
-      JPushModule.addReceiveNotificationListener(this.receiveNotificationListener)
+      if (Platform.OS === 'android') {
+        JPushModule.initPush()
+        JPushModule.addReceiveNotificationListener(this.receiveNotificationListener)
+      } else if (Platform.OS === 'ios') {
+        /* eslint-disable no-undef */
+        this.subscription = NativeAppEventEmitter.addListener('ReceiveNotification', e => {})
+      }
     })
   }
 
@@ -494,9 +499,32 @@ class Assets extends Component {
     this._didBlurSubscription && this._didBlurSubscription.remove()
   }
 
+  pressHandler() {
+    TouchID.authenticate('', optionalConfigObject)
+      .then(success => {
+        // Alert.alert('Authenticated Successfully')
+        this.checkUpdate()
+      })
+      .catch(error => {
+        Alert.alert(
+          '',
+          i18n.t('Profile.AuthenticatedError'),
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                this.pressHandler()
+              },
+              style: 'cancel'
+            }
+          ],
+          { cancelable: false }
+        )
+      })
+  }
+
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.checkApi()
       if (isFirstTime) {
         markSuccess()
       }
@@ -505,14 +533,23 @@ class Assets extends Component {
         StatusBar.setBackgroundColor('#F14B79')
       }
       StatusBar.setBarStyle(Platform.OS == 'android' ? 'light-content' : 'dark-content')
-      AppState.addEventListener('change', this.handleAppStateChange)
       // 判断用户是否设置手势密码
       // Determines whether the user has set a gesture password
       AsyncStorage.getItem('Gesture').then(result => {
         if (result == null) {
           // 没有设置
           // Not set gesture password
-          this.checkUpdate()
+          AsyncStorage.getItem('TouchID').then(result => {
+            if (result == null) {
+              // 没有设置
+              // Not set TouchID password
+              this.checkUpdate()
+              this.props.rootStore.stateStore.TouchIDState = 0
+            } else {
+              this.props.rootStore.stateStore.TouchIDState = 1
+              this.pressHandler()
+            }
+          })
           this.props.rootStore.stateStore.GestureState = 0
         } else {
           // 设置了手势密码
@@ -526,7 +563,17 @@ class Assets extends Component {
             })
             this.props.navigation.dispatch(resetAction)
           } else {
-            this.checkUpdate()
+            AsyncStorage.getItem('TouchID').then(result => {
+              if (result == null) {
+                // 没有设置
+                // Not set TouchID password
+                this.checkUpdate()
+                this.props.rootStore.stateStore.TouchIDState = 0
+              } else {
+                this.props.rootStore.stateStore.TouchIDState = 1
+                this.pressHandler()
+              }
+            })
           }
         }
       })
@@ -601,7 +648,7 @@ class Assets extends Component {
                         ].account
                       }
                     </Text>
-                    <Text style={{ color: '#A29A9D', fontSize: 14, marginTop: -3 }}>{i18n.t('Assets.Account')}</Text>
+                    <Text style={{ color: '#A29A9D', fontSize: 14, marginTop: 5 }}>{i18n.t('Assets.Account')}</Text>
                   </View>
                   <View
                     style={{
@@ -748,7 +795,7 @@ class Assets extends Component {
                   }}
                 />
                 <Animated.View>
-                  <Right_menu p={this.props} t={this} />
+                  <Right_menu hide={this.hide.bind(this)} p={this.props} t={this} />
                 </Animated.View>
               </View>
             </Modal>

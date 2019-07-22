@@ -62,6 +62,13 @@ export default {
   // Transfer 页面
   enterValue: '请输入发送数量',
   enterInformation: '请输入正确的信息',
+  Cold: '冷钱包扫描',
+  ReadData: '读入签名数据',
+  ScanAndNext: '请用冷钱包扫描二维码，待签名完成进入下一步',
+  Next: '下一步',
+  ScanCold: '扫描冷钱包签名数据二维码',
+  // Sign 页面
+  signSuccess: '签名成功',
   // Transfer_details 页面
   Details: '交易详情',
   Successed: '成功',
@@ -75,6 +82,7 @@ export default {
   calling: '调用',
   withIndex: '账户交易编号',
   SignAndSubmit: '签名并提交',
+  Sign: '授权签名',
   // Receive
   CopyAddress: '复制地址',
   // MnemonicWord.js
@@ -92,5 +100,9 @@ export default {
   MWTip12: '知道了',
   MWTip13: '请准确抄写并安全备份助记词。',
   MWTip14: '请按顺序点击助记词，以确认您正确备份。',
-  MWTip15: '助记词顺序不正确，请校对'
+  MWTip15: '助记词顺序不正确，请校对',
+  // QRCode
+  shotErr: '截图失败，请稍后再试',
+  saveSuccess: '保存成功！',
+  saveErr: '保存失败！'
 }

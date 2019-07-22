@@ -21,6 +21,7 @@ export default {
   blocksLaunch: 'blocks launch',
   // referendums.js
   Active: 'Active',
+  History: 'History',
   // referendums/Active.js
   noReferendums: 'no available referendums',
   blocksEnd: 'blocks end',

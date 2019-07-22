@@ -23,8 +23,8 @@ class StateStore {
 
   // wss
   // @observable ENDPOINT = 'wss://poc3-rpc.polkadot.io/'
-  // @observable ENDPOINT = 'ws://45.32.115.98:9944/'
-  @observable ENDPOINT = 'ws://140.82.35.183:9944/'
+  @observable ENDPOINT = 'ws://rpc.polkawallet.io:9944/'
+  // @observable ENDPOINT = 'ws://140.82.35.183:9944/'
 
   // 是否是第一次登陆
   // first time to use
@@ -111,6 +111,16 @@ class StateStore {
   // Determine where it Scan Qr from; 0: from Assets page; 1: from Addresses page;
   @observable tocamera = 0
 
+  // 转账交易扫描标识， 默认0，1代表点击冷钱包扫描  ，2 代表读取签名信息
+  @observable ScanTransaction = 0
+
+  // 扫描得到的交易信息
+  @observable TransactionDetail = ''
+
+  // 扫描得到的签名信息
+  @observable SignDetail = ''
+
+  // 0代表从Assets界面，1代表transfer，2代表通讯录
   // 是否是扫码得到的地址
   // Got address from scan Qr?
   @observable iscamera = 0
@@ -127,6 +137,10 @@ class StateStore {
   // 手势密码的模式：0 代表无密码，1 代表确认密码，2 代表验证密码
   // The pattern of the gesture password; 0:  no password, 1:confirm password, 2: verify password
   @observable GestureState = 0
+
+  // 人脸密码、指纹密码的模式：0 代表无密码，1 代表有密码
+  // The pattern of the TouchID password; 0:  no password, 1:confirm password
+  @observable TouchIDState = 0
 }
 
 class RootStore {

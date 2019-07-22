@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  TextInput,
   Clipboard,
   Platform,
   StatusBar,
@@ -28,7 +29,6 @@ import {
 import Identicon from 'polkadot-identicon-react-native'
 import SInfo from 'react-native-sensitive-info'
 import { observer, inject } from 'mobx-react'
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
@@ -343,14 +343,13 @@ class ManageAccount extends Component {
             <View style={styles.modal}>
               <View style={styles.chooseview}>
                 <Text style={styles.prompt}>{i18n.t('Profile.unlockPassword')}</Text>
-                <CustomKeyboard.CustomTextInput
+                <TextInput
                   style={[
                     styles.textInputStyle,
                     {
                       borderColor: this.state.password == '' ? 'red' : '#4169E1'
                     }
                   ]}
-                  customKeyboardType="safeKeyBoard"
                   autoCapitalize="none"
                   placeholder={i18n.t('Profile.unlockPassword')}
                   placeholderTextColor="#DC143CA5"

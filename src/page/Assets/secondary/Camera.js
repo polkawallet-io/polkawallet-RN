@@ -11,14 +11,28 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, SafeAreaView, Platform } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, SafeAreaView, Platform, Alert } from 'react-native'
 import { QRscanner } from 'react-native-qr-scanner'
 import { observer, inject } from 'mobx-react'
-import { NavigationActions, StackActions } from 'react-navigation'
+// import { NavigationActions, StackActions } from 'react-navigation'
+import LocalBarcodeRecognizer from 'react-native-local-barcode-recognizer'
 import { ScreenHeight, ScannerType } from '../../../util/Common'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
+// 图片选择器
+const ImagePicker = require('react-native-image-picker')
 
+// 图片选择器参数设置
+const options = {
+  title: '请选择图片来源',
+  cancelButtonTitle: '取消',
+  takePhotoButtonTitle: null,
+  chooseFromLibraryButtonTitle: '相册图片',
+  storageOptions: {
+    skipBackup: true,
+    path: 'images'
+  }
+}
 @inject('rootStore')
 @observer
 class Scanner extends Component {
@@ -38,6 +52,33 @@ class Scanner extends Component {
     this.props.navigation.navigate('Tabbed_Navigation')
   }
 
+  // 选择照片按钮点击
+  choosePic() {
+    ImagePicker.showImagePicker(options, response => {
+      if (!response.didCancel && !response.error) {
+        // let source = { uri: response.uri }
+        // You can also display the image using data:
+        let source = { uri: 'data:image/jpeg;base64,' + response.data }
+
+        this.setState({
+          avatarSource: source
+        })
+        this.recoginze(source.uri)
+      }
+    })
+  }
+
+  async recoginze(base64) {
+    let result = await LocalBarcodeRecognizer.decode(base64.replace('data:image/jpeg;base64,', ''), {
+      codeTypes: ['ean13', 'qr']
+    })
+    if (result) {
+      this.onRead({ data: result })
+    } else {
+      Alert.alert('', '无法识别')
+    }
+  }
+
   render() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: '#000' }]}>
@@ -46,7 +87,11 @@ class Scanner extends Component {
           backgroundColor="#000" // 状态栏背景颜色 | Status bar background color
           barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} // 状态栏样式（黑字）| Status bar style (black)
         />
-        <Header navigation={this.props.navigation} />
+        <Header
+          navigation={this.props.navigation}
+          rightIcon={require('../../../assets/images/public/addresses_add.png')}
+          rightPress={this.choosePic.bind(this)}
+        />
         <QRscanner
           cornerColor="#F14B79"
           scanBarColor="#F14B79"
@@ -94,31 +139,32 @@ class Scanner extends Component {
   // The info from Scan Qr
   onRead = res => {
     let QRdata = ScannerType(res.data)
-    if (this.props.rootStore.stateStore.tocamera == 0) {
+    if (QRdata.type == 'signData') {
+      this.props.rootStore.stateStore.TransactionDetail = QRdata.data
+      this.props.navigation.navigate('Sign')
+    } else if (QRdata.type == 'SignDetail') {
+      this.props.rootStore.stateStore.SignDetail = QRdata.data
+      this.props.navigation.goBack()
+    } else if (this.props.rootStore.stateStore.tocamera == 0) {
       // Assets界面进来的
       // From Assets page
       this.props.rootStore.stateStore.iscamera = 1
       this.props.rootStore.stateStore.t_address = QRdata.data
-      let resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Transfer' })]
-      })
-      this.props.navigation.dispatch(resetAction)
-    }
-    if (this.props.rootStore.stateStore.tocamera == 1) {
+      this.props.navigation.replace('Transfer')
+    } else if (this.props.rootStore.stateStore.tocamera == 1) {
       // transfer界面进来的
       // From transfer page
       this.props.rootStore.stateStore.iscamera = 1
       this.props.rootStore.stateStore.t_address = QRdata.data
       this.props.navigation.navigate('Transfer')
-    }
-    if (this.props.rootStore.stateStore.tocamera == 2) {
+    } else if (this.props.rootStore.stateStore.tocamera == 2) {
       // 通讯录界面进来的
       // From Add_address page
       this.props.rootStore.stateStore.iscamera = 1
       this.props.rootStore.stateStore.QRaddress = QRdata.data
       this.props.navigation.navigate('Add_address')
     }
+    this.props.rootStore.stateStore.QRaddressType = QRdata.type
   }
 }
 const styles = StyleSheet.create({

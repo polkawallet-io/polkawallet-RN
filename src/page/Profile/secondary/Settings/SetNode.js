@@ -21,11 +21,10 @@ import {
   Alert,
   StatusBar,
   SafeAreaView,
-  InteractionManager
+  InteractionManager,
+  AsyncStorage
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import Api from '@polkadot/api/promise'
-import WsProvider from '@polkadot/rpc-provider/ws'
 import { ScreenWidth, ScreenHeight } from '../../../../util/Common'
 import Header from '../../../../components/Header'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
@@ -38,7 +37,7 @@ class SetNode extends Component {
     super(props)
     this.state = {
       node: '',
-      chooseNode: 'ws://45.32.115.98:9944/',
+      chooseNode: 'ws://rpc.polkawallet.io:9944/',
       isCustom: false
     }
     this.back = this.back.bind(this)
@@ -46,6 +45,19 @@ class SetNode extends Component {
     this.Set_Node = this.Set_Node.bind(this)
     this.chooseNode = this.chooseNode.bind(this)
     this.Noclick = this.Noclick.bind(this)
+  }
+
+  /**
+   * @description 设置缓存|Setting up the cache
+   * @param {String} key
+   * @param {String} value
+   */
+  setStore = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value)
+    } catch (error) {
+      // Error saving data
+    }
   }
 
   /**
@@ -88,9 +100,9 @@ class SetNode extends Component {
           style: 'cancel'
         },
         {
-          text: 'ws://45.32.115.98:9944/',
+          text: 'ws://rpc.polkawallet.io:9944/',
           onPress: () => {
-            this.setState({ chooseNode: 'ws://45.32.115.98:9944/' })
+            this.setState({ chooseNode: 'ws://rpc.polkawallet.io:9944/' })
           },
           style: 'cancel'
         },
@@ -121,10 +133,9 @@ class SetNode extends Component {
           onPress: () => {
             ;(async () => {
               this.props.rootStore.stateStore.ENDPOINT = this.state.chooseNode
-              const provider = new WsProvider(this.state.chooseNode)
-              const api = await Api.create(provider)
-              this.props.rootStore.stateStore.API = api
-              this.props.navigation.navigate('Tabbed_Navigation')
+              this.props.rootStore.stateStore.API = {}
+              this.setStore('ENDPOINT', this.state.chooseNode)
+              this.props.navigation.navigate('Assets')
             })()
           }
         }
@@ -167,7 +178,9 @@ class SetNode extends Component {
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  height: 50
+                  height: 50,
+                  marginTop: 20
+                  // paddingHorizontal: 20,
                 }}
                 activeOpacity={0.7}
                 onPress={this.state.isCustom ? this.Noclick : this.chooseNode}
@@ -194,7 +207,7 @@ class SetNode extends Component {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.text}>{i18n.t('Profile.NOTETip_2')}</Text>
+            {/* <Text style={styles.text}>{i18n.t('Profile.NOTETip_2')}</Text> */}
             {this.state.isCustom ? (
               <View>
                 <Text style={styles.text}>{i18n.t('Profile.enterNode')}</Text>
@@ -260,13 +273,14 @@ const styles = StyleSheet.create({
   },
   textInputStyle: {
     paddingVertical: 0,
-    marginTop: 20,
+    marginTop: 10,
     height: 50,
     width: ScreenWidth - 40,
     borderWidth: 1,
     borderColor: '#DCDCDC',
     fontSize: 18,
     borderRadius: 5,
+    marginLeft: -20,
     paddingHorizontal: 20
   },
   Touch: {

@@ -39,8 +39,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Assets_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Assets')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -62,8 +64,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Staking_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Staking')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -85,8 +89,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Democrscy_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Democracy')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -108,8 +114,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Profile.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Profile')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   }
@@ -145,10 +153,5 @@ export default class Navigation extends Component {
 
   render() {
     return <Tab />
-  }
-}
-const route = (navigation, path) => {
-  if (!navigation.isFocused() && !global.LoadingTip) {
-    navigation.navigate(path)
   }
 }

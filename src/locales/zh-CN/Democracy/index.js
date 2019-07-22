@@ -21,13 +21,14 @@ export default {
   blocksLaunch: '区块后发起',
   // referendums.js
   Active: '正在进行',
+  History: '历史记录',
   // referendums/Active.js
   noReferendums: '没有正在进行的公投',
   blocksEnd: '区块后结束',
   Threshold: '阀值',
   Aye: '赞成',
   Nay: '反对',
-  // secondary/NayorAye.js
+  // secondary/Vote.js
   VoteSuccess: '投票成功！',
   VoteFailed: '投票失败！',
   Voting: '投票',

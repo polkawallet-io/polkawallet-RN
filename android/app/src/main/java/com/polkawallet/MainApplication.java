@@ -3,7 +3,11 @@ package com.polkawallet;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.yusha.customKeyboard.RNCustomKeyboardPackage;
+import com.rnfingerprint.FingerprintAuthPackage;
+import cn.jystudio.local.barcode.recognizer.LocalBarcodeRecognizerPackage;
+import com.imagepicker.ImagePickerPackage;
+import fr.bamlab.rncameraroll.CameraRollPackage;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import com.lewin.qrcode.QRScanReaderPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import cn.reactnative.modules.update.UpdatePackage;
@@ -47,7 +51,11 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNCustomKeyboardPackage(),
+            new FingerprintAuthPackage(),
+            new LocalBarcodeRecognizerPackage(),
+            new ImagePickerPackage(),
+            new CameraRollPackage(),
+            new RNViewShotPackage(),
             new QRScanReaderPackage(),
             new RNI18nPackage(),
             new UpdatePackage(),

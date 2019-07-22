@@ -62,8 +62,32 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [JPUSHService setupWithOption:launchOptions appKey:@"6f7aadcc0ccf0f3db8467c38"
-                        channel:nil apsForProduction:nil];
+  if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
+    
+    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+    
+    entity.types = UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound;
+    
+    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+    
+  }else if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+    
+    //可以添加自定义categories
+    [JPUSHService registerForRemoteNotificationTypes:(UNAuthorizationOptionBadge |
+                                                      UNAuthorizationOptionSound |
+                                                      UNAuthorizationOptionAlert)
+                                          categories:nil];
+  }else {
+    
+    //categories 必须为nil
+    [JPUSHService registerForRemoteNotificationTypes:(UNAuthorizationOptionBadge |
+                                                      UNAuthorizationOptionSound |
+                                                      UNAuthorizationOptionAlert)
+                                          categories:nil];
+  }
+  
+  [JPUSHService setupWithOption:launchOptions appKey:appKey
+                        channel:nil apsForProduction:isProduction];
 
   NSURL *jsCodeLocation;
 
@@ -87,5 +111,21 @@
   [self.window makeKeyAndVisible];
   return YES;
 }
+// add --- start -----
+//这个方法是清除icon角标
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+  [application setApplicationIconBadgeNumber:0];
+  //  [application cancelAllLocalNotifications];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  
+  //Optional
+  
+  NSLog(@"did Fail To Register For Remote Notifications With Error: %@", error);
+  
+}
+
+//add -- end ------
 
 @end

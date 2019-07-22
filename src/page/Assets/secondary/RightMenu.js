@@ -28,6 +28,7 @@ class RightMenu extends Component {
     this.Create_Account = this.Create_Account.bind(this)
     this.Switch_Account = this.Switch_Account.bind(this)
     this.camera = this.camera.bind(this)
+    this.hide = this.props.hide
   }
 
   /**
@@ -69,17 +70,25 @@ class RightMenu extends Component {
           <View
             style={{
               flexDirection: 'row',
-              height: 64,
+              height: 45,
               marginLeft: 20,
               justifyContent: 'space-between',
               alignItems: 'center'
             }}
           >
             <Text style={{ color: '#FFF', fontSize: 20 }}>{i18n.t('Assets.Menu')}</Text>
-            <Image
-              style={{ width: 20, height: 20, marginRight: 20 }}
-              source={require('../../../assets/images/Assets/Menu_line.png')}
-            />
+            <TouchableOpacity
+              style={{ padding: 20, marginRight: -10 }}
+              onPress={() => {
+                this.hide()
+              }}
+              activeOpacity={0.7}
+            >
+              <Image
+                style={{ width: 20, height: 20, marginRight: 20 }}
+                source={require('../../../assets/images/Assets/Menu_line.png')}
+              />
+            </TouchableOpacity>
           </View>
           <View style={{ height: 180 }}>
             <ScrollView>

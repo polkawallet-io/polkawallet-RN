@@ -10,7 +10,6 @@
  * @Autor: POLKAWALLET LIMITED
  * @Date: 2019-06-18 21:08:00
  */
-/* eslint no-return-assign: 2 */
 import React, { Component } from 'react'
 import {
   StyleSheet,
@@ -18,23 +17,19 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  TextInput,
   Alert,
   StatusBar,
   SafeAreaView,
-  Keyboard,
   InteractionManager
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot/util'
-import { NavigationActions, StackActions } from 'react-navigation'
 import SInfo from 'react-native-sensitive-info'
 import Keyring from '@polkadot/keyring'
 import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { observer, inject } from 'mobx-react'
-
 import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
@@ -73,22 +68,6 @@ class CreateAccount extends Component {
     this.Modify_way = this.Modify_way.bind(this)
     this.Reset = this.Reset.bind(this)
     this.onChangpasswordErepeat = this.onChangpasswordErepeat.bind(this)
-
-    CustomKeyboard.keyBoardAPI('safeKeyBoard')(CustomKeyboard.SafeKeyBoardView)
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove()
-    this.keyboardDidHideListener.remove()
-  }
-
-  _keyboardDidShow() {
-    Keyboard.dismiss()
-    return false
-  }
-
-  _keyboardDidHide() {
-    console.warn('Keyboard hidden')
   }
 
   /**
@@ -100,16 +79,9 @@ class CreateAccount extends Component {
         let key = mnemonicGenerate()
         this.pair = keyring.addFromMnemonic(key)
         this.setState({
-          key,
+          key: key,
           address: this.pair.address()
         })
-        // should manually update state via timeout due to
-        // @gre workaround https://github.com/facebook/react-native/issues/8624
-        setTimeout(() => {
-          this.onChangekey(this.state.key)
-          this.onChangename(this.state.name)
-          this.onChangepassword(this.state.password)
-        }, 500)
         const props = await polkadotAPI.properties()
         formatBalance.setDefaults({
           decimals: props.get('tokenDecimals'),
@@ -117,8 +89,6 @@ class CreateAccount extends Component {
         })
       })()
     })
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
   }
 
   /**
@@ -147,7 +117,7 @@ class CreateAccount extends Component {
     }
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
-      key,
+      key: key,
       address: this.pair.address()
     })
   }
@@ -446,21 +416,7 @@ class CreateAccount extends Component {
           {this.props.rootStore.stateStore.isfirst != 0 ? (
             <TouchableOpacity
               onPress={() => {
-                ;(async () => {
-                  let balance = await polkadotAPI.freeBalance(
-                    this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-                  )
-                  this.props.rootStore.stateStore.balance = String(balance)
-                })()
-                let resetAction = StackActions.reset({
-                  index: 0,
-                  actions: [
-                    NavigationActions.navigate({
-                      routeName: 'Tabbed_Navigation'
-                    })
-                  ]
-                })
-                this.props.navigation.dispatch(resetAction)
+                this.props.navigation.goBack()
               }}
               style={{ paddingLeft: 20, height: 44, width: 61 }}
               activeOpacity={0.7}
@@ -485,205 +441,191 @@ class CreateAccount extends Component {
           </Text>
           <View />
         </View>
-        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
-          <RNKeyboardAvoidView>
-            <View style={{ alignItems: 'center' }}>
-              {/* 头像 | Identicon */}
-              <View style={[styles.imageview]}>
-                <Identicon value={this.state.address} size={56} theme="polkadot" />
-              </View>
-              {/* 地址 | Address */}
-              <View style={styles.address_text}>
-                <Text style={{ width: 180, fontSize: 15, color: '#3E2D32' }} ellipsizeMode="middle" numberOfLines={1}>
-                  {this.state.address}
-                </Text>
-              </View>
-              <Text style={[styles.text1, { marginTop: 10 }]}>
-                {i18n.t('Assets.balance')}
-                {formatBalance(this.state.balance)}
+        <RNKeyboardAvoidView>
+          <View style={{ alignItems: 'center' }}>
+            {/* 头像 | Identicon */}
+            <View style={[styles.imageview]}>
+              <Identicon value={this.state.address} size={56} theme="polkadot" />
+            </View>
+            {/* 地址 | Address */}
+            <View style={styles.address_text}>
+              <Text style={{ width: 180, fontSize: 15, color: '#3E2D32' }} ellipsizeMode="middle" numberOfLines={1}>
+                {this.state.address}
               </Text>
             </View>
-            {/* 虚线 | Dotted line */}
+            <Text style={[styles.text1, { marginTop: 10 }]}>
+              {i18n.t('Assets.balance')}
+              {formatBalance(this.state.balance)}
+            </Text>
+          </View>
+          {/* 虚线 | Dotted line */}
+          <View
+            style={{
+              flex: 1,
+              borderWidth: 0.5,
+              borderRadius: 0.1,
+              marginTop: 20,
+              marginBottom: 40,
+              borderStyle: 'dashed',
+              borderColor: '#C0C0C0'
+            }}
+          />
+          {/* 密钥 | Key word */}
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: ScreenWidth
+            }}
+          >
+            <Text style={{ fontSize: 15, color: '#3E2D32', marginBottom: 20 }}>{i18n.t('Assets.Createfrom')}</Text>
+            {/* 选择方式 | Selection scheme */}
             <View
               style={{
-                flex: 1,
-                borderWidth: 0.5,
-                borderRadius: 0.1,
-                marginTop: 20,
-                marginBottom: 40,
-                borderStyle: 'dashed',
-                borderColor: '#C0C0C0'
-              }}
-            />
-            {/* 密钥 | Key word */}
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: ScreenWidth
+                width: ScreenWidth * 0.8,
+                paddingLeft: 13,
+                paddingRight: 13,
+                height: 44,
+                borderWidth: 1,
+                borderColor: '#d4cbcd',
+                borderRadius: 5
               }}
             >
-              <Text style={{ fontSize: 15, color: '#3E2D32', marginBottom: 20 }}>{i18n.t('Assets.Createfrom')}</Text>
-              {/* 选择方式 | Selection scheme */}
-              <View
-                style={{
-                  width: ScreenWidth * 0.8,
-                  paddingLeft: 13,
-                  paddingRight: 13,
-                  height: 44,
-                  borderWidth: 1,
-                  borderColor: '#d4cbcd',
-                  borderRadius: 5
-                }}
-              >
-                <RNPicker
-                  style={{ height: 44 }}
-                  selectedValue={this.state.way_change}
-                  onValueChange={this.Modify_way}
-                  data={pickerData}
-                />
-              </View>
-              <CustomKeyboard.CustomTextInput
-                style={[
-                  styles.textInputStyle,
-                  {
-                    height: ScreenHeight / 7,
-                    fontSize: 16,
-                    color: '#3E2D32',
-                    paddingVertical: 15
-                  }
-                ]}
-                autoCorrect={false}
-                customKeyboardType="safeKeyBoard"
-                value={this.state.key}
-                placeholderTextColor="black"
-                underlineColorAndroid="#ffffff00"
-                multiline={true}
-                maxLength={1000}
-                onChangeText={this.onChangekey}
+              <RNPicker
+                style={{ height: 44 }}
+                selectedValue={this.state.way_change}
+                onValueChange={this.Modify_way}
+                data={pickerData}
               />
-              {this.state.way != 'Keystore' && (
-                <TouchableWithoutFeedback>
-                  <View>
-                    <View style={{ marginTop: 30 }}>
-                      <Text style={{ fontSize: 16, color: '#3E2D32' }}>{i18n.t('Assets.NameTheAccount')}</Text>
-                      <CustomKeyboard.CustomTextInput
-                        style={[styles.textInputStyle, { fontSize: 16 }]}
-                        placeholder=""
-                        placeholderTextColor="#666666"
-                        autoCorrect={false}
-                        customKeyboardType="safeKeyBoard"
-                        underlineColorAndroid="#ffffff00"
-                        ref={ref => (this.KeypairInput = ref)}
-                        value={this.state.name}
-                        onFocus={this.onFocusSpecialComponent}
-                        // onBlur={this.onBlurSpecialComponent}
-                        onChangeText={this.onChangename}
-                      />
-                    </View>
-                  </View>
-                </TouchableWithoutFeedback>
-              )}
-              {/* pass */}
-              <View style={{ marginTop: 30 }}>
-                <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.Password')}</Text>
-                <CustomKeyboard.CustomTextInput
-                  style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
-                  placeholder={i18n.t('Assets.EnterPassword')}
-                  placeholderTextColor="#666666"
-                  underlineColorAndroid="#ffffff00"
-                  autoCorrect={false}
-                  customKeyboardType="safeKeyBoard"
-                  secureTextEntry={true}
-                  onChangeText={this.onChangepassword}
-                />
-              </View>
-              {/* repeatPass 2 */}
-              <View style={{ marginTop: 30 }}>
-                <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.EnterPassword_d')}</Text>
-                <CustomKeyboard.CustomTextInput
-                  style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
-                  placeholder={i18n.t('Assets.EnterPassword_d')}
-                  placeholderTextColor="#666666"
-                  underlineColorAndroid="#ffffff00"
-                  autoCorrect={false}
-                  secureTextEntry={true}
-                  customKeyboardType="safeKeyBoard"
-                  onChangeText={this.onChangpasswordErepeat}
-                />
-              </View>
             </View>
+            <TextInput
+              style={[
+                styles.textInputStyle,
+                {
+                  height: ScreenHeight / 7,
+                  fontSize: 16,
+                  color: '#3E2D32',
+                  paddingVertical: 15
+                }
+              ]}
+              autoCorrect={false}
+              value={this.state.key}
+              placeholderTextColor="black"
+              underlineColorAndroid="#ffffff00"
+              multiline={true}
+              maxLength={1000}
+              onChangeText={this.onChangekey}
+            />
+            {this.state.way != 'Keystore' && (
+              <View style={{ marginTop: 30 }}>
+                <Text style={{ fontSize: 16, color: '#3E2D32' }}>{i18n.t('Assets.NameTheAccount')}</Text>
+                <TextInput
+                  style={[styles.textInputStyle, { fontSize: 16 }]}
+                  placeholder=""
+                  placeholderTextColor="#666666"
+                  autoCorrect={false}
+                  underlineColorAndroid="#ffffff00"
+                  onChangeText={this.onChangename}
+                />
+              </View>
+            )}
+            {/* pass */}
+            <View style={{ marginTop: 30 }}>
+              <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.Password')}</Text>
+              <TextInput
+                style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
+                placeholder={i18n.t('Assets.EnterPassword')}
+                placeholderTextColor="#666666"
+                underlineColorAndroid="#ffffff00"
+                autoCorrect={false}
+                secureTextEntry={true}
+                onChangeText={this.onChangepassword}
+              />
+            </View>
+            {/* repeatPass 2 */}
+            <View style={{ marginTop: 30 }}>
+              <Text style={{ fontSize: ScreenWidth / 30 }}>{i18n.t('Assets.EnterPassword_d')}</Text>
+              <TextInput
+                style={[styles.textInputStyle, { fontSize: 16, borderColor: '#d4cbcd' }]}
+                placeholder={i18n.t('Assets.EnterPassword_d')}
+                placeholderTextColor="#666666"
+                underlineColorAndroid="#ffffff00"
+                autoCorrect={false}
+                secureTextEntry={true}
+                onChangeText={this.onChangpasswordErepeat}
+              />
+            </View>
+          </View>
 
-            {/* Reset or Save */}
+          {/* Reset or Save */}
+          <View
+            style={{
+              width: ScreenWidth,
+              justifyContent: 'center',
+              marginTop: 40,
+              marginBottom: 22
+            }}
+          >
             <View
               style={{
-                width: ScreenWidth,
-                justifyContent: 'center',
-                marginTop: 40,
-                marginBottom: 22
+                flexDirection: 'row',
+                height: ScreenHeight / 20,
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
-              <View
+              <TouchableOpacity
                 style={{
                   flexDirection: 'row',
-                  height: ScreenHeight / 20,
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  backgroundColor: '#F14B79',
+                  height: ScreenHeight / 20,
+                  width: (ScreenWidth - 50) / 2
+                }}
+                onPress={() => {
+                  doubleClick(this.Reset)
                 }}
               >
-                <TouchableOpacity
+                <Text
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 5,
-                    backgroundColor: '#F14B79',
-                    height: ScreenHeight / 20,
-                    width: (ScreenWidth - 50) / 2
-                  }}
-                  onPress={() => {
-                    doubleClick(this.Reset)
+                    fontWeight: 'bold',
+                    fontSize: ScreenHeight / 50,
+                    color: 'white'
                   }}
                 >
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: ScreenHeight / 50,
-                      color: 'white'
-                    }}
-                  >
-                    {i18n.t('TAB.Reset')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  {i18n.t('TAB.Reset')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  backgroundColor: '#76CE29',
+                  marginLeft: ScreenWidth / 100,
+                  height: ScreenHeight / 20,
+                  width: (ScreenWidth - 50) / 2
+                }}
+                onPress={() => {
+                  doubleClick(this.Save_Account)
+                }}
+              >
+                <Text
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 5,
-                    backgroundColor: '#76CE29',
-                    marginLeft: ScreenWidth / 100,
-                    height: ScreenHeight / 20,
-                    width: (ScreenWidth - 50) / 2
-                  }}
-                  onPress={() => {
-                    doubleClick(this.Save_Account)
+                    fontWeight: 'bold',
+                    fontSize: ScreenHeight / 50,
+                    color: 'white'
                   }}
                 >
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: ScreenHeight / 50,
-                      color: 'white'
-                    }}
-                  >
-                    {i18n.t('TAB.Save')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  {i18n.t('TAB.Save')}
+                </Text>
+              </TouchableOpacity>
             </View>
-          </RNKeyboardAvoidView>
-        </CustomKeyboard.AwareCusKeyBoardScrollView>
+          </View>
+        </RNKeyboardAvoidView>
       </SafeAreaView>
     )
   }

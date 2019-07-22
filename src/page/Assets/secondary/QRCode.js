@@ -11,7 +11,23 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, Image, Clipboard, StatusBar, Platform, SafeAreaView, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Clipboard,
+  StatusBar,
+  Platform,
+  SafeAreaView,
+  Alert,
+  CameraRoll,
+  PermissionsAndroid
+} from 'react-native'
+import {
+  // captureScreen,
+  captureRef
+} from 'react-native-view-shot'
 import QRCode from 'react-native-qrcode'
 import Identicon from 'polkadot-identicon-react-native'
 import { observer, inject } from 'mobx-react'
@@ -29,6 +45,7 @@ class QRCodeView extends Component {
     }
     this.copy = this.copy.bind(this)
     this.back = this.back.bind(this)
+    this.mainViewRef = React.createRef()
   }
 
   /**
@@ -44,6 +61,66 @@ class QRCodeView extends Component {
    */
   back() {
     this.props.navigation.navigate('Tabbed_Navigation')
+  }
+
+  requestExternalStoragePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, {
+        title: 'My App Storage Permission',
+        message: 'My App needs access to your storage so you can save your photos'
+      })
+      return granted
+    } catch (err) {
+      console.error('Failed to request permission ', err)
+      return null
+    }
+  }
+
+  async shareScreenShot() {
+    if (Platform.OS == 'android') {
+      this.requestExternalStoragePermission()
+    }
+    const { makingImage } = this.state
+    if (makingImage) return
+
+    this.setState({ makingImage: true }, async () => {
+      try {
+        const captureConfig = {
+          format: 'png',
+          quality: 0.7,
+          result: Platform.OS == 'android' ? 'tmpfile' : 'base64',
+          width: 750
+        }
+        let imguri = ''
+        // try {
+        //   imgBase64 = await captureScreen (captureConfig);
+        // } catch (e) {
+        try {
+          imguri = await captureRef(this.mainViewRef.current, captureConfig)
+        } catch (ex) {
+          throw ex
+        }
+        // }
+        console.log(imguri)
+        this.setState({ showTitle: true })
+        this.saveImage(Platform.OS == 'ios' ? `data:image/png;base64,${imguri}` : imguri)
+      } catch (e) {
+        Alert.alert(i18n.t('Assets.shotErr') + e.toString())
+        console.log(e)
+      } finally {
+        this.setState({ makingImage: false })
+      }
+    })
+  }
+
+  async saveImage(screenShotShowImg) {
+    CameraRoll.saveToCameraRoll(screenShotShowImg)
+      .then(result => {
+        Alert.alert('', i18n.t('Assets.saveSuccess'))
+      })
+      .catch(error => {
+        Alert.alert('', i18n.t('Assets.saveErr') + `\n${error}`)
+      })
   }
 
   render() {
@@ -63,7 +140,12 @@ class QRCodeView extends Component {
           }}
         >
           {/* 导航栏 | The navigation bar */}
-          <Header navigation={this.props.navigation} title={i18n.t('Assets.Receive')} />
+          <Header
+            navigation={this.props.navigation}
+            title={i18n.t('Assets.Receive')}
+            rightIcon={require('../../../assets/images/Assets/sweep_code_share.png')}
+            rightPress={this.shareScreenShot.bind(this)}
+          />
           <View
             style={{
               marginTop: 20,
@@ -118,6 +200,7 @@ class QRCodeView extends Component {
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}
+                  ref={this.mainViewRef}
                 >
                   <QRCode value={accountId(this.state.address)} size={144} bgColor="black" fgColor="white" />
                 </View>
@@ -136,10 +219,10 @@ class QRCodeView extends Component {
                 {this.state.address}
               </Text>
               <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={() => {
                   doubleClick(this.copy)
                 }}
-                activeOpacity={0.7}
               >
                 <View
                   style={{

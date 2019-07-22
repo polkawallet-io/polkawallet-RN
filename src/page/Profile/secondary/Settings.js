@@ -28,6 +28,7 @@ import {
 import { checkUpdate, downloadUpdate, switchVersion, switchVersionLater } from 'react-native-update'
 import { NavigationActions, StackActions } from 'react-navigation'
 import { observer, inject } from 'mobx-react'
+import TouchID from 'react-native-touch-id'
 import _updateConfig from '../../../../update.json'
 import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header.js'
@@ -35,19 +36,30 @@ import i18n from '../../../locales/i18n'
 import DataRepository from '../../../util/DataRepository'
 
 const { appKey } = _updateConfig[Platform.OS]
-
+const optionalConfigObject = {
+  title: i18n.t('Profile.Authentication'), // Android
+  color: '#e00606', // Android,
+  fallbackLabel: 'Show Passcode' // iOS (if empty, then label is hidden)
+}
 @inject('rootStore')
 @observer
 class Settings extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      Gesture: this.props.rootStore.stateStore.GestureState == 0 ? false : true
+      Gesture: this.props.rootStore.stateStore.GestureState == 0 ? false : true,
+      TouchID: this.props.rootStore.stateStore.TouchIDState == 0 ? false : true,
+      supportedTouchID: this.props.rootStore.stateStore.TouchIDState == 0 ? false : true
     }
     this.back = this.back.bind(this)
     this.Set_Node = this.Set_Node.bind(this)
     this.Gesture = this.Gesture.bind(this)
+    this.TouchID = this.TouchID.bind(this)
     this.Check_Update = this.Check_Update.bind(this)
+  }
+
+  componentDidMount() {
+    this.clickHandler.bind(this)()
   }
 
   /**
@@ -87,7 +99,15 @@ class Settings extends Component {
         ])
       })
       .catch(() => {
-        Alert.alert('', i18n.t('Profile.UpdateFailed'))
+        Alert.alert('', i18n.t('Profile.UpdateFailed') + '\n' + i18n.t('Profile.gotoAppStore'), [
+          {
+            text: 'Yes',
+            onPress: () => {
+              Linking.openURL('https://polkawallet.io/#download')
+            }
+          },
+          { text: 'No' }
+        ])
       })
   }
 
@@ -129,13 +149,21 @@ class Settings extends Component {
         }
       })
       .catch(() => {
-        Alert.alert('', i18n.t('Profile.UpdateFailed'))
+        Alert.alert('', i18n.t('Profile.UpdateFailed') + '\n' + i18n.t('Profile.gotoAppStore'), [
+          {
+            text: 'Yes',
+            onPress: () => {
+              Linking.openURL('https://polkawallet.io/#download')
+            }
+          },
+          { text: 'No' }
+        ])
       })
   }
 
   /**
    * @description 设置手势密码|Set gesture password
-   * @param {*} e
+   * @param {Boolean} e
    */
   Gesture(e) {
     this.setState({ Gesture: e })
@@ -162,6 +190,71 @@ class Settings extends Component {
             onPress: () => {
               this.props.rootStore.stateStore.GestureState = 0
               AsyncStorage.removeItem('Gesture').then(Alert.alert('', i18n.t('Profile.gestureCanceled')))
+            }
+          }
+        ],
+        { cancelable: false }
+      )
+    }
+  }
+
+  /**
+   * @description check TouchID
+   */
+  clickHandler() {
+    TouchID.isSupported()
+      .then(biometryType => {
+        // Success code
+        this.setState({
+          supportedTouchID: true
+        })
+      })
+      .catch(error => {
+        this.setState({
+          supportedTouchID: false
+        })
+      })
+  }
+
+  /**
+   * @description 设置TouchID、FaceID |Set TouchID、FaceID
+   * @param {Boolean} e
+   */
+  TouchID(e) {
+    if (!this.state.supportedTouchID) {
+      Alert.alert(i18n.t('Profile.noTouchId'))
+      this.setState({ TouchID: false })
+      return
+    }
+    this.setState({ TouchID: e })
+    if (e) {
+      TouchID.authenticate('', optionalConfigObject)
+        .then(success => {
+          this.props.rootStore.stateStore.TouchIDState = 2
+          AsyncStorage.setItem('TouchID', '2')
+          Alert.alert('', i18n.t('Profile.AuthenticatedSuccess'))
+        })
+        .catch(error => {
+          this.setState({ TouchID: false })
+          Alert.alert('', i18n.t('Profile.AuthenticatedError'))
+        })
+    } else {
+      Alert.alert(
+        '',
+        i18n.t('Profile.deleteTouch'),
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {
+              this.setState({ TouchID: true })
+            },
+            style: 'cancel'
+          },
+          {
+            text: 'Confirm',
+            onPress: () => {
+              this.props.rootStore.stateStore.TouchIDState = 0
+              AsyncStorage.removeItem('TouchID').then(Alert.alert('', i18n.t('Profile.TouchCanceled')))
             }
           }
         ],
@@ -261,6 +354,19 @@ class Settings extends Component {
             onValueChange={e => this.Gesture(e)} // 当状态值发生变化值回调 | Callbacks when state values change
           />
         </View>
+
+        {/* TouchID、Face ID */}
+        {this.state.supportedTouchID && (
+          <View style={[styles.msgView, { marginTop: ScreenHeight / 40 }]}>
+            <Text style={styles.msgText}>{i18n.t('Profile.TouchID')}</Text>
+            <View style={{ flex: 1 }} />
+            <Switch
+              style={{ marginRight: ScreenWidth / 28 }}
+              value={this.state.TouchID} // 默认状态 | Default state
+              onValueChange={e => this.TouchID(e)} // 当状态值发生变化值回调 | Callbacks when state values change
+            />
+          </View>
+        )}
       </SafeAreaView>
     )
   }
@@ -300,8 +406,6 @@ const styles = StyleSheet.create({
   },
   msgImage: {
     marginRight: ScreenWidth / 28,
-    height: ScreenHeight / 60,
-    width: ScreenHeight / 60 / 1.83,
     resizeMode: 'contain'
   }
 })

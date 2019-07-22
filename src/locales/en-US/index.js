@@ -41,7 +41,8 @@ export default {
     signMess: 'You are about to sign a message from',
     unlockPassword: 'unlock account using password',
     loading: 'loading',
-    CopySuccess: 'Copy success'
+    CopySuccess: 'Copy success',
+    Confirm: 'Confirm'
   },
   Assets: {
     ...Assets

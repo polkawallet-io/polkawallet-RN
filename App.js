@@ -1,20 +1,17 @@
-/*
- * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 
- *  This file is part of Polkawallet. 
- 
- It under the terms of the GNU General Public License as published by 
- the Free Software Foundation, either version 3 of the License. 
- You should have received a copy of the GNU General Public License 
- along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 
-
- * @Autor: POLKAWALLET LIMITED
- * @Date: 2019-06-18 21:08:00
+/*	
+ * @Description: COPYRIGHT © 2018 POLKAWALLET (HK) LIMITED 	
+ *  This file is part of Polkawallet. 	
+ 	
+ It under the terms of the GNU General Public License as published by 	
+ the Free Software Foundation, either version 3 of the License. 	
+ You should have received a copy of the GNU General Public License 	
+ along with Polkawallet. If not, see <http://www.gnu.org/licenses/>. 	
+  * @Autor: POLKAWALLET LIMITED	
+ * @Date: 2019-06-18 21:08:00	
  */
 import React, { Component } from 'react'
 import { StackNavigator } from 'react-navigation'
 import { Provider } from 'mobx-react'
-import Api from '@polkadot/api/promise'
-import WsProvider from '@polkadot/rpc-provider/ws'
 import Tabbed_Navigation from './src/page/TabbedNavigation'
 import Create_Account from './src/page/Assets/secondary/CreateAccount'
 import Backup_Account from './src/page/Assets/secondary/BackupAccount'
@@ -42,6 +39,7 @@ import Unstake from './src/page/Staking/secondary/Unstake'
 import Unnominate from './src/page/Staking/secondary/Unnominate'
 import Change_Password from './src/page/Profile/secondary/Change/ChangePassword'
 import Change_Name from './src/page/Profile/secondary/Change/ChangeName'
+import Vote from './src/page/Democracy/secondary/Vote'
 import Settings from './src/page/Profile/secondary/Settings'
 import Set_Node from './src/page/Profile/secondary/Settings/SetNode'
 import About from './src/page/Profile/secondary/About'
@@ -84,6 +82,7 @@ const Polkawallet_App = StackNavigator({
   Unnominate: { screen: Unnominate, navigationOptions: { header: null } },
   Change_Password: { screen: Change_Password, navigationOptions: { header: null } },
   Change_Name: { screen: Change_Name, navigationOptions: { header: null } },
+  Vote: { screen: Vote, navigationOptions: { header: null } },
   Settings: { screen: Settings, navigationOptions: { header: null } },
   Set_Node: { screen: Set_Node, navigationOptions: { header: null } },
   About: { screen: About, navigationOptions: { header: null } },
@@ -96,14 +95,6 @@ const Polkawallet_App = StackNavigator({
 setJSExceptionHandler(() => {}, true)
 
 export default class Polkawallet extends Component {
-  componentWillMount() {
-    ;(async () => {
-      const provider = new WsProvider(AppState.stateStore.ENDPOINT)
-      const api = await Api.create(provider)
-      AppState.stateStore.API = api
-    })()
-  }
-
   render() {
     return (
       <Provider rootStore={AppState}>

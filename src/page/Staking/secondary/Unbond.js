@@ -24,7 +24,6 @@ import {
   SafeAreaView
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { getUnit, ScreenWidth, ScreenHeight, formatData, checkPwd } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
@@ -220,149 +219,146 @@ class Unbond extends Component {
         >
           <Header title={i18n.t('Staking.UnBond')} theme="dark" navigation={this.props.navigation} />
         </View>
-        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
-          <RNKeyboardAvoidView>
-            <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
+        <RNKeyboardAvoidView>
+          <View style={{ width: ScreenWidth - 40, marginLeft: 20, marginBottom: 20 }}>
+            <Text
+              style={{
+                marginTop: 40,
+                color: '#3E2D32',
+                fontSize: 20,
+                marginBottom: 40,
+                fontWeight: '600'
+              }}
+            >
+              {i18n.t('Staking.UnBond')}
+            </Text>
+            <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('TAB.signMess')}</Text>
+            <View
+              style={{
+                padding: 3,
+                backgroundColor: '#F0F0F0',
+                borderRadius: 3,
+                paddingHorizontal: 10,
+                width: 270,
+                marginTop: 12
+              }}
+            >
+              <Text style={{ color: '#3E2D32', fontSize: 15, width: 250 }} ellipsizeMode="middle" numberOfLines={1}>
+                {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 15,
+                marginBottom: 42
+              }}
+            >
+              <Text style={{ fontSize: 15 }}>{i18n.t('Staking.calling')}</Text>
               <Text
                 style={{
-                  marginTop: 40,
-                  color: '#3E2D32',
-                  fontSize: 20,
-                  marginBottom: 40,
-                  fontWeight: '600'
-                }}
-              >
-                {i18n.t('Staking.UnBond')}
-              </Text>
-              <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('TAB.signMess')}</Text>
-              <View
-                style={{
-                  padding: 3,
+                  fontSize: 15,
                   backgroundColor: '#F0F0F0',
-                  borderRadius: 3,
-                  paddingHorizontal: 10,
-                  width: 270,
-                  marginTop: 12
+                  paddingHorizontal: 5,
+                  borderRadius: 3
                 }}
               >
-                <Text style={{ color: '#3E2D32', fontSize: 15, width: 250 }} ellipsizeMode="middle" numberOfLines={1}>
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 15,
-                  marginBottom: 42
-                }}
-              >
-                <Text style={{ fontSize: 15 }}>{i18n.t('Staking.calling')}</Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    backgroundColor: '#F0F0F0',
-                    paddingHorizontal: 5,
-                    borderRadius: 3
-                  }}
-                >
-                  staking.unbond
-                </Text>
-              </View>
-              <Text
-                style={{
-                  color: '#3E2D32',
-                  fontSize: 18,
-                  marginBottom: 12,
-                  fontWeight: '600'
-                }}
-              >
-                {i18n.t('Staking.unbondAmount')}
+                staking.unbond
               </Text>
-              <View
+            </View>
+            <Text
+              style={{
+                color: '#3E2D32',
+                fontSize: 18,
+                marginBottom: 12,
+                fontWeight: '600'
+              }}
+            >
+              {i18n.t('Staking.unbondAmount')}
+            </Text>
+            <View
+              style={{
+                width: ScreenWidth - 40,
+                flexDirection: 'row',
+                marginBottom: 40,
+                marginTop: 12
+              }}
+            >
+              <TextInput
                 style={{
-                  width: ScreenWidth - 40,
-                  flexDirection: 'row',
-                  marginBottom: 40,
-                  marginTop: 12
-                }}
-              >
-                <TextInput
-                  style={{
-                    height: 44,
-                    borderColor: '#CCCCCC',
-                    paddingHorizontal: 12,
-                    borderWidth: 1,
-                    fontSize: 16,
-                    flex: 1,
-                    borderRadius: 4
-                  }}
-                  placeholder=""
-                  placeholderTextColor="#666666"
-                  underlineColorAndroid="#ffffff00"
-                  onChangeText={this.onChangeValue.bind(this)}
-                />
-                <View
-                  style={{
-                    width: 105,
-                    borderWidth: 1,
-                    borderColor: '#CCCCCC',
-                    borderRadius: 4,
-                    height: 44,
-                    marginLeft: 12
-                  }}
-                >
-                  <RNPicker
-                    style={{ width: 105, height: 44 }}
-                    selectedValue={this.state.way_change}
-                    onValueChange={this.Modify_way}
-                  />
-                </View>
-              </View>
-              <Text
-                style={{
-                  color: '#3E2D32',
+                  height: 44,
+                  borderColor: '#CCCCCC',
+                  paddingHorizontal: 12,
+                  borderWidth: 1,
                   fontSize: 16,
-                  marginBottom: 12,
-                  marginTop: 20,
-                  fontWeight: '600'
+                  flex: 1,
+                  borderRadius: 4
+                }}
+                placeholder=""
+                placeholderTextColor="#666666"
+                underlineColorAndroid="#ffffff00"
+                onChangeText={this.onChangeValue.bind(this)}
+              />
+              <View
+                style={{
+                  width: 105,
+                  borderWidth: 1,
+                  borderColor: '#CCCCCC',
+                  borderRadius: 4,
+                  height: 44,
+                  marginLeft: 12
                 }}
               >
-                {i18n.t('TAB.unlockPassword')}
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <CustomKeyboard.CustomTextInput
-                  style={{
-                    width: ScreenWidth - 40,
-                    fontSize: 14,
-                    color: '#3E2D32',
-                    height: 44,
-                    paddingHorizontal: 15,
-                    borderColor: '#CCCCCC',
-                    borderWidth: 1,
-                    borderRadius: 6
-                  }}
-                  customKeyboardType="safeKeyBoard"
-                  placeholder=""
-                  placeholderTextColor="#666666"
-                  underlineColorAndroid="#ffffff00"
-                  secureTextEntry={this.state.ispwd}
-                  onChangeText={this.onChangepassword}
+                <RNPicker
+                  style={{ width: 105, height: 44 }}
+                  selectedValue={this.state.way_change}
+                  onValueChange={this.Modify_way}
                 />
-                <TouchableOpacity
-                  onPress={this.lookpwd}
-                  activeOpacity={0.7}
-                  style={{ width: 50, marginLeft: -50, height: 44 }}
-                >
-                  <Image
-                    style={{ width: 21, marginTop: 12, marginLeft: 14 }}
-                    source={require('../../../assets/images/public/eye.png')}
-                  />
-                </TouchableOpacity>
               </View>
             </View>
-          </RNKeyboardAvoidView>
-        </CustomKeyboard.AwareCusKeyBoardScrollView>
+            <Text
+              style={{
+                color: '#3E2D32',
+                fontSize: 16,
+                marginBottom: 12,
+                marginTop: 20,
+                fontWeight: '600'
+              }}
+            >
+              {i18n.t('TAB.unlockPassword')}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TextInput
+                style={{
+                  width: ScreenWidth - 40,
+                  fontSize: 14,
+                  color: '#3E2D32',
+                  height: 44,
+                  paddingHorizontal: 15,
+                  borderColor: '#CCCCCC',
+                  borderWidth: 1,
+                  borderRadius: 6
+                }}
+                placeholder=""
+                placeholderTextColor="#666666"
+                underlineColorAndroid="#ffffff00"
+                secureTextEntry={this.state.ispwd}
+                onChangeText={this.onChangepassword}
+              />
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
+                <Image
+                  style={{ width: 21, marginTop: 12, marginLeft: 14 }}
+                  source={require('../../../assets/images/public/eye.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </RNKeyboardAvoidView>
         {/* Cancel or UnBond */}
         <View style={{ justifyContent: 'center', marginBottom: 20 }}>
           <View

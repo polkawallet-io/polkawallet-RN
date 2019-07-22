@@ -190,6 +190,12 @@ export function ScannerType(data) {
       if (data.indexOf('substrate:') > -1) {
         type = 'substrate'
         QRData = data.split('substrate:')[1]
+      } else if (data.indexOf('signData') > -1) {
+        type = 'signData'
+        QRData = data
+      } else if (data.indexOf('SignDetail') > -1) {
+        type = 'SignDetail'
+        QRData = JSON.stringify(JSON.parse(data).signature)
       } else {
         type = ''
         QRData = data

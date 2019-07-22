@@ -11,9 +11,18 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, SafeAreaView, Alert } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  StatusBar,
+  SafeAreaView,
+  Alert
+} from 'react-native'
 import { observer, inject } from 'mobx-react'
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../../util/Common'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
 import i18n from '../../../../locales/i18n'
@@ -164,45 +173,42 @@ class ChangePassword extends Component {
               <Image source={require('../../../../assets/images/public/About_return.png')} />
             </TouchableOpacity>
           </View>
-          <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
-            <RNKeyboardAvoidView>
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    fontSize: 24,
-                    marginTop: 37,
-                    marginBottom: 17,
-                    color: '#3E2D32'
-                  }}
-                >
-                  {i18n.t('Profile.ChangePassword')}
-                </Text>
-                {msg.map((item, index) => {
-                  return (
-                    <View style={[styles.view]} key={index}>
-                      <CustomKeyboard.CustomTextInput
-                        style={[styles.textInputStyle]}
-                        placeholder={
-                          index == 0
-                            ? i18n.t('Profile.CurrentPassword')
-                            : index == 1
-                            ? i18n.t('Profile.NewPassword')
-                            : i18n.t('Profile.RepeatPassword')
-                        }
-                        customKeyboardType="safeKeyBoard"
-                        secureTextEntry={true}
-                        autoCorrect={false}
-                        underlineColorAndroid="#ffffff00"
-                        onChangeText={
-                          index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Repeat_password
-                        }
-                      />
-                    </View>
-                  )
-                })}
-              </View>
-            </RNKeyboardAvoidView>
-          </CustomKeyboard.AwareCusKeyBoardScrollView>
+          <RNKeyboardAvoidView>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  marginTop: 37,
+                  marginBottom: 17,
+                  color: '#3E2D32'
+                }}
+              >
+                {i18n.t('Profile.ChangePassword')}
+              </Text>
+              {msg.map((item, index) => {
+                return (
+                  <View style={[styles.view]} key={index}>
+                    <TextInput
+                      style={[styles.textInputStyle]}
+                      placeholder={
+                        index == 0
+                          ? i18n.t('Profile.CurrentPassword')
+                          : index == 1
+                          ? i18n.t('Profile.NewPassword')
+                          : i18n.t('Profile.RepeatPassword')
+                      }
+                      secureTextEntry={true}
+                      autoCorrect={false}
+                      underlineColorAndroid="#ffffff00"
+                      onChangeText={
+                        index == 0 ? this.Current_password : index == 1 ? this.New_password : this.Repeat_password
+                      }
+                    />
+                  </View>
+                )
+              })}
+            </View>
+          </RNKeyboardAvoidView>
           <TouchableOpacity
             style={styles.Change}
             onPress={() => {

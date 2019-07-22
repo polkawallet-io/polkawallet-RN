@@ -1,6 +1,14 @@
 rootProject.name = 'Polkawallet'
-include ':react-native-yusha-customkeyboard'
-project(':react-native-yusha-customkeyboard').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-yusha-customkeyboard/android')
+include ':react-native-touch-id'
+project(':react-native-touch-id').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-touch-id/android')
+include ':react-native-local-barcode-recognizer'
+project(':react-native-local-barcode-recognizer').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-local-barcode-recognizer/android')
+include ':react-native-image-picker'
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+include ':rn-camera-roll'
+project(':rn-camera-roll').projectDir = new File(rootProject.projectDir, '../node_modules/rn-camera-roll/android')
+include ':react-native-view-shot'
+project(':react-native-view-shot').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-view-shot/android')
 include ':jcore-react-native'
 project(':jcore-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/jcore-react-native/android')
 

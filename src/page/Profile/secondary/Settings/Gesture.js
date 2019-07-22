@@ -11,11 +11,10 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { AsyncStorage, SafeAreaView, StatusBar, View } from 'react-native'
+import { AsyncStorage } from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import PasswordGesture from 'react-native-gesture-password'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth } from '../../../../util/Common'
 import i18n from '../../../../locales/i18n'
 
 @inject('rootStore')
@@ -25,7 +24,8 @@ class Gesture extends Component {
     super(props)
     this.state = {
       status: 'right',
-      message: this.props.rootStore.stateStore.GestureState == 0 ? 'Please set the gesture password' : 'Password'
+      message:
+        this.props.rootStore.stateStore.GestureState == 0 ? i18n.t('Profile.setGesture') : i18n.t('Profile.inputPWD')
     }
     this.onStart = this.onStart.bind(this)
     this.onEnd = this.onEnd.bind(this)
@@ -124,35 +124,21 @@ class Gesture extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-        <StatusBar
-          hidden={false}
-          backgroundColor="#FFF" // 状态栏背景颜色 | Status bar background color
-          barStyle="dark-content" // 状态栏样式（黑字）| Status bar style (black)
-        />
-        <View
-          style={{
-            width: ScreenWidth,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f00'
-          }}
-        >
-          <PasswordGesture
-            status={this.state.status}
-            message={this.state.message}
-            style={{ backgroundColor: '#f00', width: ScreenWidth }}
-            textStyle={{ fontSize: 25 }}
-            normalColor="blue"
-            rightColor="green"
-            wrongColor="red"
-            outerCircle={true}
-            innerCircle={true}
-            onStart={() => this.onStart()}
-            onEnd={password => this.onEnd(password)}
-          />
-        </View>
-      </SafeAreaView>
+      <PasswordGesture
+        // ref="pg"
+        status={this.state.status}
+        message={this.state.message}
+        textStyle={{ fontSize: 25 }}
+        normalColor="#1b8ae8"
+        rightColor="green"
+        wrongColor="#eb0550"
+        style={{ backgroundColor: '#fff' }}
+        outerCircle={true}
+        innerCircle={true}
+        onStart={() => this.onStart()}
+        interval={500}
+        onEnd={password => this.onEnd(password)}
+      />
     )
   }
 }

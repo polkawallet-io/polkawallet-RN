@@ -40,7 +40,8 @@ export default {
     unlockPassword: '输入密码解锁账户',
     loading: '加载中',
     CopySuccess: '复制成功',
-    Copy: '复制'
+    Copy: '复制',
+    Confirm: '确认'
   },
   Assets: {
     ...Assets
