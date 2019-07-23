@@ -46,7 +46,7 @@
     "punycode": "^1.4.1",
     "react": "^16.8.6",
     "react-native": "0.59.9",
-    "react-native-camera": "git+https://github.com/lwansbrough/react-native-camera.git",
+    "react-native-camera": "2.11.1",
     "react-native-crypto": "^2.1.2",
     "react-native-drawer": "^2.5.1",
     "react-native-gesture-password": "^0.3.6",
