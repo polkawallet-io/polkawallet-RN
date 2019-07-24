@@ -5,9 +5,8 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
-		000DFB7521F9C42700E6CD63 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 000DFB4821F9C42700E6CD63 /* main.jsbundle */; };
-		000DFB7621F9C42700E6CD63 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 000DFB7421F9C42700E6CD63 /* assets */; };
 		0010FC4D2236842A009BDD26 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0010FC4C2236842A009BDD26 /* libz.tbd */; };
 		0010FC4F22368432009BDD26 /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0010FC4E22368432009BDD26 /* libbz2.1.0.tbd */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -58,6 +57,7 @@
 		6CE001E3A4934CA3BAD868AB /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC7A4219CCC466F980477C3 /* CoreFoundation.framework */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8931F69C14F34EC5B7452202 /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B309E22B44ED43559C8630A2 /* libRNI18n-tvOS.a */; };
+		97C1DFEF4C9D44E2BA75C6AA /* libCustomKeyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */; };
 		A30B932658124600B036BDB9 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FEF3E5C51804E5ABF7FD0FA /* Security.framework */; };
 		A836B936152B4B64AF8A196B /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D65D0D54F8C4D0C88B8E2A6 /* libRNOS.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -68,7 +68,6 @@
 		EA4F2C70FA9745B2AEB680D8 /* libRNRandomBytes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CAE28FA9ED644BB8A90B29C1 /* libRNRandomBytes.a */; };
 		EACC091644BE4B1AAA632D77 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA731E8B44F34977B0642957 /* SystemConfiguration.framework */; };
 		F7436684CD37428E96C9905E /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 118F184CEC284B5490A606B2 /* libRNSVG-tvOS.a */; };
-		97C1DFEF4C9D44E2BA75C6AA /* libCustomKeyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -505,6 +504,7 @@
 		59E1A208F660451AA5B4B716 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		610D2CFE2DA34E8DA04367DC /* libRNCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCamera.a; sourceTree = "<group>"; };
+		674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCustomKeyboard.a; sourceTree = "<group>"; };
 		6B53A16FB3194358990873F6 /* libresolv.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		6C773CB0289E43639188030C /* RNRandomBytes.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNRandomBytes.xcodeproj; path = "../node_modules/react-native-randombytes/RNRandomBytes.xcodeproj"; sourceTree = "<group>"; };
 		6D65D0D54F8C4D0C88B8E2A6 /* libRNOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNOS.a; sourceTree = "<group>"; };
@@ -523,6 +523,7 @@
 		B309E22B44ED43559C8630A2 /* libRNI18n-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNI18n-tvOS.a"; sourceTree = "<group>"; };
 		BA731E8B44F34977B0642957 /* SystemConfiguration.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		BC2A1EE534854E9A8DCBA3BC /* Foundation.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BEA2E3122CD84B3E96E03DCB /* CustomKeyboard.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CustomKeyboard.xcodeproj; path = "../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard.xcodeproj"; sourceTree = "<group>"; };
 		C75A8D595E534724914B9462 /* libRCTJPushModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTJPushModule.a; sourceTree = "<group>"; };
 		C811B0D708BC400599581C3F /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
 		C84F6B4634E64B83B59F74C4 /* RCTJCoreModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTJCoreModule.xcodeproj; path = "../node_modules/jcore-react-native/ios/RCTJCoreModule.xcodeproj"; sourceTree = "<group>"; };
@@ -531,8 +532,6 @@
 		D9BAB2C522B22B4F00F5A2AD /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F60DD03E7F094414B6A6D842 /* RNSensitiveInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSensitiveInfo.xcodeproj; path = "../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo.xcodeproj"; sourceTree = "<group>"; };
 		FE0A9E285E7D4EAB8F411C9F /* libRNSecureStorage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSecureStorage.a; sourceTree = "<group>"; };
-		BEA2E3122CD84B3E96E03DCB /* CustomKeyboard.xcodeproj */ = {isa = PBXFileReference; name = "CustomKeyboard.xcodeproj"; path = "../node_modules/react-native-yusha-customkeyboard/ios/CustomKeyboard.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */ = {isa = PBXFileReference; name = "libCustomKeyboard.a"; path = "libCustomKeyboard.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -762,6 +761,7 @@
 				B309E22B44ED43559C8630A2 /* libRNI18n-tvOS.a */,
 				886D396F9A644014A8570E56 /* libRCTJCoreModule.a */,
 				C75A8D595E534724914B9462 /* libRCTJPushModule.a */,
+				674B7B7956DA48A48914F9F6 /* libCustomKeyboard.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1602,8 +1602,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000DFB7521F9C42700E6CD63 /* main.jsbundle in Resources */,
-				000DFB7621F9C42700E6CD63 /* assets in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -1639,7 +1637,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
