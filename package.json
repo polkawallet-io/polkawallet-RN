@@ -7,7 +7,7 @@
     "postinstall": "sh postinstall.sh",
     "test": "jest",
     "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --sourcemap-output android/app/src/main/assets/index.android.map --assets-dest android/app/src/main/res/",
-    "bundle-ios": "node --max_old_space_size=4096 node_modules/react-native/local-cli/cli.js bundle --entry-file index.js  --platform ios --dev false --bundle-output ./release_ios/main.jsbundle --assets-dest release_ios/",
+    "bundle-ios": "node --max_old_space_size=4096 node_modules/react-native/local-cli/cli.js bundle --entry-file index.js  --platform ios --dev false --bundle-output ios/main.jsbundle",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "adb": "adb connect 127.0.0.1:21503",
