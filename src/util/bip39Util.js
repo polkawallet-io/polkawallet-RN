@@ -15,7 +15,7 @@ const STRENGTH_MAP = {
  * @param {Number} length
  * @returns {Buffer} Random bytes
  */
-const randomAsU8a = length =>
+const randomAsU8a = (length = 32) =>
   new Promise((resolve, reject) => {
     randomBytes(length, (err, bytes) => {
       if (err) return reject(err)
