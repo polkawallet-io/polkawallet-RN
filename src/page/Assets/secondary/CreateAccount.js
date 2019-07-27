@@ -83,7 +83,6 @@ class CreateAccount extends Component {
   }
 
   _keyboardDidShow() {
-    Keyboard.dismiss()
     return false
   }
 
