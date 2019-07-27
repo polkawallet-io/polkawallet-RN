@@ -682,6 +682,11 @@
   resolved "https://registry.npmjs.org/@emotion/unitless/-/unitless-0.7.4.tgz#a87b4b04e5ae14a88d48ebef15015f6b7d1f5677"
   integrity sha512-kBa+cDHOR9jpRJ+kcGMsysrls0leukrm68DmFQoMIWQcXdr2cZvyvypWuGYT7U+9kAExUE7+T7r6G3C3A6L8MQ==
 
+"@plugnet/wasm-crypto-js@^0.11.102":
+  version "0.11.102"
+  resolved "https://registry.npmjs.org/@plugnet/wasm-crypto-js/-/wasm-crypto-js-0.11.102.tgz#3f38703022fe1a55195fd812e9a7fb92f5398d6d"
+  integrity sha512-+ieVYsCPtb/JOlIfsfHwnhrajk/EkpyGoonWFsPTDzedDE1mQumv0FRElx39qEr1CVKnoFrxIWeREerqa9482A==
+
 "@polkadot/api-derive@^0.79.1":
   version "0.79.1"
   resolved "https://registry.npmjs.org/@polkadot/api-derive/-/api-derive-0.79.1.tgz#0c91bc1450849fad092fd8c201066a4c0fc38bcd"
@@ -840,11 +845,6 @@
   version "0.10.1"
   resolved "https://registry.npmjs.org/@polkadot/wasm-crypto/-/wasm-crypto-0.10.1.tgz#284e57e102050cca1586b7b1f008f64224147eb4"
   integrity sha512-hI3OYftMGJkDetTe1DeU9aH4euk6WVmAMFszslNrCxHMFFkemEgACykwpyuOdCjv24VZP/cMsrVskKix1GzSYQ==
-
-"@polkadot/wasm-crypto@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.npmjs.org/@polkadot/wasm-crypto/-/wasm-crypto-0.13.1.tgz#602305b2ca86fc320a35ce820835e0e2dd9e646e"
-  integrity sha512-24a63FynhyBHEGxqoDMZHAcaSxJqnjBPnEcmXXYCN2lI7b4iKaJKF2t+/FUmY7XTST+xNgFTJZ7A/o8jjgC/mA==
 
 "@react-native-community/cli@^1.2.1":
   version "1.10.0"

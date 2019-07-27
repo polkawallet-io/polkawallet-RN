@@ -32,6 +32,8 @@
           "_stream_readable": "readable-stream/readable",
           "_stream_transform": "readable-stream/transform",
           "_stream_writable": "readable-stream/writable",
+          "@polkadot/wasm-crypto": "@plugnet/wasm-crypto-js",
+          "@plugnet/util": "@polkadot/util",
           "vm": "vm-browserify"
         },
         "throwForNonStringLiteral": true
