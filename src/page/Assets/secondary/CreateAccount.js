@@ -30,18 +30,19 @@ import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot
 import { NavigationActions, StackActions } from 'react-navigation'
 import SInfo from 'react-native-sensitive-info'
 import Keyring from '@polkadot/keyring'
-import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
 import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { observer, inject } from 'mobx-react'
 
+import { mnemonicGenerate, randomAsU8a } from '../../../util/bip39Util'
 import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
 import RNPicker from '../../../components/RNPicker'
 
-const keyring = new Keyring()
+// TODO: this is just show case to use sr25519
+const keyring = new Keyring({ type: 'sr25519' })
 
 @inject('rootStore')
 @observer
@@ -50,22 +51,6 @@ class CreateAccount extends Component {
     super(props)
     this.json
     this.pair
-    this.state = {
-      way: 'Mnemonic',
-      way_change: 'Mnemonic',
-      isModel: false,
-      israndom: 1,
-      keyrandom: '',
-      key: '',
-      name: '',
-      password: '',
-      passwordErepeat: '',
-      address: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-      islookpwd: false,
-      ispwd: 0,
-      ispwd2: 0,
-      balance: 0
-    }
     this.Save_Account = this.Save_Account.bind(this)
     this.onChangekey = this.onChangekey.bind(this)
     this.onChangename = this.onChangename.bind(this)
@@ -77,13 +62,31 @@ class CreateAccount extends Component {
     CustomKeyboard.keyBoardAPI('safeKeyBoard')(CustomKeyboard.SafeKeyBoardView)
   }
 
+  defaultState = {
+    way: 'Mnemonic',
+    way_change: 'Mnemonic',
+    isModel: false,
+    israndom: 1,
+    keyrandom: '',
+    key: '',
+    name: '',
+    password: '',
+    passwordErepeat: '',
+    address: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+    islookpwd: false,
+    ispwd: 0,
+    ispwd2: 0,
+    balance: 0
+  }
+
+  state = { ...this.defaultState }
+
   componentWillUnmount() {
     this.keyboardDidShowListener.remove()
     this.keyboardDidHideListener.remove()
   }
 
   _keyboardDidShow() {
-    Keyboard.dismiss()
     return false
   }
 
@@ -97,7 +100,7 @@ class CreateAccount extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       ;(async () => {
-        let key = mnemonicGenerate()
+        let key = await mnemonicGenerate()
         this.pair = keyring.addFromMnemonic(key)
         this.setState({
           key,
@@ -125,7 +128,7 @@ class CreateAccount extends Component {
    * @description 切换单位|Switching unit
    * @param {String} way_change 单位|unit
    */
-  Modify_way(way_change) {
+  async Modify_way(way_change) {
     this.setState({
       isModel: false,
       way: way_change,
@@ -139,11 +142,11 @@ class CreateAccount extends Component {
       })
       return
     } else if (way_change == 'Mnemonic') {
-      key = mnemonicGenerate()
+      key = await mnemonicGenerate()
     } else if (way_change == 'Mnemonic24') {
-      key = mnemonicGenerate(24)
+      key = await mnemonicGenerate(24)
     } else {
-      key = u8aToHex(randomAsU8a())
+      key = u8aToHex(await randomAsU8a())
     }
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
@@ -278,26 +281,28 @@ class CreateAccount extends Component {
   /**
    * @description 点击重置|Click Reset
    */
-  Reset() {
+  async Reset() {
+    const { way } = this.state
     let key
-    if (this.state.way == 'Keystore') {
-      this.setState({
-        key: '',
-        address: '',
-        balance: 0
-      })
+
+    if (way == 'Keystore') {
+      this.setState({ ...this.defaultState, way })
       return
-    } else if (this.state.way === 'Mnemonic') {
-      key = mnemonicGenerate()
-    } else if (this.state.way === 'Mnemonic24') {
-      key = mnemonicGenerate(24)
+    } else if (way === 'Mnemonic') {
+      key = await mnemonicGenerate()
+    } else if (way === 'Mnemonic24') {
+      key = await mnemonicGenerate(24)
     } else {
-      key = u8aToHex(randomAsU8a())
+      key = u8aToHex(await randomAsU8a())
     }
+
     this.pair = keyring.addFromMnemonic(key)
+    const { address } = this.pair
     this.setState({
-      key: key,
-      address: this.pair.address()
+      ...this.defaultState,
+      address: address(),
+      key,
+      way
     })
   }
 
@@ -596,6 +601,7 @@ class CreateAccount extends Component {
                   customKeyboardType="safeKeyBoard"
                   secureTextEntry={true}
                   onChangeText={this.onChangepassword}
+                  value={this.state.password}
                 />
               </View>
               {/* repeatPass 2 */}
@@ -610,6 +616,7 @@ class CreateAccount extends Component {
                   secureTextEntry={true}
                   customKeyboardType="safeKeyBoard"
                   onChangeText={this.onChangpasswordErepeat}
+                  value={this.state.passwordErepeat}
                 />
               </View>
             </View>
