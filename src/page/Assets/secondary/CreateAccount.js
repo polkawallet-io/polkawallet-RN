@@ -51,22 +51,6 @@ class CreateAccount extends Component {
     super(props)
     this.json
     this.pair
-    this.state = {
-      way: 'Mnemonic',
-      way_change: 'Mnemonic',
-      isModel: false,
-      israndom: 1,
-      keyrandom: '',
-      key: '',
-      name: '',
-      password: '',
-      passwordErepeat: '',
-      address: 'xxxxxxxxxxxxxxxxxxxxxxxx',
-      islookpwd: false,
-      ispwd: 0,
-      ispwd2: 0,
-      balance: 0
-    }
     this.Save_Account = this.Save_Account.bind(this)
     this.onChangekey = this.onChangekey.bind(this)
     this.onChangename = this.onChangename.bind(this)
@@ -77,6 +61,25 @@ class CreateAccount extends Component {
 
     CustomKeyboard.keyBoardAPI('safeKeyBoard')(CustomKeyboard.SafeKeyBoardView)
   }
+
+  defaultState = {
+    way: 'Mnemonic',
+    way_change: 'Mnemonic',
+    isModel: false,
+    israndom: 1,
+    keyrandom: '',
+    key: '',
+    name: '',
+    password: '',
+    passwordErepeat: '',
+    address: 'xxxxxxxxxxxxxxxxxxxxxxxx',
+    islookpwd: false,
+    ispwd: 0,
+    ispwd2: 0,
+    balance: 0
+  }
+
+  state = { ...this.defaultState }
 
   componentWillUnmount() {
     this.keyboardDidShowListener.remove()
@@ -279,25 +282,27 @@ class CreateAccount extends Component {
    * @description 点击重置|Click Reset
    */
   async Reset() {
+    const { way } = this.state
     let key
-    if (this.state.way == 'Keystore') {
-      this.setState({
-        key: '',
-        address: '',
-        balance: 0
-      })
+
+    if (way == 'Keystore') {
+      this.setState({ ...this.defaultState, way })
       return
-    } else if (this.state.way === 'Mnemonic') {
+    } else if (way === 'Mnemonic') {
       key = await mnemonicGenerate()
-    } else if (this.state.way === 'Mnemonic24') {
+    } else if (way === 'Mnemonic24') {
       key = await mnemonicGenerate(24)
     } else {
       key = u8aToHex(await randomAsU8a())
     }
+
     this.pair = keyring.addFromMnemonic(key)
+    const { address } = this.pair
     this.setState({
-      key: key,
-      address: this.pair.address()
+      ...this.defaultState,
+      address: address(),
+      key,
+      way
     })
   }
 
@@ -596,6 +601,7 @@ class CreateAccount extends Component {
                   customKeyboardType="safeKeyBoard"
                   secureTextEntry={true}
                   onChangeText={this.onChangepassword}
+                  value={this.state.password}
                 />
               </View>
               {/* repeatPass 2 */}
@@ -610,6 +616,7 @@ class CreateAccount extends Component {
                   secureTextEntry={true}
                   customKeyboardType="safeKeyBoard"
                   onChangeText={this.onChangpasswordErepeat}
+                  value={this.state.passwordErepeat}
                 />
               </View>
             </View>
