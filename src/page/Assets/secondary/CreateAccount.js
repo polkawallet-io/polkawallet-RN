@@ -30,18 +30,19 @@ import { formatBalance, hexToU8a, isHex, stringToU8a, u8aToHex } from '@polkadot
 import { NavigationActions, StackActions } from 'react-navigation'
 import SInfo from 'react-native-sensitive-info'
 import Keyring from '@polkadot/keyring'
-import { randomAsU8a, mnemonicGenerate } from '@polkadot/util-crypto'
 
 import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { observer, inject } from 'mobx-react'
 
+import { mnemonicGenerate, randomAsU8a } from '../../../util/bip39Util'
 import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import polkadotAPI from '../../../util/polkadotAPI'
 import i18n from '../../../locales/i18n'
 import RNPicker from '../../../components/RNPicker'
 
-const keyring = new Keyring()
+// TODO: this is just show case to use sr25519
+const keyring = new Keyring({ type: 'sr25519' })
 
 @inject('rootStore')
 @observer
@@ -83,7 +84,6 @@ class CreateAccount extends Component {
   }
 
   _keyboardDidShow() {
-    Keyboard.dismiss()
     return false
   }
 
@@ -97,7 +97,7 @@ class CreateAccount extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       ;(async () => {
-        let key = mnemonicGenerate()
+        let key = await mnemonicGenerate()
         this.pair = keyring.addFromMnemonic(key)
         this.setState({
           key,
@@ -125,7 +125,7 @@ class CreateAccount extends Component {
    * @description 切换单位|Switching unit
    * @param {String} way_change 单位|unit
    */
-  Modify_way(way_change) {
+  async Modify_way(way_change) {
     this.setState({
       isModel: false,
       way: way_change,
@@ -139,11 +139,11 @@ class CreateAccount extends Component {
       })
       return
     } else if (way_change == 'Mnemonic') {
-      key = mnemonicGenerate()
+      key = await mnemonicGenerate()
     } else if (way_change == 'Mnemonic24') {
-      key = mnemonicGenerate(24)
+      key = await mnemonicGenerate(24)
     } else {
-      key = u8aToHex(randomAsU8a())
+      key = u8aToHex(await randomAsU8a())
     }
     this.pair = keyring.addFromMnemonic(key)
     this.setState({
@@ -278,7 +278,7 @@ class CreateAccount extends Component {
   /**
    * @description 点击重置|Click Reset
    */
-  Reset() {
+  async Reset() {
     let key
     if (this.state.way == 'Keystore') {
       this.setState({
@@ -288,11 +288,11 @@ class CreateAccount extends Component {
       })
       return
     } else if (this.state.way === 'Mnemonic') {
-      key = mnemonicGenerate()
+      key = await mnemonicGenerate()
     } else if (this.state.way === 'Mnemonic24') {
-      key = mnemonicGenerate(24)
+      key = await mnemonicGenerate(24)
     } else {
-      key = u8aToHex(randomAsU8a())
+      key = u8aToHex(await randomAsU8a())
     }
     this.pair = keyring.addFromMnemonic(key)
     this.setState({

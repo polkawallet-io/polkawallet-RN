@@ -7,10 +7,7 @@ import com.yusha.customKeyboard.RNCustomKeyboardPackage;
 import com.lewin.qrcode.QRScanReaderPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import cn.reactnative.modules.update.UpdatePackage;
-import com.tradle.react.UdpSocketsModule;
-import com.peel.react.TcpSocketsModule;
 import li.yunqi.rnsecurestorage.RNSecureStoragePackage;
-import com.peel.react.rnos.RNOSModule;
 import org.reactnative.camera.RNCameraPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
@@ -51,10 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
             new QRScanReaderPackage(),
             new RNI18nPackage(),
             new UpdatePackage(),
-            new UdpSocketsModule(),
-            new TcpSocketsModule(),
             new RNSecureStoragePackage(),
-            new RNOSModule(),
             new RNCameraPackage(),
             new RandomBytesPackage(),
             new RNSensitiveInfoPackage(),
