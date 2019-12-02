@@ -20,6 +20,8 @@ export default {
     Assets: '资产',
     Staking: '抵押',
     Democracy: '民主',
+    Vote: '投票',
+    Exchange: '兑换',
     Profile: '设置',
     ChangeLanguages: '更换语言',
     PasswordMistake: '密码错误',
@@ -40,7 +42,8 @@ export default {
     unlockPassword: '输入密码解锁账户',
     loading: '加载中',
     CopySuccess: '复制成功',
-    Copy: '复制'
+    Copy: '复制',
+    Confirm: '确认'
   },
   Assets: {
     ...Assets

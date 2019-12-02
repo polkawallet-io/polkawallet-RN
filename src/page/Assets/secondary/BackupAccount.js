@@ -95,11 +95,10 @@ class BackupAccount extends Component {
         }
       })
     })()
-    let resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Tabbed_Navigation' })]
+    console.warn('dddd继续....')
+    this.props.navigation.navigate('Tabbed_Navigation', {
+      address: this.props.navigation.state.params.address
     })
-    this.props.navigation.dispatch(resetAction)
   }
 
   /**

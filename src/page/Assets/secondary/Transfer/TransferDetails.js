@@ -60,7 +60,7 @@ class Transfer_details extends PureComponent {
     Clipboard.setString(
       this.state.data.tx_type == 'Send'
         ? this.state.data.tx_address
-        : this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+        : this.props.rootStore.stateStore.currentAccount.address
     )
     Alert.alert('', i18n.t('TAB.CopySuccess'))
   }
@@ -71,7 +71,7 @@ class Transfer_details extends PureComponent {
   async copyFrom() {
     Clipboard.setString(
       this.state.data.tx_type == 'Send'
-        ? this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+        ? this.props.rootStore.stateStore.currentAccount.address
         : this.state.data.tx_address
     )
     Alert.alert('', i18n.t('TAB.CopySuccess'))
@@ -165,7 +165,7 @@ class Transfer_details extends PureComponent {
               <Text style={styles.address} ellipsizeMode="middle" numberOfLines={1}>
                 {this.state.data.tx_type == 'Send'
                   ? this.state.data.tx_address
-                  : this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                  : this.props.rootStore.stateStore.currentAccount.address}
               </Text>
             </View>
             <TouchableOpacity
@@ -185,7 +185,7 @@ class Transfer_details extends PureComponent {
             <View style={styles.grey_text}>
               <Text style={[styles.address, { fontSize: 14 }]} ellipsizeMode="middle" numberOfLines={1}>
                 {this.state.data.tx_type == 'Send'
-                  ? this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+                  ? this.props.rootStore.stateStore.currentAccount.address
                   : this.state.data.tx_address}
               </Text>
             </View>

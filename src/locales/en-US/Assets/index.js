@@ -11,13 +11,15 @@
  * @Date: 2019-06-18 21:08:00
  */
 export default {
-  Alexander: 'Alexander TestNet',
+  Alexander: 'Kusama network',
   Receive: 'Receive',
   Account: 'Account',
   AssetsList: 'Assets list',
   Scan: 'Scan',
   Menu: 'Menu',
+  memoOf: 'memo',
   CreateAccount: 'Create Account',
+  CreatePCXAccount: 'Create PCX Account',
   // Create_Account 页面
   balance: 'balance',
   Createfrom: 'Create from mnemonic,seed or import keystore',
@@ -50,7 +52,7 @@ export default {
   recipientAddress: 'to the recipient address',
   sendOf: 'send a value of ',
   send: 'Send',
-  PleaseEnterAddress: 'Please enter address',
+  PleaseEnterAddress: 'Please enter correct address',
   creationFee: 'creationFee',
   existentialDeposit: 'existentialDeposit',
   transactionBaseFee: 'transactionBaseFee',
@@ -60,6 +62,15 @@ export default {
   // Transfer 页面
   enterValue: 'Please enter Send a value',
   enterInformation: 'Please enter the correct information.',
+  Cold: 'Cold Wallet Scanning',
+  ReadData: 'Read in signature data',
+  ScanAndNext:
+    'Please scan the two-dimensional code with a cold wallet, and wait for the signature to be completed to move on to the next step.',
+  Next: 'Next step',
+  ScanCold: 'Scanning cold wallet signature data two-dimensional code',
+  // Sign 页面
+  signSuccess: 'Successful signature',
+
   // Transfer_details 页面
   Details: 'Details',
   Successed: 'Successed',
@@ -74,6 +85,7 @@ export default {
   calling: 'calling',
   withIndex: 'with an index of ',
   SignAndSubmit: 'Sign and Submit',
+  Sign: 'Sign',
   // Receive
   CopyAddress: 'Copy address',
   // MnemonicWord.js
@@ -92,5 +104,9 @@ export default {
   MWTip12: 'Got it',
   MWTip13: 'Please accurately copy and safely backup the mnemonic',
   MWTip14: 'Please click on mnemonics in order to confirm that you have backed up correctly',
-  MWTip15: 'The order of the mnemonic is incorrect,please proofread'
+  MWTip15: 'The order of the mnemonic is incorrect,please proofread',
+  // QRCode
+  shotErr: 'The screenshot failed. Please try again later.',
+  saveSuccess: 'Save successfully!',
+  saveErr: 'Save failed!'
 }

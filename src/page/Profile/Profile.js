@@ -121,18 +121,10 @@ class Profile extends Component {
                 }}
               >
                 {/* 头像 | Identicon */}
-                <Identicon
-                  value={
-                    this.props.rootStore.stateStore.Accounts[
-                      this.props.rootStore.stateStore.isfirst == 0 ? 0 : this.props.rootStore.stateStore.Account
-                    ].address
-                  }
-                  size={56}
-                  theme="polkadot"
-                />
+                <Identicon value={this.props.rootStore.stateStore.currentAccount.address} size={56} theme="polkadot" />
                 {/* 用户名 | User name */}
                 <Text style={{ fontSize: 18, color: 'white', marginLeft: 21 }}>
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
+                  {this.props.rootStore.stateStore.currentAccount.account}
                 </Text>
               </View>
             </View>

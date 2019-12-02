@@ -14,6 +14,7 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   View,
+  TextInput,
   Text,
   TouchableOpacity,
   Image,
@@ -24,7 +25,6 @@ import {
   InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd, formatData, doubleClick } from '../../../../util/Common'
 import Header from '../../../../components/Header'
 import RNKeyboardAvoidView from '../../../../components/RNKeyboardAvoidView'
@@ -82,9 +82,7 @@ class Transfer extends Component {
    */
   getAccountNonce() {
     ;(async () => {
-      const accountNonce = await polkadotAPI.accountNonce(
-        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-      )
+      const accountNonce = await polkadotAPI.accountNonce(this.props.rootStore.stateStore.currentAccount.address)
       this.setState({
         accountNonce: JSON.stringify(accountNonce)
       })
@@ -126,7 +124,7 @@ class Transfer extends Component {
     })
     const _this = this
     checkPwd({
-      address: _this.props.rootStore.stateStore.Accounts[_this.props.rootStore.stateStore.Account].address,
+      address: _this.props.rootStore.stateStore.currentAccount.address,
       password: _this.state.password,
       success: loadPair => {
         ;(async () => {
@@ -153,7 +151,6 @@ class Transfer extends Component {
               )
             }
           }, 15000)
-          const accountNonce = await polkadotAPI.accountNonce(loadPair.address())
           // Do the transfer and track the actual status
           let transfer
           try {
@@ -183,7 +180,7 @@ class Transfer extends Component {
 
           // 签名 发送
           // Signature to send
-          transfer.sign(loadPair, accountNonce).send(({ status }) => {
+          transfer.signAndSend(loadPair, ({ status }) => {
             status = formatData(status)
             if (status.Finalized) {
               _this.setState({
@@ -240,106 +237,103 @@ class Transfer extends Component {
         >
           <Header title={i18n.t('Assets.Transfer')} theme="dark" navigation={this.props.navigation} />
         </View>
-        <CustomKeyboard.AwareCusKeyBoardScrollView style={{ flex: 1 }}>
-          <RNKeyboardAvoidView>
-            <View style={{ width: ScreenWidth - 40, marginLeft: 20 }}>
-              <Text
-                style={{
-                  marginTop: 40,
-                  color: '#3E2D32',
-                  fontSize: 20,
-                  marginBottom: 40,
-                  fontWeight: '600'
-                }}
-              >
-                {i18n.t('Assets.SubmitTransaction')}
+        <RNKeyboardAvoidView>
+          <View style={{ width: ScreenWidth - 40, marginLeft: 20 }}>
+            <Text
+              style={{
+                marginTop: 40,
+                color: '#3E2D32',
+                fontSize: 20,
+                marginBottom: 40,
+                fontWeight: '600'
+              }}
+            >
+              {i18n.t('Assets.SubmitTransaction')}
+            </Text>
+            <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('TAB.signMess')}</Text>
+            <View
+              style={{
+                padding: 3,
+                backgroundColor: '#F0F0F0',
+                borderRadius: 3,
+                paddingHorizontal: 10,
+                width: 270,
+                marginTop: 12
+              }}
+            >
+              <Text style={{ color: '#3E2D32', fontSize: 15, width: 250 }} ellipsizeMode="middle" numberOfLines={1}>
+                {this.props.rootStore.stateStore.currentAccount.address}
               </Text>
-              <Text style={{ color: '#3E2D32', fontSize: 15 }}>{i18n.t('TAB.signMess')}</Text>
-              <View
-                style={{
-                  padding: 3,
-                  backgroundColor: '#F0F0F0',
-                  borderRadius: 3,
-                  paddingHorizontal: 10,
-                  width: 270,
-                  marginTop: 12
-                }}
-              >
-                <Text style={{ color: '#3E2D32', fontSize: 15, width: 250 }} ellipsizeMode="middle" numberOfLines={1}>
-                  {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 15,
-                  marginBottom: 42
-                }}
-              >
-                <Text style={{ fontSize: 15 }}>{i18n.t('Assets.calling')}</Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    backgroundColor: '#F0F0F0',
-                    paddingHorizontal: 5,
-                    borderRadius: 3
-                  }}
-                >
-                  balances.transfer
-                </Text>
-                <Text style={{ fontSize: 15 }}>{i18n.t('Assets.withIndex')}</Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    backgroundColor: '#F0F0F0',
-                    paddingHorizontal: 5,
-                    borderRadius: 3
-                  }}
-                >
-                  {this.state.accountNonce}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  color: '#3E2D32',
-                  fontSize: 18,
-                  marginBottom: 12,
-                  fontWeight: '600'
-                }}
-              >
-                {i18n.t('TAB.unlockPassword')}
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <CustomKeyboard.CustomTextInput
-                  style={{
-                    width: ScreenWidth - 40,
-                    fontSize: 14,
-                    color: '#3E2D32',
-                    height: 44,
-                    paddingHorizontal: 15,
-                    borderColor: '#CCCCCC',
-                    borderWidth: 1,
-                    borderRadius: 6
-                  }}
-                  customKeyboardType="safeKeyBoard"
-                  secureTextEntry={this.state.ispwd}
-                  onChangeText={this.onChangepasswore}
-                />
-                <TouchableOpacity
-                  onPress={this.lookpwd}
-                  activeOpacity={0.7}
-                  style={{ width: 50, marginLeft: -50, height: 44 }}
-                >
-                  <Image
-                    style={{ width: 21, marginTop: 12, marginLeft: 14 }}
-                    source={require('../../../../assets/images/public/eye.png')}
-                  />
-                </TouchableOpacity>
-              </View>
             </View>
-          </RNKeyboardAvoidView>
-        </CustomKeyboard.AwareCusKeyBoardScrollView>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 15,
+                marginBottom: 42
+              }}
+            >
+              <Text style={{ fontSize: 15 }}>{i18n.t('Assets.calling')}</Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  backgroundColor: '#F0F0F0',
+                  paddingHorizontal: 5,
+                  borderRadius: 3
+                }}
+              >
+                balances.transfer
+              </Text>
+              <Text style={{ fontSize: 15 }}>{i18n.t('Assets.withIndex')}</Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  backgroundColor: '#F0F0F0',
+                  paddingHorizontal: 5,
+                  borderRadius: 3
+                }}
+              >
+                {this.state.accountNonce}
+              </Text>
+            </View>
+            <Text
+              style={{
+                color: '#3E2D32',
+                fontSize: 18,
+                marginBottom: 12,
+                fontWeight: '600'
+              }}
+            >
+              {i18n.t('TAB.unlockPassword')}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TextInput
+                style={{
+                  width: ScreenWidth - 40,
+                  fontSize: 14,
+                  color: '#3E2D32',
+                  height: 44,
+                  paddingHorizontal: 15,
+                  borderColor: '#CCCCCC',
+                  borderWidth: 1,
+                  borderRadius: 6
+                }}
+                secureTextEntry={this.state.ispwd}
+                onChangeText={this.onChangepasswore}
+              />
+              <TouchableOpacity
+                onPress={this.lookpwd}
+                activeOpacity={0.7}
+                style={{ width: 50, marginLeft: -50, height: 44 }}
+              >
+                <Image
+                  style={{ width: 21, marginTop: 12, marginLeft: 14 }}
+                  source={require('../../../../assets/images/public/eye.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </RNKeyboardAvoidView>
         {/* Reset or Save */}
         <View style={{ justifyContent: 'center', marginBottom: 20 }}>
           <View

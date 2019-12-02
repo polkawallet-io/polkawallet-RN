@@ -18,8 +18,8 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
-  Platform,
-  InteractionManager
+  Platform
+  // InteractionManager
 } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import { ScreenWidth } from '../../util/Common'
@@ -44,9 +44,9 @@ class Democracy extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.loadPage()
-    })
+    // InteractionManager.runAfterInteractions(() => {
+    this.loadPage()
+    // })
   }
 
   componentWillUnmount() {

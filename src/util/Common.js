@@ -14,6 +14,7 @@ import SInfo from 'react-native-sensitive-info'
 import Keyring from '@polkadot/keyring'
 import { Dimensions, Alert } from 'react-native'
 import i18n from '../locales/i18n'
+import { async } from 'rxjs/internal/scheduler/async'
 // 返回页面宽度
 // Get page width
 export const ScreenWidth = Dimensions.get('window').width
@@ -29,48 +30,45 @@ export function getUnit(type) {
   let unit = 1
   type = String(type)
   switch (type) {
-    case 'femto':
+    case 'pico':
       unit = '1'
       break
-    case 'pico':
+    case 'nano':
       unit = '1000'
       break
-    case 'nano':
+    case 'micro':
       unit = '1000000'
       break
-    case 'micro':
+    case 'milli':
       unit = '1000000000'
       break
-    case 'milli':
+    case 'DOT':
       unit = '1000000000000'
       break
-    case 'DOT':
+    case 'Kilo':
       unit = '1000000000000000'
       break
-    case 'Kilo':
+    case 'Mega':
       unit = '1000000000000000000'
       break
-    case 'Mega':
+    case 'Giga':
       unit = '1000000000000000000000'
       break
-    case 'Giga':
+    case 'Tera':
       unit = '1000000000000000000000000'
       break
-    case 'Tera':
+    case 'Peta':
       unit = '1000000000000000000000000000'
       break
-    case 'Peta':
+    case 'Exa':
       unit = '1000000000000000000000000000000'
       break
-    case 'Exa':
-      unit = '1000000000000000000000000000000000'
-      break
     case 'Zeta':
-      unit = '1000000000000000000000000000000000000'
+      unit = '1000000000000000000000000000000000'
       break
     default:
       // Yotta
-      unit = '1000000000000000000000000000000000000000'
+      unit = '1000000000000000000000000000000000000'
   }
   return unit
 }
@@ -83,7 +81,7 @@ export function getUnit(type) {
  * @param {Function} params.error    密码错误的回调 | Password error callback method
  */
 export function checkPwd(params) {
-  const keyring = new Keyring()
+  const keyring = new Keyring({ type: 'ed25519', addressPrefix: 0x02 })
   SInfo.getItem(params.address, {
     sharedPreferencesName: 'Polkawallet',
     keychainService: 'PolkawalletKey'
@@ -106,7 +104,7 @@ export function checkPwd(params) {
         { cancelable: false }
       )
     }
-    !loadPair.isLocked() && (params.success && params.success(loadPair, SInfo))
+    !loadPair.isLocked && (params.success && params.success(loadPair, SInfo))
   })
 }
 
@@ -120,6 +118,36 @@ export function formatData(data) {
     return JSON.parse(JSON.stringify(data))
   }
 }
+
+export function axiosGet(url, params) {
+  // 将后台接口的公共部分拼接进去
+  //判断有木有参数
+  if (params) {
+    // 定一个空数组
+    let paramsArray = []
+    //  拆分对象
+    Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))
+    // 判断是否地址拼接的有没有 ？,当没有的时候，使用 ？拼接第一个参数，如果有参数拼接，则用&符号拼接后边的参数
+    if (url.search(/\?/) === -1) {
+      url = url + '?' + paramsArray.join('&')
+    } else {
+      url = url + '&' + paramsArray.join('&')
+    }
+  }
+  // 返回一个promise
+  return new Promise((resolve, reject) => {
+    //fetch请求
+    fetch(url, { method: 'GET' })
+      .then(response => response.json())
+      .then(resulet => {
+        resolve(resulet)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 /**
  * @description 请求接口 方法整合 | Request interface method integration
  * @param {String} url 请求的地址 | Requested url
@@ -190,6 +218,12 @@ export function ScannerType(data) {
       if (data.indexOf('substrate:') > -1) {
         type = 'substrate'
         QRData = data.split('substrate:')[1]
+      } else if (data.indexOf('signData') > -1) {
+        type = 'signData'
+        QRData = data
+      } else if (data.indexOf('SignDetail') > -1) {
+        type = 'SignDetail'
+        QRData = JSON.stringify(JSON.parse(data).signature)
       } else {
         type = ''
         QRData = data

@@ -73,8 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js",
-    odeExecutableAndArgs: ["node", "--max_old_space_size=4096"]
+    entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -103,7 +102,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "0.1.9"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "6f7aadcc0ccf0f3db8467c38",
                 APP_CHANNEL : "default"
@@ -113,16 +112,11 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         missingDimensionStrategy 'react-native-camera', 'mlkit'
-
+        multiDexEnabled = true
     }
     signingConfigs {
         release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
-            }
+
         }
     }
     splits {
@@ -162,13 +156,21 @@ configurations.all {
 }
 
 dependencies {
-    implementation project(':react-native-yusha-customkeyboard')
+    implementation project(':react-native-fs')
+    implementation project(':react-native-touch-id')
+    implementation project(':react-native-local-barcode-recognizer')
+    implementation project(':react-native-image-picker')
+    implementation project(':rn-camera-roll')
+    implementation project(':react-native-view-shot')
     implementation project(':jcore-react-native')
     implementation project(':jpush-react-native')
     implementation project(':react-native-qr-scanner')
     implementation project(':react-native-i18n')
     compile project(':react-native-update')
+    compile project(':react-native-udp')
+    compile project(':react-native-tcp')
     compile project(':react-native-secure-storage')
+    compile project(':react-native-os')
     compile project(':react-native-camera')
     compile project(':react-native-randombytes')
     compile project(':react-native-sensitive-info')

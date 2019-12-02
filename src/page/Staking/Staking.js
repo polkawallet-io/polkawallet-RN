@@ -187,10 +187,8 @@ class Staking extends Component {
   loadAccountActions() {
     ;(async () => {
       this.loadSlashRecords()
-      this.getStakingOption(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-      let address = await polkadotAPI.bonded(
-        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-      ) // 检测是否为“存储账户(stash)" | The account is stash account?
+      this.getStakingOption(this.props.rootStore.stateStore.currentAccount.address)
+      let address = await polkadotAPI.bonded(this.props.rootStore.stateStore.currentAccount.address) // 检测是否为“存储账户(stash)" | The account is stash account?
       address = String(address)
       if (address) {
         // 存储账户(stash)
@@ -207,9 +205,7 @@ class Staking extends Component {
 
         let allLockedValue = 0 // 所有解绑的值 | All of the unbound values
         const lockedes = [] // 解绑中的每个对象的集合 | Object of Unbond
-        let balance = await polkadotAPI.freeBalance(
-          String(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-        ) // 余额 | Balance
+        let balance = await polkadotAPI.freeBalance(String(this.props.rootStore.stateStore.currentAccount.address)) // 余额 | Balance
         const bonded = Number(AccountMsg.active)
         balance = String(Number(balance))
 
@@ -254,20 +250,14 @@ class Staking extends Component {
         this.setState({
           stashAccountTag: false
         })
-        const balance = await polkadotAPI.freeBalance(
-          String(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-        )
-        const AccountMsg = await polkadotAPI.accountInfo(
-          String(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
-        ) // 查对应的控制账户信息 | Check the control account info
+        const balance = await polkadotAPI.freeBalance(String(this.props.rootStore.stateStore.currentAccount.address))
+        const AccountMsg = await polkadotAPI.accountInfo(String(this.props.rootStore.stateStore.currentAccount.address)) // 查对应的控制账户信息 | Check the control account info
         this.setState({
           AccountMsg: {
             balance
           }
         })
-        let controller = await polkadotAPI.ledger(
-          this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-        ) // 判断是否为控制账户 | Determine whether it is a control account
+        let controller = await polkadotAPI.ledger(this.props.rootStore.stateStore.currentAccount.address) // 判断是否为控制账户 | Determine whether it is a control account
         controller = formatData(controller)
         if (controller && controller != null && controller != 'null') {
           // 如果是控制账户
@@ -298,9 +288,7 @@ class Staking extends Component {
                     // 判断提名
                     // Determine the nomination
                     ;(async () => {
-                      const info = await polkadotAPI.accountInfo(
-                        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-                      )
+                      const info = await polkadotAPI.accountInfo(this.props.rootStore.stateStore.currentAccount.address)
                       const nominating = formatData(info).nominators
                       if (nominating.length > 0) {
                         // 提名个数大于0 正在提名   显示停止提名
@@ -329,9 +317,7 @@ class Staking extends Component {
           } else {
             // 判断提名
             // Determine the nominate
-            const info = await polkadotAPI.accountInfo(
-              this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-            )
+            const info = await polkadotAPI.accountInfo(this.props.rootStore.stateStore.currentAccount.address)
             const nominating = formatData(info).nominators
             if (nominating.length > 0) {
               // 提名个数大于0 正在提名   显示停止提名
@@ -357,9 +343,7 @@ class Staking extends Component {
         }
       }
 
-      const info = await polkadotAPI.accountInfo(
-        this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-      )
+      const info = await polkadotAPI.accountInfo(this.props.rootStore.stateStore.currentAccount.address)
       const nominating = formatData(info).nominators
       const nominatingBalance = await Promise.all(
         nominating.map(authorityId => polkadotAPI.accountInfo(String(authorityId)))
@@ -396,7 +380,7 @@ class Staking extends Component {
     let params = {
       pageNum,
       pageSize: 10,
-      user_address: this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
+      user_address: this.props.rootStore.stateStore.currentAccount.address
     }
     params = JSON.stringify(params)
     axios(REQUEST_URL, params)
@@ -1041,7 +1025,7 @@ class Staking extends Component {
                           <TouchableOpacity
                             key={index}
                             activeOpacity={0.7}
-                            onPress={this.toValidator_Info.bind(this, formatData(item).stashId)}
+                            onPress={this.toValidator_Info.bind(this, formatData(item).accountId)}
                             style={{
                               paddingHorizontal: 20,
                               flexDirection: 'row',
@@ -1053,26 +1037,21 @@ class Staking extends Component {
                               borderBottomColor: '#F0F0F0'
                             }}
                           >
-                            <Identicon size={25} theme="polkadot" value={String(formatData(item).stashId)} />
+                            <Identicon size={25} theme="polkadot" value={String(formatData(item).accountId)} />
                             <View style={{ flex: 1 }}>
                               <Text
                                 ellipsizeMode="middle"
                                 numberOfLines={1}
                                 style={{
-                                  width: 80,
+                                  width: 150,
                                   fontSize: 13,
                                   color: '#3E2D32',
                                   marginLeft: 12
                                 }}
                               >
-                                {String(formatData(item).stashId)}
+                                {String(formatData(item).accountId)}
                               </Text>
                             </View>
-                            <Text style={{ justifyContent: 'flex-end', color: '#666666', fontSize: 10 }}>
-                              {`${formatBalance(String(Number(formatData(item).stakers.own)))}(+${formatBalance(
-                                Number(formatData(item).stakers.total) - Number(formatData(item).stakers.own)
-                              )})`}
-                            </Text>
                           </TouchableOpacity>
                         ))
                       )
@@ -1199,14 +1178,12 @@ class Staking extends Component {
                         <Identicon
                           size={36}
                           theme="polkadot"
-                          value={
-                            this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-                          }
+                          value={this.props.rootStore.stateStore.currentAccount.address}
                         />
                         <Text
                           style={{ color: '#4B4B4B', marginBottom: ScreenHeight / 40, fontSize: ScreenHeight / 47.65 }}
                         >
-                          {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].account}
+                          {this.props.rootStore.stateStore.currentAccount.account}
                         </Text>
                       </View>
                       {/* 控制账户或者储存账户信息 | Control or stash account info */}
@@ -1277,7 +1254,7 @@ class Staking extends Component {
                           width: 165
                         }}
                       >
-                        {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                        {this.props.rootStore.stateStore.currentAccount.address}
                       </Text>
                       {this.state.stashAccountTag && this.state.controllersAccount ? (
                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>

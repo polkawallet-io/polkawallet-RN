@@ -11,10 +11,12 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { Text } from 'react-native'
+import { Text, DeviceEventEmitter } from 'react-native'
 import { createBottomTabNavigator } from 'react-navigation'
+import { observer, inject } from 'mobx-react'
 import Assets from './Assets/Assets'
 import Staking from './Staking/Staking'
+
 import Democracy from './Democracy/Democracy'
 import Profile from './Profile/Profile'
 import Diceng from '../components/bottom'
@@ -39,8 +41,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Assets_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Assets')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -62,8 +66,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Staking_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Staking')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -85,8 +91,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Democrscy_dark.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Democracy')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   },
@@ -108,8 +116,10 @@ const TabRouteConfigs = {
       tabBarIcon: ({ b, tintColor }) => (
         <Diceng b={b} b1={require('../assets/images/public/Profile.png')} tintColor={tintColor} />
       ),
-      tabBarOnPress: () => {
-        route(navigation, 'Profile')
+      tabBarOnPress: ({ defaultHandler }) => {
+        if (!global.LoadingTip) {
+          defaultHandler()
+        }
       }
     })
   }
@@ -132,23 +142,35 @@ const TabNavigatorConfigs = {
   tabBarPosition: 'bottom',
   lazy: false
 }
-const Tab = createBottomTabNavigator(TabRouteConfigs, TabNavigatorConfigs)
-module.exports = Tab
-export default class Navigation extends Component {
-  static navigationOptions = {
-    header: null
-  }
-
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return <Tab />
-  }
+let Tab = createBottomTabNavigator(TabRouteConfigs, TabNavigatorConfigs)
+const Staking2 = {
+  screen: Staking,
+  navigationOptions: ({ navigation }) => ({
+    tabBarLabel: ({ tintColor }) => (
+      <Text
+        style={{
+          fontSize: 10,
+          color: tintColor,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {i18n.t('TAB.Staking')}
+      </Text>
+    ),
+    tabBarIcon: ({ b, tintColor }) => (
+      <Diceng b={b} b1={require('../assets/images/public/Staking_dark.png')} tintColor={tintColor} />
+    ),
+    tabBarOnPress: ({ defaultHandler }) => {
+      if (!global.LoadingTip) {
+        defaultHandler()
+      }
+    }
+  })
 }
-const route = (navigation, path) => {
-  if (!navigation.isFocused() && !global.LoadingTip) {
-    navigation.navigate(path)
-  }
+
+module.exports = {
+  TabNavigatorConfigs,
+  TabRouteConfigs,
+  Tab
 }

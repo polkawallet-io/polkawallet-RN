@@ -1,0 +1,12 @@
+diff a/src/util/chainxAPI.js b/src/util/chainxAPI.js	(rejected hunks)
+@@ -14 +14 @@ function judgeObj(obj) {
+-  for (var i in obj) { 
++  for (var i in obj) {
+@@ -91 +91 @@ const chainxAPI = {
+-  sign: (_address, _privatekey,_from, _amount, _memo, cb) => {
++  sign: (_address, _privatekey, _from, _amount, _memo, cb) => {
+@@ -96,3 +96 @@ const chainxAPI = {
+-          const signMethod = api.tx.xAssets
+-            .transfer(_address, _from, _amount, _memo)
+-            .method.toHex()
++          const signMethod = api.tx.xAssets.transfer(_address, _from, _amount, _memo).method.toHex()

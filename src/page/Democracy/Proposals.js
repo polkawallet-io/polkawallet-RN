@@ -12,7 +12,7 @@
  */
 import React, { Component } from 'react'
 import { Text, View } from 'react-native'
-import { Method } from '@polkadot/types'
+import { GenericCall } from '@polkadot/types'
 import { observer, inject } from 'mobx-react'
 import { ScreenWidth, ScreenHeight } from '../../util/Common'
 import ProposalsRow from '../../components/ProposalsRow'
@@ -69,7 +69,7 @@ class Proposals extends Component {
                       info = item[1].proposal.args
                     }
                   } catch (e) {}
-                  let { meta, method, section } = Method.findFunction(info.callIndex)
+                  let { meta, method, section } = GenericCall.findFunction(info.callIndex)
                   this.state.Actives_Title.push({
                     section: section,
                     method: method

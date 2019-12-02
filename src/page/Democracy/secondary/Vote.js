@@ -86,7 +86,7 @@ class Vote extends Component {
     })
     const _this = this
     checkPwd({
-      address: _this.props.rootStore.stateStore.Accounts[_this.props.rootStore.stateStore.Account].address,
+      address: _this.props.rootStore.stateStore.currentAccount.address,
       password: _this.state.password,
       success: loadPair => {
         ;(async () => {

@@ -13,7 +13,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, SafeAreaView, Modal } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import i18n from '../../../locales/i18n'
@@ -190,9 +190,7 @@ class MnemonicWord extends Component {
                       justifyContent: 'center'
                     }}
                     activeOpacity={0.7}
-                    onPress={() => {
-                      doubleClick(this.nextStep.bind(this))
-                    }}
+                    onPress={this.nextStep.bind(this)}
                   >
                     <Text style={{ color: '#F14B79', fontSize: 16 }}>{i18n.t('Assets.MWTip12')}</Text>
                   </TouchableOpacity>
@@ -208,9 +206,7 @@ class MnemonicWord extends Component {
             marginBottom: 20
           }}
           activeOpacity={0.7}
-          onPress={() => {
-            doubleClick(this.showTip.bind(this))
-          }}
+          onPress={this.showTip.bind(this)}
         >
           <Image source={require('../../../assets/images/Assets/Nextstep.png')} />
         </TouchableOpacity>

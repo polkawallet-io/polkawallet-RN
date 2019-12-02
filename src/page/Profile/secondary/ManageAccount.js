@@ -23,15 +23,17 @@ import {
   Platform,
   StatusBar,
   SafeAreaView,
-  InteractionManager
+  InteractionManager,
+  DeviceEventEmitter
 } from 'react-native'
 import Identicon from 'polkadot-identicon-react-native'
 import SInfo from 'react-native-sensitive-info'
 import { observer, inject } from 'mobx-react'
-import * as CustomKeyboard from 'react-native-yusha-customkeyboard'
 import { ScreenWidth, ScreenHeight, checkPwd, doubleClick } from '../../../util/Common'
 import Header from '../../../components/Header'
 import i18n from '../../../locales/i18n'
+import PasswordPicker from '../../../components/PasswordPicker'
+import { TYPE_KUSMA } from '../../../util/Constant'
 
 @inject('rootStore')
 @observer
@@ -40,7 +42,7 @@ class ManageAccount extends Component {
     super(props)
     this.state = {
       password: '',
-      address: this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,
+      address: this.props.rootStore.stateStore.currentAccount.address,
       isModal1: false,
       isModal2: false,
       msg: ''
@@ -148,13 +150,10 @@ class ManageAccount extends Component {
         {
           text: 'OK',
           onPress: () => {
-            SInfo.deleteItem(
-              this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address,
-              {
-                sharedPreferencesName: 'Polkawallet',
-                keychainService: 'PolkawalletKey'
-              }
-            ).then(
+            SInfo.deleteItem(this.props.rootStore.stateStore.currentAccount.address, {
+              sharedPreferencesName: 'Polkawallet',
+              keychainService: 'PolkawalletKey'
+            }).then(
               Alert.alert(
                 '',
                 i18n.t('Profile.DeleteSuccess'),
@@ -162,64 +161,59 @@ class ManageAccount extends Component {
                   {
                     text: 'OK',
                     onPress: () => {
-                      this.props.rootStore.stateStore.Account = 1
                       SInfo.getAllItems({
                         sharedPreferencesName: 'Polkawallet',
                         keychainService: 'PolkawalletKey'
                       }).then(result => {
+                        // should set account to 0 first, and then update account list
+                        this.props.rootStore.stateStore.Account = 0
                         if (JSON.stringify(result).length < 10) {
-                          this.props.rootStore.stateStore.Account = 0
-                          this.props.rootStore.stateStore.Accountnum = 0
-                          this.props.rootStore.stateStore.Accounts = [
-                            {
-                              account: 'NeedCreate',
-                              address: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx'
-                            }
-                          ]
+                          this.props.rootStore.stateStore.Accounts = []
                           this.props.navigation.navigate('Create_Account')
                         } else {
-                          this.props.rootStore.stateStore.Account = 0
-                          this.props.rootStore.stateStore.Accountnum = 0
-                          this.props.rootStore.stateStore.Accounts = [
-                            {
-                              account: 'NeedCreate',
-                              address: 'xxxxxxxxxxxxxxxxxxxxxxxxxxx'
-                            }
-                          ]
-
                           if (Platform.OS == 'android') {
                             // android
                             for (let o in result) {
+                              let type = TYPE_KUSMA
+                              try {
+                                type = JSON.parse(result[o]).meta.type
+                                if (!type) {
+                                  type = TYPE_KUSMA
+                                }
+                              } catch (err) {
+                                type = TYPE_KUSMA
+                              }
                               this.props.rootStore.stateStore.Accounts.push({
                                 account: JSON.parse(result[o]).meta.name,
-                                address: JSON.parse(result[o]).address
+                                address: JSON.parse(result[o]).address,
+                                type: JSON.parse(result[o]).meta.type
                               })
-                              this.props.rootStore.stateStore.Account++
-                              this.props.rootStore.stateStore.Accountnum++
                             }
                           } else {
                             // ios
                             result.map((item, index) => {
                               item.map((item, index) => {
+                                let type = TYPE_KUSMA
+                                try {
+                                  type = JSON.parse(item.value).meta.type
+                                  if (!type) {
+                                    type = TYPE_KUSMA
+                                  }
+                                } catch (err) {
+                                  type = TYPE_KUSMA
+                                }
                                 // 添加用户到 mobx
                                 // Add account to mobx
                                 this.props.rootStore.stateStore.Accounts.push({
                                   account: JSON.parse(item.value).meta.name,
-                                  address: item.key
+                                  address: item.key,
+                                  type: type
                                 })
-                                this.props.rootStore.stateStore.Account = 1
-                                this.props.rootStore.stateStore.Accountnum++
                               })
                             })
                           }
-                          this.props.rootStore.stateStore.balances.map((item, index) => {
-                            if (
-                              item.address ==
-                              this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-                            ) {
-                              this.props.rootStore.stateStore.balanceIndex = index
-                            }
-                          })
+
+                          DeviceEventEmitter.emit('deleteAccount', TYPE_KUSMA)
                           this.props.navigation.navigate('Tabbed_Navigation')
                         }
                       })
@@ -276,15 +270,7 @@ class ManageAccount extends Component {
                 marginLeft: 21
               }}
             >
-              <Identicon
-                value={
-                  this.props.rootStore.stateStore.Accounts[
-                    this.props.rootStore.stateStore.isfirst == 0 ? 0 : this.props.rootStore.stateStore.Account
-                  ].address
-                }
-                size={56}
-                theme="polkadot"
-              />
+              <Identicon value={this.props.rootStore.stateStore.currentAccount.address} size={56} theme="polkadot" />
               <Text
                 style={{
                   width: ScreenWidth * 0.5,
@@ -295,26 +281,49 @@ class ManageAccount extends Component {
                 ellipsizeMode="middle"
                 numberOfLines={1}
               >
-                {this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}
+                {this.props.rootStore.stateStore.currentAccount.address}
               </Text>
             </View>
           </View>
           {/* Change Name */}
-          <View style={{ alignItems: 'center', marginTop: 20 }}>
-            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Name}>
-              <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangeName')}</Text>
-              <View style={{ flex: 1 }} />
-              <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
-            </TouchableOpacity>
-          </View>
+
+          {(() => {
+            if (this.props.rootStore.stateStore.type == 2) {
+              return <View />
+            } else {
+              return (
+                <View style={{ alignItems: 'center', marginTop: 20 }}>
+                  <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Name}>
+                    <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>
+                      {i18n.t('Profile.ChangeName')}
+                    </Text>
+                    <View style={{ flex: 1 }} />
+                    <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
+                  </TouchableOpacity>
+                </View>
+              )
+            }
+          })()}
+
           {/* Change password */}
-          <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Password}>
-              <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>{i18n.t('Profile.ChangePassword')}</Text>
-              <View style={{ flex: 1 }} />
-              <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
-            </TouchableOpacity>
-          </View>
+          {(() => {
+            if (this.props.rootStore.stateStore.type == 2) {
+              return <View />
+            } else {
+              return (
+                <View style={{ alignItems: 'center' }}>
+                  <TouchableOpacity style={styles.export} activeOpacity={0.7} onPress={this.Change_Password}>
+                    <Text style={{ marginLeft: 20, color: '#3E2D32', fontSize: 18 }}>
+                      {i18n.t('Profile.ChangePassword')}
+                    </Text>
+                    <View style={{ flex: 1 }} />
+                    <Image style={styles.next} source={require('../../../assets/images/public/addresses_nav_go.png')} />
+                  </TouchableOpacity>
+                </View>
+              )
+            }
+          })()}
+
           {/* Export Keystore */}
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity
@@ -339,49 +348,28 @@ class ManageAccount extends Component {
             </TouchableOpacity>
           </View>
           {/* Please enter your password */}
-          <Modal animationType="fade" transparent={true} visible={this.state.isModal1}>
-            <View style={styles.modal}>
-              <View style={styles.chooseview}>
-                <Text style={styles.prompt}>{i18n.t('Profile.unlockPassword')}</Text>
-                <CustomKeyboard.CustomTextInput
-                  style={[
-                    styles.textInputStyle,
-                    {
-                      borderColor: this.state.password == '' ? 'red' : '#4169E1'
-                    }
-                  ]}
-                  customKeyboardType="safeKeyBoard"
-                  autoCapitalize="none"
-                  placeholder={i18n.t('Profile.unlockPassword')}
-                  placeholderTextColor="#DC143CA5"
-                  underlineColorAndroid="#ffffff00"
-                  secureTextEntry={true}
-                  onChangeText={this.onChangepassword}
-                />
-                {/* <View style={{ flex: 1 }} /> */}
-                <View style={styles.yorn}>
-                  <TouchableOpacity
-                    style={[styles.choose, { borderRightWidth: 1, borderRightColor: '#ECE2E5' }]}
-                    onPress={this.cancel}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.textchoose}>cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.choose}
-                    activeOpacity={0.7}
-                    onPress={() => {
-                      this.state.password == ''
-                        ? Alert.alert('', i18n.t('Profile.unlockPassword'))
-                        : doubleClick(this.ok())
-                    }}
-                  >
-                    <Text style={styles.textchoose}>ok</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
+          <PasswordPicker
+            isModel={this.state.isModal1}
+            address={this.props.rootStore.stateStore.currentAccount.address}
+            type={this.props.rootStore.stateStore.currentAccount.type}
+            onCancel={() => this.setState({ isModal1: false })}
+            onError={() => this.setState({ isModal1: false })}
+            onGetPrivateKey={privatekey => {
+              if (this.props.rootStore.stateStore.currentAccount.type == 2) {
+                this.setState({
+                  isModal1: false,
+                  isModal2: true,
+                  msg: JSON.stringify(privatekey)
+                })
+              } else {
+                this.setState({
+                  isModal1: false,
+                  isModal2: true,
+                  msg: JSON.stringify(privatekey.toJson())
+                })
+              }
+            }}
+          ></PasswordPicker>
           {/* Please save your information */}
           <Modal animationType="fade" transparent={true} visible={this.state.isModal2}>
             <View style={styles.modal}>

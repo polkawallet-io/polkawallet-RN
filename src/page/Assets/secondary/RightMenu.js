@@ -11,7 +11,17 @@
  * @Date: 2019-06-18 21:08:00
  */
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, SafeAreaView } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  DeviceEventEmitter
+} from 'react-native'
+import { isEmpty } from 'lodash'
 import { observer, inject } from 'mobx-react'
 import Identicon from 'polkadot-identicon-react-native'
 import { ScreenWidth, ScreenHeight } from '../../../util/Common'
@@ -26,8 +36,10 @@ class RightMenu extends Component {
       Account: this.props.rootStore.stateStore.Account + 1
     }
     this.Create_Account = this.Create_Account.bind(this)
+    this.Create_PCX_Account = this.Create_PCX_Account.bind(this)
     this.Switch_Account = this.Switch_Account.bind(this)
     this.camera = this.camera.bind(this)
+    this.hide = this.props.hide
   }
 
   /**
@@ -51,12 +63,19 @@ class RightMenu extends Component {
     this.props.p.navigation.navigate('Create_Account')
   }
 
+  Create_PCX_Account() {
+    this.props.t.setState({
+      is: false
+    })
+    this.props.p.navigation.navigate('Create_PCX_Account')
+  }
+
   /**
    * @description 切换用户|Switch account
    */
   Switch_Account() {
     this.props.rootStore.stateStore.balances.map((item, index) => {
-      if (item.address == this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address) {
+      if (item.address == this.props.rootStore.stateStore.currentAccount.address) {
         this.props.rootStore.stateStore.balanceIndex = index
       }
     })
@@ -69,28 +88,45 @@ class RightMenu extends Component {
           <View
             style={{
               flexDirection: 'row',
-              height: 64,
+              height: 45,
               marginLeft: 20,
               justifyContent: 'space-between',
               alignItems: 'center'
             }}
           >
             <Text style={{ color: '#FFF', fontSize: 20 }}>{i18n.t('Assets.Menu')}</Text>
-            <Image
-              style={{ width: 20, height: 20, marginRight: 20 }}
-              source={require('../../../assets/images/Assets/Menu_line.png')}
-            />
+            <TouchableOpacity
+              style={{ padding: 20, marginRight: -10 }}
+              onPress={() => {
+                this.hide()
+              }}
+              activeOpacity={0.7}
+            >
+              <Image
+                style={{ width: 20, height: 20, marginRight: 20 }}
+                source={require('../../../assets/images/Assets/Menu_line.png')}
+              />
+            </TouchableOpacity>
           </View>
           <View style={{ height: 180 }}>
             <ScrollView>
               {this.props.rootStore.stateStore.Accounts.map((item, index) => {
-                if (index != 0) {
+                if (isEmpty(item)) return null
+                if (index != -1) {
                   return (
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
                         this.props.rootStore.stateStore.Account = index
-                        this.Switch_Account()
+                        console.warn('account:' + this.props.rootStore.stateStore.Account)
+                        console.log(this.props.rootStore.stateStore.currentAccount)
+                        console.warn(this.props.rootStore.stateStore.currentAccount)
+                        if (this.props.rootStore.stateStore.currentAccount.type) {
+                          this.props.rootStore.stateStore.type = this.props.rootStore.stateStore.currentAccount.type
+                        } else {
+                          this.props.rootStore.stateStore.type = 0
+                        }
+                        DeviceEventEmitter.emit('changeTab', this.props.rootStore.stateStore.type)
                       }}
                       activeOpacity={0.7}
                     >
@@ -114,7 +150,23 @@ class RightMenu extends Component {
                             }}
                           >
                             <View>
-                              <Identicon value={item.address} size={36} theme="polkadot" />
+                              {(() => {
+                                if (this.props.rootStore.stateStore.Accounts[index].type == 2) {
+                                  return (
+                                    <Image
+                                      style={{ width: 36, height: 36 }}
+                                      source={require('../../../assets/images/Assets/pcx.png')}
+                                    />
+                                  )
+                                } else {
+                                  return (
+                                    <Image
+                                      style={{ width: 36, height: 36 }}
+                                      source={require('../../../assets/images/Assets/KSC.png')}
+                                    />
+                                  )
+                                }
+                              })()}
                             </View>
                             <View style={{ marginLeft: 21 }}>
                               <View>
@@ -165,11 +217,21 @@ class RightMenu extends Component {
                   alignItems: 'center'
                 }}
               >
-                <Image
-                  style={{ width: 36, height: 36 }}
-                  source={require('../../../assets/images/Assets/Menu_Create.png')}
-                />
+                <Image style={{ width: 36, height: 36 }} source={require('../../../assets/images/Assets/KSC.png')} />
                 <Text style={{ fontSize: 15, color: '#fff', marginLeft: 20 }}>{i18n.t('Assets.CreateAccount')}</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.Create_PCX_Account} activeOpacity={0.7}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 37,
+                  alignItems: 'center'
+                }}
+              >
+                <Image style={{ width: 36, height: 36 }} source={require('../../../assets/images/Assets/pcx.png')} />
+                <Text style={{ fontSize: 15, color: '#fff', marginLeft: 20 }}>{i18n.t('Assets.CreatePCXAccount')}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -178,7 +240,6 @@ class RightMenu extends Component {
     )
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

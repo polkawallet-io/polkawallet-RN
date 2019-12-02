@@ -81,22 +81,17 @@ class ChangeName extends Component {
     } else {
       const _this = this
       checkPwd({
-        address: _this.props.rootStore.stateStore.Accounts[_this.props.rootStore.stateStore.Account].address,
+        address: _this.props.rootStore.stateStore.currentAccount.address,
         password: _this.state.Current_password,
         success: (loadPair, SInfo) => {
           loadPair.setMeta({ name: _this.state.New_name })
           _this.json = loadPair.toJson(_this.state.Current_password)
-          _this.json.meta = loadPair.getMeta()
-          SInfo.setItem(
-            _this.props.rootStore.stateStore.Accounts[_this.props.rootStore.stateStore.Account].address,
-            JSON.stringify(_this.json),
-            {
-              sharedPreferencesName: 'Polkawallet',
-              keychainService: 'PolkawalletKey'
-            }
-          )
-          _this.props.rootStore.stateStore.Accounts[_this.props.rootStore.stateStore.Account].account =
-            _this.state.New_name
+          _this.json.meta.name = loadPair.meta.name
+          SInfo.setItem(_this.props.rootStore.stateStore.currentAccount.address, JSON.stringify(_this.json), {
+            sharedPreferencesName: 'Polkawallet',
+            keychainService: 'PolkawalletKey'
+          })
+          _this.props.rootStore.stateStore.currentAccount.account = _this.state.New_name
           Alert.alert(
             '',
             i18n.t('Profile.Modify'),
