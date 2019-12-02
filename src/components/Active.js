@@ -12,7 +12,7 @@
  */
 import React, { Component } from 'react'
 import { Text, View, Image, TouchableOpacity, RefreshControl, ScrollView } from 'react-native'
-import { Method } from '@polkadot/types'
+import { GenericCall } from '@polkadot/types'
 import { formatBalance } from '@polkadot/util'
 import { VictoryPie } from 'victory-native'
 import { observer, inject } from 'mobx-react'
@@ -161,7 +161,7 @@ class Active extends Component {
             }
           } catch (e) {}
           if (info) {
-            let { meta, method, section } = Method.findFunction(info.proposal.callIndex)
+            let { meta, method, section } = GenericCall.findFunction(info.proposal.callIndex)
             let have = 0
             this.state.Actives_Title.push({ section: section, method: method })
             this.state.Actives_Nofixedvalue.push(info.proposal.args)
@@ -411,7 +411,7 @@ class Active extends Component {
                               }}
                             >
                               {i18n.t('Democracy.Aye')}
-                              {' ' + formatBalance(this.Aye(this.state.votingState[index]))}
+                              {' ' + formatBalance(String(this.Aye(this.state.votingState[index])))}
                             </Text>
                             <Text
                               style={{
@@ -452,7 +452,7 @@ class Active extends Component {
                               }}
                             >
                               {i18n.t('Democracy.Nay')}
-                              {' ' + formatBalance(this.Nay(this.state.votingState[index]))}
+                              {' ' + formatBalance(String(this.Nay(this.state.votingState[index])))}
                             </Text>
                             <Text
                               style={{

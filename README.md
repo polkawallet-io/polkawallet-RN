@@ -3,9 +3,9 @@ polkawallet react native implementation
 
 ### How to compile
 `$ git clone https://github.com/polkawallet-io/polkawallet-RN.git`  
-`$ cd polkawallet-RN && npm install`  
+`$ cd polkawallet-RN && yarn install`  
 
-`$ react-native start`  
+`$ NODE_OPTIONS=--max_old_space_size=8192 yarn start`  
 
 Open a new terminal:  
 `$ react-native run-android`  

@@ -23,6 +23,7 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         google()
         jcenter()
         maven {
@@ -37,10 +38,6 @@ allprojects {
 }
 
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
-    distributionUrl = distributionUrl.replace("bin", "all")
-}
 subprojects {
     afterEvaluate {project ->
         if (project.hasProperty("android")) {

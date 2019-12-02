@@ -1,0 +1,2 @@
+isOpenUniswap=true
+voteUrl=https://dapp.chainx.org 

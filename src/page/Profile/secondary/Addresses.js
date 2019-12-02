@@ -130,7 +130,11 @@ class Addresses extends Component {
                     } else {
                       this.props.rootStore.stateStore.t_address = item.Address
                       this.props.rootStore.stateStore.isaddresses = 1
-                      this.props.navigation.navigate('Transfer')
+                      if (this.props.rootStore.stateStore.type == 2) {
+                        this.props.navigation.navigate('PCX_transfer')
+                      } else {
+                        this.props.navigation.navigate('Transfer')
+                      }
                     }
                   }}
                 >

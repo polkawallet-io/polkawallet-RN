@@ -14,6 +14,7 @@ import React, { Component } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { observer, inject } from 'mobx-react'
 import Active from '../../components/Active'
+import History from './secondary/History'
 import { ScreenWidth } from '../../util/Common'
 import i18n from '../../locales/i18n'
 
@@ -39,13 +40,13 @@ class Referendums extends Component {
           }}
         >
           <TouchableOpacity
+            activeOpacity={0.7}
             style={{ justifyContent: 'center', alignItems: 'center' }}
             onPress={() => {
               this.setState({
                 activeTap: 1
               })
             }}
-            activeOpacity={0.7}
           >
             <View style={{ paddingHorizontal: 20 }}>
               <Text
@@ -53,7 +54,7 @@ class Referendums extends Component {
                   color: this.state.activeTap == 1 ? '#F14B79' : '#3E2D32',
                   borderBottomWidth: 2,
                   fontSize: 15,
-                  borderBottomColor: '#F14B79',
+                  borderBottomColor: this.state.activeTap == 1 ? '#F14B79' : '#fff',
                   height: 44,
                   lineHeight: 44
                 }}
@@ -62,12 +63,34 @@ class Referendums extends Component {
               </Text>
             </View>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+            activeOpacity={0.7}
+            onPress={() => {
+              this.setState({
+                activeTap: 2
+              })
+            }}
+          >
+            <View style={{ paddingHorizontal: 20 }}>
+              <Text
+                style={{
+                  color: this.state.activeTap == 2 ? '#F14B79' : '#3E2D32',
+                  borderBottomWidth: 2,
+                  fontSize: 15,
+                  borderBottomColor: this.state.activeTap == 2 ? '#F14B79' : '#fff',
+                  height: 44,
+                  lineHeight: 44
+                }}
+              >
+                {i18n.t('Democracy.History')}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        {this.state.activeTap == 1 ? (
-          <Active num={this.props.num} p={this.props.p} />
-        ) : (
-          <Active num={this.props.num} p={this.props.p} />
-        )}
+
+        {this.state.activeTap == 1 ? <Active num={this.props.num} p={this.props.p} /> : <History />}
       </View>
     )
   }

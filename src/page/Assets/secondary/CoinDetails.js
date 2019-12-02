@@ -108,15 +108,13 @@ class CoinDetails extends Component {
     // Clear the cache
     let REQUEST_URL = 'https://api.polkawallet.io:8080/tx_list_for_redis'
     let params =
-      '{"user_address":"' +
-      this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address +
-      '","pageNum":"1","pageSize":"10"}'
+      '{"user_address":"' + this.props.rootStore.stateStore.currentAccount.address + '","pageNum":"1","pageSize":"10"}'
     axios(REQUEST_URL, params, 'post', true)
       .then(() => {
         this.LoadTxList()
       })
       .catch()
-    this.GetStakingOption(this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address)
+    this.GetStakingOption(this.props.rootStore.stateStore.currentAccount.address)
   }
 
   /**
@@ -127,7 +125,7 @@ class CoinDetails extends Component {
     // 获取交易记录
     // Access to transaction records
     let REQUEST_URL = 'https://api.polkawallet.io:8080/tx_list'
-    let params = `{"user_address":"${this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address}","pageNum":${pageNum},"pageSize":"10"}`
+    let params = `{"user_address":"${this.props.rootStore.stateStore.currentAccount.address}","pageNum":${pageNum},"pageSize":"10"}`
     axios(REQUEST_URL, params)
       .then(result => {
         let transactions = [...this.state.transactions, ...result.tx_list.list]
@@ -181,7 +179,7 @@ class CoinDetails extends Component {
     let REQUEST_URL = 'https://api.polkawallet.io:8080/tx_money_date'
     let params =
       '{"user_address":"' +
-      this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address +
+      this.props.rootStore.stateStore.currentAccount.address +
       '","UTCdate":"' +
       moment(new Date().getTime()).format('YYYY-MM-DD HH:mm:ss') +
       '"}'

@@ -32,7 +32,9 @@ const getAppApi = async () =>
       ;(async () => {
         if (judgeObj(AppState.stateStore.API)) {
           const provider = new WsProvider(AppState.stateStore.ENDPOINT)
-          const api = await Api.create(provider)
+
+          const api = await Api.create({ provider: provider })
+
           AppState.stateStore.API = api
           resolve(api)
         } else {
@@ -79,6 +81,7 @@ const polkadotAPI = {
             resolve(_data)
           })()
         } catch (error) {
+          AppState.stateStore.API = {}
           reject(error)
         }
       })
@@ -127,6 +130,21 @@ const polkadotAPI = {
           const api = await getAppApi()
           const _data = api.tx.balances.transfer(_address, _value)
           resolve(_data)
+        })()
+      } catch (error) {
+        reject(error)
+      }
+    }),
+  sign: (_address, accountAddress, loadPair, _amount, _memo, cb) =>
+    new Promise(function(resolve, reject) {
+      try {
+        ;(async () => {
+          const api = await getAppApi()
+          const transfer = api.tx.balances.transfer(_address, _amount)
+          const nonce = await api.rpc.account.nextIndex(accountAddress)
+          const signData = transfer.sign(loadPair, nonce)
+          console.warn('成功后signData。。。。。。。。。' + signData.toHex())
+          resolve(signData.toHex())
         })()
       } catch (error) {
         reject(error)
@@ -217,7 +235,7 @@ const polkadotAPI = {
       try {
         ;(async () => {
           const api = await getAppApi()
-          const _data = await api.query.democracy.launchPeriod()
+          const _data = await api.consts.democracy.launchPeriod
           resolve(_data)
         })()
       } catch (error) {
@@ -333,7 +351,7 @@ const polkadotAPI = {
       try {
         ;(async () => {
           const api = await getAppApi()
-          const _data = await api.tx.session.setKey(key)
+          const _data = await api.tx.session.setKeys(key)
           resolve(_data)
         })()
       } catch (error) {
@@ -394,8 +412,8 @@ const polkadotAPI = {
       try {
         ;(async () => {
           const api = await getAppApi()
-          const _data = await api.query.session.sessionLength()
-          resolve(_data)
+          const _data = await api.derive.session.info()
+          resolve(_data.sessionLength)
         })()
       } catch (error) {
         reject(error)
@@ -407,7 +425,7 @@ const polkadotAPI = {
         ;(async () => {
           const api = await getAppApi()
           const _data = await api.derive.session.eraLength()
-          resolve(_data)
+          resolve(Number(_data))
         })()
       } catch (error) {
         reject(error)
@@ -425,7 +443,7 @@ const polkadotAPI = {
           ;(async () => {
             const api = await getAppApi()
             const _data = await api.derive.session.sessionProgress()
-            resolve(_data)
+            resolve(Number(_data))
           })()
         } catch (error) {
           reject(error)
@@ -445,7 +463,7 @@ const polkadotAPI = {
           ;(async () => {
             const api = await getAppApi()
             const _data = await api.derive.session.eraProgress()
-            resolve(_data)
+            resolve(Number(_data))
           })()
         } catch (error) {
           reject(error)

@@ -18,6 +18,8 @@ import Profile from './Profile/index'
 export default {
   TAB: {
     Assets: 'Assets',
+    Vote: 'Vote',
+    Exchange: 'Exchange',
     Staking: 'Staking',
     Democracy: 'Democracy',
     Profile: 'Profile',
@@ -41,7 +43,8 @@ export default {
     signMess: 'You are about to sign a message from',
     unlockPassword: 'unlock account using password',
     loading: 'loading',
-    CopySuccess: 'Copy success'
+    CopySuccess: 'Copy success',
+    Confirm: 'Confirm'
   },
   Assets: {
     ...Assets

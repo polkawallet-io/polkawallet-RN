@@ -13,7 +13,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
 import { observer, inject } from 'mobx-react'
-import { ScreenWidth, ScreenHeight, doubleClick } from '../../../util/Common'
+import { ScreenWidth, ScreenHeight } from '../../../util/Common'
 import Header from '../../../components/Header'
 import RNKeyboardAvoidView from '../../../components/RNKeyboardAvoidView'
 import i18n from '../../../locales/i18n'
@@ -113,9 +113,7 @@ class MnemonicWord extends Component {
             marginBottom: 20
           }}
           activeOpacity={0.7}
-          onPress={() => {
-            doubleClick(this.Next.bind(this))
-          }}
+          onPress={this.Next.bind(this)}
         >
           <Image source={require('../../../assets/images/Assets/Nextstep.png')} />
         </TouchableOpacity>

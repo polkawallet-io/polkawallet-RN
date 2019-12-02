@@ -153,7 +153,7 @@ export default class ProposalsRow extends Component {
                       fontSize: ScreenWidth / 30
                     }}
                   >
-                    {String(formatBalance(balances[index] || 0))}
+                    {formatBalance(String(balances[index] || 0))}
                   </Text>
                 </View>
               </View>

@@ -136,9 +136,10 @@ class ValidatorInfo extends Component {
         StakingNextPage: result.staking_list_alexander.hasNextPage
       })
       const _StakingRecords = this.state.StakingRecords
-      result.staking_list_alexander.list.map(item => {
-        _StakingRecords.staking_list_alexander.list.push(item)
-      })
+      result.staking_list_alexander.list &&
+        result.staking_list_alexander.list.map(item => {
+          _StakingRecords.staking_list_alexander.list.push(item)
+        })
       this.setState({
         StakingRecords: _StakingRecords
       })
@@ -167,15 +168,11 @@ class ValidatorInfo extends Component {
           validatorBalances: formatData(info).stakers.own || formatData(info).stakingLedger.active
         })
         let showBtn = false
-        let address = await polkadotAPI.bonded(
-          this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-        )
+        let address = await polkadotAPI.bonded(this.props.rootStore.stateStore.currentAccount.address)
         address = String(address)
         let controller = ''
         if (!address) {
-          controller = await polkadotAPI.ledger(
-            this.props.rootStore.stateStore.Accounts[this.props.rootStore.stateStore.Account].address
-          )
+          controller = await polkadotAPI.ledger(this.props.rootStore.stateStore.currentAccount.address)
           controller = String(controller)
           if (controller && controller != null && controller != 'null') {
             showBtn = true
@@ -575,11 +572,11 @@ class ValidatorInfo extends Component {
                           {i18n.t('TAB.Staking')}
                           {` ${item.st_type}`}
                         </Text>
-                        <Text>{moment(item.st_timestamp).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                        <Text>{item.st_timestamp ? moment(item.st_timestamp).format('DD/MM/YYYY HH:mm:ss') : '-'}</Text>
                       </View>
                       <Text style={{ justifyContent: 'flex-end' }}>
                         {item.st_type == 'slashed' ? '- ' : '+ '}
-                        {formatBalance(String(item.st_balance))}
+                        {item.st_balance ? formatBalance(String(item.st_balance)) : '0'}
                       </Text>
                     </View>
                   ))}
