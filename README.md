@@ -1,6 +1,9 @@
 # polkawallet-RN
 polkawallet react native implementation
 
+Now mainly exploring Flutter version: 
+https://github.com/polkawallet-io/polkawallet-flutter
+
 ### How to compile
 `$ git clone https://github.com/polkawallet-io/polkawallet-RN.git`  
 `$ cd polkawallet-RN && yarn install`  
