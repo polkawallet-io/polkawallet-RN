@@ -99,7 +99,7 @@
     "eslint-plugin-react": "7.13.0",
     "husky": "2.4.1",
     "jest": "23.6.0",
-    "lint-staged": "8.2.1",
+    "lint-staged": "13.1.0",
     "metro-react-native-babel-preset": "0.51.1",
     "polkadot-identicon-react-native": "0.0.5",
     "prettier": "1.18.2",
